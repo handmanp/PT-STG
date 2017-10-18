@@ -236,7 +236,7 @@ void enemy_uni::move() {
 		y -= speed;
 
 		//2ŸŠÖ”“I“®‚« Quadratic functionally Moving
-		x = ((y - ry) * (y - ry)) / 320.0f + rx;
+		x = ((y - ry) * (y - ry)) / 100.0f + rx;
 	}
 	draw();
 	collision_Check();

@@ -15,7 +15,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	SetDrawScreen( DX_SCREEN_BACK ); 
 
-	SetUseDirect3DVersion(DX_DIRECT3D_9);
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
 
 	//初期化
 	if (DxLib_Init() == -1) {
@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
 
 	// DXライブラリのデバイスロストした時のコールバックを設定
-	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+	//Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 	Effekseer_Set2DSetting(WINDOW_SIZE_X, WINDOW_SIZE_Y); // Effekseerに2D描画の設定をする。
 
 	//Zバッファ(エフェクト用)
@@ -160,10 +160,10 @@ void debug_Init() {
 	test.set_StagePos(0, 0);
 
 	//debug unis 4tai
-	unis[0].init(3, 1000, 700, 300, 360, 10, 1);
-	unis[1].init(3, 1050, 700, 300, 360, 10, 1);
-	unis[2].init(3, 1100, 700, 300, 360, 10, 1);
-	unis[3].init(3, 1150, 700, 300, 360, 10, 1);
+	unis[0].init(3, 1000, 700, 300, 360, 1, 1);
+	unis[1].init(3, 1050, 700, 300, 360, 1, 1);
+	unis[2].init(3, 1100, 700, 300, 360, 1, 1);
+	unis[3].init(3, 1150, 700, 300, 360, 1, 1);
 
 
 	//debug nuts 4tai
