@@ -286,3 +286,7 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+/PT STG.sln
+/PT STG/PT STG.vcxproj.filters
+/PT STG/PT STG.vcxproj
+/PT STG/Log.txt

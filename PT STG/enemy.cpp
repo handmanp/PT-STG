@@ -1,0 +1,695 @@
+#include "global.h"
+
+//--------------------------------------------------------------------------------
+//何も当たらなかったら -1 が返る
+//自機と敵本体が当たったら -2 が返る
+//自機弾と敵本体が当たったら -3 が返る
+//自機と弾が当たったら 弾構造体の配列番号 が返る
+//--------------------------------------------------------------------------------
+int enemy::collision_Check() {
+
+	//弾の枠外初期化
+	//----------------------------------------------------------------------------
+	bool flag = init_OutRangeBullets();
+	if (stats == 2 && flag == false) {
+		stats = 0; //弾も実態も無かったら消す
+		init_Bullets();
+	}
+
+	//自機と敵本体の当たり判定
+	//----------------------------------------------------------------------------
+	if (ship.x >= x - collision_size && ship.x <= x + collision_size &&
+		ship.y >= y - collision_size && ship.y <= y + collision_size) {
+		return -2;
+	}
+	//自機の弾と敵の当たり判定
+	//----------------------------------------------------------------------------
+	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+		if (ship.s[i].stats == 1 && stats == 1) {
+			if (ship.s[i].x > x - collision_size && ship.s[i].x < x + collision_size &&
+				ship.s[i].y > y - collision_size && ship.s[i].y < y + collision_size) {
+				ship.s[i].stats = 0;
+				hp--;
+				//敵死亡時
+				if (hp <= 0) {
+					//エフェクトの再生開始
+					effect_hnd = PlayEffekseer2DEffect(effects[0]);
+					//スケール変更
+					SetScalePlayingEffekseer2DEffect(effect_hnd, 25.0f, 25.0f, 25.0f);
+					//敵の位置にエフェクトをあわせる
+					SetPosPlayingEffekseer2DEffect(effect_hnd, x, y, 0);
+					//敵が死んでも弾が残ってたら存在させたままにする(stats = 2)
+					if (flag == false) {
+						stats = 0;
+						init_Bullets();
+					}
+					else {
+						stats = 2;
+					}
+				}
+			}
+		}
+	}
+	//自機と敵弾の当たり判定
+	//----------------------------------------------------------------------------
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (stats == 1) {
+			if (ship.x + 25 >= bullets[i].x - bullets[i].collision_size && ship.x - 25 <= bullets[i].x + bullets[i].collision_size &&
+				ship.y + 10 >= bullets[i].y - bullets[i].collision_size && ship.y - 10 <= bullets[i].y + bullets[i].collision_size) {
+				return i;
+			}
+		}
+	}
+	//めちゃくちゃ画面外いったら敵は死ぬ（今後解決策求む）
+	//----------------------------------------------------------------------------
+	if (x <= -1024) {
+		stats = 0;
+		init_Bullets();
+	}
+
+	return -1;
+}
+//----------------------------------------------------------------------------
+//配列の空き番地検索
+//----------------------------------------------------------------------------
+int enemy::search_FreeAddress() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+//----------------------------------------------------------------------------
+//弾の初期化
+//----------------------------------------------------------------------------
+void enemy::init_Bullets() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		bullets[i].stats = 0;
+		bullets[i].x = 0.f;
+		bullets[i].y = 0.f;
+		bullets[i].rad = 0.f;
+		bullets[i].speed = 0.f;
+		bullets[i].collision_size = 2;
+	}
+}
+//----------------------------------------------------------------------------
+//画面外に行った弾を初期化
+//----------------------------------------------------------------------------
+bool enemy::init_OutRangeBullets() {
+	bool flag = false;
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			flag = true;
+			if (bullets[i].x < -48 || bullets[i].x > WINDOW_SIZE_X + 48 ||
+				bullets[i].y < -48 || bullets[i].y > WINDOW_SIZE_Y + 48) {
+				bullets[i].stats = 0;
+				bullets[i].x = 0.f;
+				bullets[i].y = 0.f;
+				bullets[i].rad = 0.f;
+				bullets[i].speed = 0.f;
+			}
+		}
+	}
+	return flag;
+}
+float deg(int deg) {
+	float rad;
+	rad = DX_PI_F / 180 * deg;
+	return rad;
+}
+
+/*----------------------------------------------------------*/
+/*--------------------------STAGE1--------------------------*/
+/*----------------------------------------------------------*/
+
+/*
+ウニズ：二次関数的動き（壊れる）6
+
+バナナのヤツ：ランダム秒ごとに自機の高さに合わせてきてバナナ（弾）を発射する（壊れる）7
+
+ピネ爆弾：上に上がって円形弾幕を発射して数秒したら下に戻る（一応たまぶち込んだら壊れる）8
+
+カイ：固定砲台で自機狙いの玉をランダム秒の間隔（1～3秒くらい？）で打ってくる（壊れる）9
+
+*/
+
+//uni
+void enemy_uni::init(int HP, float start_x, float start_y, float reverse_x, float reverse_y, float s, int coll_size, int stat) {
+	x = start_x;
+	y = start_y;
+	hp = HP;
+	rx = reverse_x;
+	ry = reverse_y;
+	speed = s;
+	collision_size = coll_size;
+	stats = stat;
+
+}
+
+void enemy_uni::move() {
+	if (stats == 1) {
+		y -= speed;
+
+		//2次関数的動き Quadratic functionally Moving
+		x = ((y - ry) * (y - ry)) / 320.0f + rx;
+	}
+}
+
+void enemy_uni::draw() {
+		DrawBox((int)x + collision_size, (int)y + collision_size, (int)x - collision_size, (int)y - collision_size, GetColor(255, 255, 255), FALSE);
+}
+
+
+//banana
+void enemy_banana::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+	x = start_x;
+	y = start_y;
+	hp = HP;
+	speed = s;
+	collision_size = coll_size;
+	stats = stat;
+	mode = 0;
+}
+
+void enemy_banana::shot() {
+	int max = 12;
+	if (stats == 1) {
+		for (int i = 0; i < max; i++) {
+			int free = search_FreeAddress();
+			bullets[free].rad = DX_PI_F;
+			bullets[free].speed = 10;
+			bullets[free].x = x;
+			bullets[free].y = y;
+			bullets[free].stats = 1;
+		}
+	}
+
+}
+
+void enemy_banana::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		bullets[i].x += cosf(bullets[i].rad) * bullets[i].speed;
+		bullets[i].y += sinf(bullets[i].rad) * bullets[i].speed;
+	}
+}
+
+void enemy_banana::move() {
+	if (stats == 1) {
+		//mode=1:静止状態
+		if (mode == 0 && frame % (GetRand(299) + 1) == 0) {
+			mode = 1;
+		}
+		//mode=2:移動中
+		if (mode == 1) {
+			if (y < ship.y) {
+				y += 10;
+			}
+			else if (y > ship.y) {
+				y -= 10;
+			}
+			//自機付近の高さになったら弾を生成
+			if (y >= ship.y - 10 && y <= ship.y + 10) {
+				shot();
+				mode = 0;
+			}
+		}
+		move_shot();
+	}
+}
+
+void enemy_banana::draw() {
+	DrawBox((int)x - 10, (int)y - 10, (int)x + 10, (int)y + 10, GetColor(255, 255, 255), FALSE);
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			DrawBox((int)bullets[i].x - 10, (int)bullets[i].y - 10, (int)bullets[i].x + 10, (int)bullets[i].y + 10, GetColor(255, 255, 0), TRUE);
+			DrawFormatString((int)bullets[i].x - 8, (int)bullets[i].y - 8, GetColor(0, 0, 0), "バ");
+		}
+	}
+	init_OutRangeBullets();
+}
+
+
+//pine
+void enemy_pine::init(int HP, float s_x, float s_y, float up_y, float s, int coll_size, int stat) {
+	x = s_x;
+	y = s_y;
+	hp = HP;
+	start_y = s_y;
+	upper_y = up_y;
+	speed = s;
+	collision_size = coll_size;
+	stats = stat;
+	mode = 0;
+	attack_flag = 0;
+}
+
+void enemy_pine::shot() {
+	int max = 12;
+	if (stats == 1) {
+		for (int i = 0; i < max; i++) {
+			int free = search_FreeAddress();
+			bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
+			bullets[free].speed = 10;
+			bullets[free].x = x;
+			bullets[free].y = y;
+			bullets[free].stats = 1;
+		}
+		attack_flag = 1;
+	}
+}
+
+void enemy_pine::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		bullets[i].x += sinf(bullets[i].rad) * bullets[i].speed;
+		bullets[i].y += cosf(bullets[i].rad) * bullets[i].speed;
+	}
+}
+
+void enemy_pine::move() {
+	if (stats == 1) {
+		x -= speed;
+
+		//mode=0:上昇
+		//ステージ座標が100になったら(仮) upper_y まで上昇
+		if (mode == 0 && y >= upper_y && x - ship.x <= 256 && x - ship.x >= -256) {
+			y -= 10.0f;
+			if (y == upper_y) { mode = 1; }		// upper_y に達したら静止状態に移行
+		}
+		//mode=1:静止
+		if (mode == 1) {
+			if (attack_flag == 0 && frame % (GetRand(119) + 1) == 0) {
+				shot();
+			}
+
+			if (attack_flag == 1 && frame % 60 == 0) {
+				mode = 2;
+			}
+		}
+		//mode=2:下降
+		if (mode == 2 && y != start_y) {
+			y += 10;
+		}
+		move_shot();
+	}
+}
+
+void enemy_pine::draw() {
+	DrawBox((int)x, (int)y, (int)x + 10, (int)y + 10, GetColor(255, 255, 255), FALSE);
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			DrawBox((int)bullets[i].x - 10, (int)bullets[i].y - 10, (int)bullets[i].x + 10, (int)bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+			DrawFormatString((int)bullets[i].x - 8, (int)bullets[i].y - 8, GetColor(0, 0, 0), "ピ");
+		}
+	}
+	init_OutRangeBullets();
+}
+
+
+//shell
+void enemy_shell::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+	x = start_x;
+	y = start_y;
+	hp = HP;
+	speed = s;
+	collision_size = coll_size;
+	stats = stat;
+	mode = 0;
+}
+
+void enemy_shell::shot() {
+	int max = 10;
+	for (int i = 0; i < max; i++) {
+		int free = search_FreeAddress();
+		bullets[free].rad = atan2f(ship.x - x, ship.y - y);
+		bullets[free].speed = 10;
+		bullets[free].x = x;
+		bullets[free].y = y;
+		bullets[free].stats = 1;
+	}
+}
+
+void enemy_shell::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			bullets[i].x += sinf(bullets[i].rad) * bullets[i].speed;
+			bullets[i].y += cosf(bullets[i].rad) * bullets[i].speed;
+		}
+	}
+}
+
+void enemy_shell::move() {
+	if (stats == 1) {
+		x -= speed;
+
+		//1~180フレーム間(0~3秒)ランダムで弾を生成
+		if (frame % (GetRand(179) + 1) == 0) {
+			shot();
+		}
+		move_shot();
+	}
+}
+
+void enemy_shell::draw() {
+	DrawBox((int)x, (int)y, (int)x + 10, (int)y + 10, GetColor(255, 255, 250), FALSE);
+	for (int i = 0; i < MAX_BULLET; i++) {
+		DrawBox((int)bullets[i].x - 10, (int)bullets[i].y - 10, (int)bullets[i].x + 10, (int)bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+		DrawFormatString((int)bullets[i].x - 8, (int)bullets[i].y - 8, GetColor(0, 0, 0), "貝");
+	}
+	init_OutRangeBullets();
+}
+
+
+/*----------------------------------------------------------*/
+/*--------------------------STAGE2--------------------------*/
+/*----------------------------------------------------------*/
+
+/*
+Stage2
+ミートボールスパム:"２"みたいな動き
+
+ムービングスタチュー:普段は見えない。自機の半径180pxになったらいきなり能われて自機狙いで突進してくる
+
+ワーム:最初はいない　地面ニョキニョキ
+地面からある程度生えて体をくねらせながら6弾からなる円形弾を発射
+
+胞子コア:地面に生えていて、一定間隔で胞子を放つ(差分あり)。　胞子は範囲攻撃
+
+ツタ:壊されても一定時間経過でまた生える(statsを0にする)
+
+クワガタン:一定間隔で上下に移動(イージング)
+
+	O
+O		こんなの撃ってくる
+O
+	O
+
+*/
+
+
+
+//meatball
+void enemy_meatball::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+	mode = 0;
+	hp = HP;
+	x = start_x;
+	y = start_y;
+	speed = s;
+	collision_size = coll_size;
+	stats = stat;
+	deg = 180;
+	r = 0;
+	sh_x = 0.0f;
+	sh_y = 0.0f;
+	temp = 0;
+}
+
+void enemy_meatball::move() {
+	if (stats == 1) {
+
+		//version 0:回転を続ける 1:半円分移動後に直進
+		int version = 1;
+
+		//自機と x がhobo同じになるまで直進
+		if (mode == 0 && x >= ship.x) {
+			x -= speed;
+
+			if (x <= ship.x + 10.0f && x > ship.x) {
+				mode = 1;
+				sh_x = ship.x;
+				sh_y = ship.y;
+				r = sqrtf(powf(x - ship.x, 2) + powf(y - ship.y, 2));
+
+				//自機と敵の位置により上回転か下回転か決める
+				if (y <= ship.y) {
+					temp = 1;	// -> 上回転
+				}
+				else {
+					temp = -1;	// -> 下回転
+				}
+
+				mode = 1;
+			}
+		}
+
+		//円運動
+		if (mode == 1) {
+			deg -= 5 * temp;
+			x = r * sinf(a2r(deg)) * temp + sh_x;
+			y = r * cosf(a2r(deg)) * temp + sh_y;
+
+			if (deg > 360) {
+				deg = 0;
+			}
+
+			if (deg == 0 && version == 1) {
+				mode = 3;
+			}
+		}
+
+		//円運動終了後直進
+		if (mode == 3) {
+			x -= speed;
+		}
+	}
+}
+
+void enemy_meatball::draw() {
+	DrawBox((int)x - 10, (int)y - 10, (int)x + 10, (int)y + 10, GetColor(255, 255, 255), FALSE);
+}
+
+//statue
+void enemy_statue::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+	hidden = 1;
+	mode = 0;
+	rad = 0;
+	hp = HP;
+	x = start_x;
+	y = start_y;
+	speed = s;
+	collision_size = coll_size;
+	stats = stat;
+}
+
+void enemy_statue::move() {
+	if (stats == 1) {
+		//静止状態(hidden = 1)
+		if (mode == 0) {
+			/*なんか*/
+
+			//自機-敵間の距離が 180 以下になった時に戦闘モードに変更し正体を現す
+			if (sqrtf(powf(x - ship.x, 2) + powf(y - ship.y, 2)) <= 180) {
+				mode = 1;
+				hidden = 0;
+			}
+		}
+
+		//移動前の準備(とりあえず2秒後)
+		if (mode == 1) {
+			if (frame % 120 == 0) {
+				rad = atan2f(ship.x - x, ship.y - y);
+				mode = 2;
+			}
+		}
+
+		//実際の移動
+		if (mode == 2) {
+			speed += 0.2f;
+			x += sinf(rad) * speed;
+			y += cosf(rad) * speed;
+		}
+	}
+}
+
+void enemy_statue::draw() {
+	if (hidden == 0) {
+		DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), FALSE);
+	}
+	else {
+		DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), TRUE);
+	}
+}
+
+//warm
+void enemy_warm::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+	mode = 0;
+	ball = 6;
+	hp = HP;
+	x = start_x;
+	y = start_y;
+	speed = s;
+	collision_size = coll_size;
+	stats = stat;
+}
+
+void enemy_warm::shot() {
+
+}
+
+void enemy_warm::move_shot() {
+
+}
+
+void enemy_warm::move() {
+	if (stats == 1) {
+				
+	}
+}
+
+void enemy_warm::draw() {
+	DrawCircle(x + collision_size, y + collision_size, collision_size, GetColor(255, 255, 255), FALSE, 1);
+}
+
+//sporecore
+void enemy_sporecore::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+	hp = HP;
+	x = start_x;
+	y = start_y;
+	speed = s;
+	collision_size = coll_size;
+	stats = stat;
+}
+
+void enemy_sporecore::shot() {
+
+}
+
+void enemy_sporecore::move_shot() {
+
+}
+
+void enemy_sporecore::move() {
+	x -= 10.0f;
+}
+
+void enemy_sporecore::draw() {
+	DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), FALSE);
+
+}
+
+//ivy
+//y は最大時のツタの最下部
+void enemy_ivy::init(int HP, float start_x, float start_y,  float s, int Height, int stat) {
+	hp = HP;
+	x = start_x;
+	y = start_y;
+	prev_x = (int)start_x;
+	prev_y = (int)start_y;
+	speed = s;
+	collision_size = Height;
+	height = Height;
+	stats = stat;
+	mode = 0; //0:地中 1:伸びてる最中 2:破壊時
+}
+
+void enemy_ivy::move() {
+	x -= speed;
+
+	//生存
+	if (stats == 1) {
+
+		//とりあえず1秒後に育つ
+		if (frame % 60 == 0 && mode == 0) {
+			mode = 1;
+		}
+		if (mode == 1) {
+			if (y >= prev_y - height) {
+
+				//上に設置バージョンと下に設置バージョン
+				if (y <= WINDOW_SIZE_Y / 2) {
+					y += speed;
+				}
+				else {
+					y -= speed;
+				}
+			}
+
+			//HPがゼロになったら死状態
+			if (hp <= 0) {
+				stats = 0;
+			}
+		}
+	}
+
+	//死 = 復活
+	if (stats == 0) {
+		if (frame % 60 == 0) {
+			stats = 1;
+			hp = 5;
+			mode = 0;
+			y = (float)prev_y;
+		}
+	}
+}
+
+void enemy_ivy::draw() {
+	if (stats == 1) {
+		if (prev_y >= WINDOW_SIZE_Y / 2) {
+			DrawBox((int)x - 15, (int)y + height, (int)x + 15, (int)y, GetColor(255, 255, 255), FALSE);
+		}
+		else {
+			DrawBox((int)x - 15, (int)y - height, (int)x + 15, (int)y, GetColor(255, 255, 255), FALSE);
+		}
+	}
+}
+
+//stagbeetle
+void enemy_stagbeetle::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+	hp = HP;
+	x = start_x;
+	y = start_y;
+	speed = s;
+	collision_size = coll_size;
+	stats = stat;
+	temp_x = start_x;
+	mode = 0;
+}
+
+void enemy_stagbeetle::shot() {
+
+}
+
+void enemy_stagbeetle::move_shot() {
+
+}
+
+void enemy_stagbeetle::move() {
+	if (stats == 1) {
+
+		if (mode == 0) {
+			if (y >= WINDOW_SIZE_Y / 2) {
+				mode = 1;
+			}
+			else {
+				mode = 2;
+			}
+		}
+
+		if (mode == 1) {
+			if (y >= (WINDOW_SIZE_Y / 3) ) {
+
+				temp_x -= speed;
+				if (temp_x >= x + collision_size) {
+					speed *= -1;
+				}
+				else if (temp_x <= x - collision_size) {
+					speed *= -1;
+				}
+
+				y = (pow(temp_x - x, 2)) / 320.0f + (WINDOW_SIZE_Y / 3);
+			}
+			else {
+				mode = 0;
+			}
+		}
+
+
+	}
+}
+
+void enemy_stagbeetle::draw() {
+	DrawBox((int)x - collision_size, (int)y - collision_size, (int)x + collision_size, (int)y + collision_size, GetColor(255, 255, 255), FALSE);
+}
+
+
+
