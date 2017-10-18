@@ -39,6 +39,8 @@ void my_Stage::del_Stage() {
 //ステージの移動
 //s:移動スピート r:移動角度
 void my_Stage::move(int s, int r) {
+	//スピードをメンバに追加
+	speed = s;
 	//ラジアンにする
 	float move_rad = (DX_PI_F / 180.0f) * r;
 	//移動処理

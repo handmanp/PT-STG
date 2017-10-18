@@ -17,6 +17,8 @@ public:
 	float x;
 	float y;
 
+	float speed;
+
 	//動的確保用ポインタ
 	int ***stage_size;
 
