@@ -91,8 +91,18 @@ void make_FontData();
 //debug global area
 //-------------------------------
 
+//debug unis
+GLOBAL enemy_uni unis[4];
+
+//debug pine
+GLOBAL enemy_pine pine[4];
+
 //debug nuts
 GLOBAL enemy_nuts nuts[4];
+
+//debug shell
+GLOBAL enemy_shell shell[4];
+
 
 //debug my ship
 GLOBAL my_Ship  ship;

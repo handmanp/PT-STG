@@ -109,10 +109,12 @@ void load_Img() {
 	bg_handle = LoadGraph(_T("data/img/bg/bg000.png"));
 
 	//敵画像
+	//stage:1
 	enemy_img[0] = LoadGraph("data/img/enemy/st1/unis.png");     //ウニズ
 	enemy_img[1] = LoadGraph("data/img/enemy/st1/edamamen.png"); //エダマメン
 	enemy_img[2] = LoadGraph("data/img/enemy/st1/nuts.png");     //ナッツ
 	enemy_img[3] = LoadGraph("data/img/enemy/st1/pine.png");     //ピネ
+	enemy_img[4] = LoadGraph("data/img/enemy/st1/kai.png");		 //カイ
 
 	//自機画像
 	for (int i = 0; i < 2; i++) {
@@ -157,11 +159,25 @@ void debug_Init() {
 	test.init(500, 40);
 	test.set_StagePos(0, 0);
 
+	//debug unis 4tai
+	unis[0].init(3, 1000, 700, 300, 360, 10, 1);
+	unis[1].init(3, 1050, 700, 300, 360, 10, 1);
+	unis[2].init(3, 1100, 700, 300, 360, 10, 1);
+	unis[3].init(3, 1150, 700, 300, 360, 10, 1);
+
+
 	//debug nuts 4tai
 	nuts[0].init(1280, 360, 2, 0, 1);
 	nuts[1].init(1380, 360, 2, 90, 1);
 	nuts[2].init(1480, 360, 2, 180, 1);
 	nuts[3].init(1580, 360, 2, 270, 1);
+
+	//debug shell 4tai
+	shell[0].init(5, 700, 650, 1);
+	shell[1].init(5, 740, 650, 1);
+	shell[2].init(5, 780, 650, 1);
+	shell[3].init(5, 820, 650, 1);
+
 }
 
 void debug_GameMain() {
@@ -181,7 +197,15 @@ void debug_GameMain() {
 	debug_Message();
 
 	for (int i = 0; i < 4; i++) {
+		unis[i].move();
+	}
+
+	for (int i = 0; i < 4; i++) {
 		nuts[i].move();
+	}
+
+	for (int i = 0; i < 4; i++) {
+		shell[i].move();
 	}
 }
 

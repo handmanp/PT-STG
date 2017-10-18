@@ -61,7 +61,7 @@ class enemy_uni : public enemy {
 public:
 	float rx;
 	float ry;
-	void init(int HP, float start_x, float start_y, float reverse_x, float reverse_y, float s, int coll_size, int stat);
+	void init(int HP, float start_x, float start_y, float reverse_x, float reverse_y, float s, int stat);
 	void move();
 	void draw();
 };
@@ -95,7 +95,7 @@ public:
 class enemy_shell : public enemy {
 public:
 	int mode;
-	void init(int HP, float start_x, float start_y, float s, int coll_size, int stat);
+	void init(int HP, float start_x, float start_y, int stat);
 	void shot();
 	void move_shot();
 	void move();

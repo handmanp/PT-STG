@@ -219,14 +219,14 @@ void enemy_nuts::move() {
 //　ウニズ
 //----------------------------------------------------------------------------------------
 //========================================================================================
-void enemy_uni::init(int HP, float start_x, float start_y, float reverse_x, float reverse_y, float s, int coll_size, int stat) {
+void enemy_uni::init(int HP, float start_x, float start_y, float reverse_x, float reverse_y, float s, int stat) {
 	x = start_x;
 	y = start_y;
 	hp = HP;
 	rx = reverse_x;
 	ry = reverse_y;
 	speed = s;
-	collision_size = coll_size;
+	collision_size = 24;
 	stats = stat;
 
 }
@@ -238,10 +238,14 @@ void enemy_uni::move() {
 		//2次関数的動き Quadratic functionally Moving
 		x = ((y - ry) * (y - ry)) / 320.0f + rx;
 	}
+	draw();
+	collision_Check();
 }
 
 void enemy_uni::draw() {
-	DrawBox(x + collision_size, y + collision_size, x - collision_size, y - collision_size, GetColor(255, 255, 255), FALSE);
+	if (stats == 1) {
+		DrawGraph(x, y, enemy_img[0], TRUE);
+	}
 }
 
 
@@ -306,14 +310,18 @@ void enemy_banana::move() {
 		}
 		move_shot();
 	}
+	draw();
+	collision_Check();
 }
 
 void enemy_banana::draw() {
-	DrawBox(x - 10, y - 10, x + 10, y + 10, GetColor(255, 255, 255), FALSE);
-	for (int i = 0; i < MAX_BULLET; i++) {
-		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 0), TRUE);
-			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "バ");
+	if (stats == 1) {
+		DrawBox(x - 10, y - 10, x + 10, y + 10, GetColor(255, 255, 255), FALSE);
+		for (int i = 0; i < MAX_BULLET; i++) {
+			if (bullets[i].stats == 1) {
+				DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 0), TRUE);
+				DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "バ");
+			}
 		}
 	}
 	init_OutRangeBullets();
@@ -389,14 +397,18 @@ void enemy_pine::move() {
 
 		move_shot();
 	}
+	draw();
+	collision_Check();
 }
 
 void enemy_pine::draw() {
-	DrawBox(x, y, x + 10, y + 10, GetColor(255, 255, 255), FALSE);
-	for (int i = 0; i < MAX_BULLET; i++) {
-		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ピ");
+	if (stats == 1) {
+		DrawBox(x, y, x + 10, y + 10, GetColor(255, 255, 255), FALSE);
+		for (int i = 0; i < MAX_BULLET; i++) {
+			if (bullets[i].stats == 1) {
+				DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+				DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ピ");
+			}
 		}
 	}
 	init_OutRangeBullets();
@@ -408,12 +420,11 @@ void enemy_pine::draw() {
 // カイ
 //----------------------------------------------------------------------------------------
 //========================================================================================
-void enemy_shell::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+void enemy_shell::init(int HP, float start_x, float start_y, int stat) {
 	x = start_x;
 	y = start_y;
 	hp = HP;
-	speed = s;
-	collision_size = coll_size;
+	collision_size = 24;
 	stats = stat;
 	mode = 0;
 }
@@ -441,21 +452,28 @@ void enemy_shell::move_shot() {
 
 void enemy_shell::move() {
 	if (stats == 1) {
+		speed = test.speed;
 		x -= speed;
 
 		//1~180フレーム間(0~3秒)ランダムで弾を生成
 		if (frame % (GetRand(179) + 1) == 0) {
 			shot();
 		}
-		move_shot();
+
 	}
+	move_shot();
+
+	draw();
+	collision_Check();
 }
 
 void enemy_shell::draw() {
-	DrawBox(x, y, x + 10, y + 10, GetColor(255, 255, 250), FALSE);
-	for (int i = 0; i < MAX_BULLET; i++) {
-		DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-		DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "貝");
+	if (stats == 1) {
+		DrawGraph(x, y, enemy_img[4], TRUE);
+		for (int i = 0; i < MAX_BULLET; i++) {
+			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "貝");
+		}
 	}
 	init_OutRangeBullets();
 }
@@ -552,10 +570,14 @@ void enemy_meatball::move() {
 			x -= speed;
 		}
 	}
+	draw();
+	collision_Check();
 }
 
 void enemy_meatball::draw() {
-	DrawBox((int)x - 10, (int)y - 10, (int)x + 10, (int)y + 10, GetColor(255, 255, 255), FALSE);
+	if (stats == 1) {
+		DrawBox((int)x - 10, (int)y - 10, (int)x + 10, (int)y + 10, GetColor(255, 255, 255), FALSE);
+	}
 }
 
 //statue
@@ -599,14 +621,18 @@ void enemy_statue::move() {
 			y += cosf(rad) * speed;
 		}
 	}
+	draw();
+	collision_Check();
 }
 
 void enemy_statue::draw() {
-	if (hidden == 0) {
-		DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), FALSE);
-	}
-	else {
-		DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), TRUE);
+	if (stats == 1) {
+		if (hidden == 0) {
+			DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), FALSE);
+		}
+		else {
+			DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), TRUE);
+		}
 	}
 }
 
@@ -633,11 +659,18 @@ void enemy_warm::move_shot() {
 void enemy_warm::move() {
 	if (stats == 1) {
 
+
+
+
 	}
+	draw();
+	collision_Check();
 }
 
 void enemy_warm::draw() {
-	DrawCircle(x + collision_size, y + collision_size, collision_size, GetColor(255, 255, 255), FALSE, 1);
+	if (stats == 1) {
+		DrawCircle(x + collision_size, y + collision_size, collision_size, GetColor(255, 255, 255), FALSE, 1);
+	}
 }
 
 //sporecore
@@ -660,11 +693,16 @@ void enemy_sporecore::move_shot() {
 
 void enemy_sporecore::move() {
 	x -= 10.0f;
+
+
+	draw();
+	collision_Check();
 }
 
 void enemy_sporecore::draw() {
-	DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), FALSE);
-
+	if (stats == 1) {
+		DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), FALSE);
+	}
 }
 
 //ivy
@@ -720,6 +758,9 @@ void enemy_ivy::move() {
 			y = (float)prev_y;
 		}
 	}
+	draw();
+	collision_Check();
+
 }
 
 void enemy_ivy::draw() {
@@ -785,8 +826,12 @@ void enemy_stagbeetle::move() {
 
 
 	}
+	draw();
+	collision_Check();
 }
 
 void enemy_stagbeetle::draw() {
-	DrawBox((int)x - collision_size, (int)y - collision_size, (int)x + collision_size, (int)y + collision_size, GetColor(255, 255, 255), FALSE);
+	if (stats == 1) {
+		DrawBox((int)x - collision_size, (int)y - collision_size, (int)x + collision_size, (int)y + collision_size, GetColor(255, 255, 255), FALSE);
+	}
 }
