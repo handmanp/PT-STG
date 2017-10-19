@@ -115,6 +115,9 @@ void load_Img() {
 	enemy_img[2] = LoadGraph("data/img/enemy/st1/nuts.png");     //ナッツ
 	enemy_img[3] = LoadGraph("data/img/enemy/st1/pine.png");     //ピネ
 	enemy_img[4] = LoadGraph("data/img/enemy/st1/kai.png");		 //カイ
+	enemy_img[5] = LoadGraph("data/img/enemy/st1/genocide_banana.png"); //ジェノサイドバナナ
+	enemy_img[6] = LoadGraph("data/img/enemy/st1/pine.png");		//ぴ根
+	enemy_img[7] = LoadGraph("data/img/enemy/st1/moving_statue.png");	   //moving statue
 
 	//自機画像
 	for (int i = 0; i < 2; i++) {
@@ -178,6 +181,23 @@ void debug_Init() {
 	shell[2].init(5, 780, 650, 1);
 	shell[3].init(5, 820, 650, 1);
 
+	//debug banana 4tai
+	banana[0].init(10, 1000, 300, 1);
+	banana[1].init(10, 1200, 300, 1);
+	banana[2].init(10, 1300, 300, 1);
+	banana[3].init(10, 1520, 300, 1);
+
+	//debug pine 4tai
+	for (int i = 0; i < 4; i++) {
+		pine[i].init(5, 1800 + i * 40, 700, 300 + i * 60, 1);
+	}
+
+	//debug statue 4tai
+	for (int i = 0; i < 4; i++) {
+		statue[i].init(5, 1200 + i * 70, 600 + i * 40, 1);
+	}
+
+
 }
 
 void debug_GameMain() {
@@ -206,6 +226,18 @@ void debug_GameMain() {
 
 	for (int i = 0; i < 4; i++) {
 		shell[i].move();
+	}
+
+	for (int i = 0; i < 4; i++) {
+		banana[i].move();
+	}
+
+	for (int i = 0; i < 4; i++) {
+		pine[i].move();
+	}
+
+	for (int i = 0; i < 4; i++) {
+		statue[i].move();
 	}
 }
 
