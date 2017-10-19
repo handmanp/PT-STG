@@ -131,7 +131,7 @@ public:
 };
 
 
-class enemy_warm : public enemy {
+class enemy_worm : public enemy {
 public:
 	int mode;
 	int ball;

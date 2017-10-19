@@ -640,7 +640,7 @@ void enemy_statue::draw() {
 }
 
 //warm
-void enemy_warm::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+void enemy_worm::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
 	mode = 0;
 	ball = 6;
 	hp = HP;
@@ -651,15 +651,15 @@ void enemy_warm::init(int HP, float start_x, float start_y, float s, int coll_si
 	stats = stat;
 }
 
-void enemy_warm::shot() {
+void enemy_worm::shot() {
 
 }
 
-void enemy_warm::move_shot() {
+void enemy_worm::move_shot() {
 
 }
 
-void enemy_warm::move() {
+void enemy_worm::move() {
 	if (stats == 1) {
 
 
@@ -670,7 +670,7 @@ void enemy_warm::move() {
 	collision_Check();
 }
 
-void enemy_warm::draw() {
+void enemy_worm::draw() {
 	if (stats == 1) {
 		DrawCircle(x + collision_size, y + collision_size, collision_size, GetColor(255, 255, 255), FALSE, 1);
 	}

@@ -122,6 +122,7 @@ void load_Img() {
 	enemy_img[9] = LoadGraph("data/img/enemy/st1/ivy.png");		 //ツタ
 	enemy_img[10] = LoadGraph("data/img/enemy/st1/sporecore.png");//胞子コア
 	enemy_img[11] = LoadGraph("data/img/enemy/st1/kuwagatan.png");//クワガタん
+	enemy_img[12] = LoadGraph("data/img/enemy/st1/worm_head.png");//ワームヘッド
 
 	//自機画像
 	for (int i = 0; i < 2; i++) {
