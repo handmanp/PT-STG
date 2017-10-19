@@ -110,6 +110,15 @@ GLOBAL enemy_banana banana[4];
 //debug statue
 GLOBAL enemy_statue statue[4];
 
+//debug ivy
+GLOBAL enemy_ivy ivy[4];
+
+//debug kuwagaran
+GLOBAL enemy_stagbeetle kuwagatan[4];
+
+//debug sporecore
+GLOBAL enemy_sporecore houshi[4];
+
 //debug my ship
 GLOBAL my_Ship  ship;
 

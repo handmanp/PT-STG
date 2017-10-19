@@ -10,7 +10,7 @@
 void my_Ship::init() {
 	x              = 200.0f;
 	y              = 360.0f;
-	speed          = 4.0f;
+	speed          = 10.0f;
 	collision_size = 3;
 	anim           = 2;
 	type           = 0;

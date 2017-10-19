@@ -146,7 +146,7 @@ public:
 class enemy_sporecore : public enemy {
 public:
 	int mode;
-	void init(int HP, float start_x, float start_y, float s, int coll_size, int stat);
+	void init(int HP, float start_x, float start_y, int stat);
 	void shot();
 	void move_shot();
 	void move();
@@ -157,10 +157,11 @@ public:
 class enemy_ivy : public enemy {
 public:
 	int mode;
+	int temp;
 	int height;
 	int prev_x;
 	int prev_y;
-	void init(int HP, float start_x, float start_y, float s, int Height, int stat);
+	void init(int HP, float start_x, float start_y, int stat);
 	void move();
 	void draw();
 };
@@ -170,7 +171,8 @@ class enemy_stagbeetle : public enemy {
 public:
 	int mode;
 	int temp_x;
-	void init(int HP, float start_x, float start_y, float s, int coll_size, int stat);
+	int temp_y;
+	void init(int HP, float start_x, float start_y, int stat);
 	void shot();
 	void move_shot();
 	void move();

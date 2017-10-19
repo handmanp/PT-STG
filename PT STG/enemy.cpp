@@ -309,21 +309,20 @@ void enemy_banana::move() {
 				mode = 0;
 			}
 		}
-		move_shot();
-		draw();
-
 	}
+	move_shot();
+	draw();
 	collision_Check();
 }
 
 void enemy_banana::draw() {
 	if (stats == 1) {
 		DrawGraph(x , y, enemy_img[5], TRUE);
-		for (int i = 0; i < MAX_BULLET; i++) {
-			if (bullets[i].stats == 1) {
-				DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 0), TRUE);
-				DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "Éo");
-			}
+	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 0), TRUE);
+			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "Éo");
 		}
 	}
 	init_OutRangeBullets();
@@ -397,8 +396,8 @@ void enemy_pine::move() {
 			y += 10;
 		}
 
-		move_shot();
 	}
+	move_shot();
 	draw();
 	collision_Check();
 }
@@ -406,11 +405,11 @@ void enemy_pine::move() {
 void enemy_pine::draw() {
 	if (stats == 1) {
 		DrawGraph(x, y, enemy_img[6], TRUE);
-		for (int i = 0; i < MAX_BULLET; i++) {
-			if (bullets[i].stats == 1) {
-				DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-				DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "És");
-			}
+	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "És");
 		}
 	}
 	init_OutRangeBullets();
@@ -464,7 +463,6 @@ void enemy_shell::move() {
 
 	}
 	move_shot();
-
 	draw();
 	collision_Check();
 }
@@ -472,10 +470,10 @@ void enemy_shell::move() {
 void enemy_shell::draw() {
 	if (stats == 1) {
 		DrawGraph(x, y, enemy_img[4], TRUE);
-		for (int i = 0; i < MAX_BULLET; i++) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "äL");
-		}
+	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+		DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "äL");
 	}
 	init_OutRangeBullets();
 }
@@ -676,79 +674,113 @@ void enemy_warm::draw() {
 	if (stats == 1) {
 		DrawCircle(x + collision_size, y + collision_size, collision_size, GetColor(255, 255, 255), FALSE, 1);
 	}
+
 }
 
 //sporecore
-void enemy_sporecore::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+void enemy_sporecore::init(int HP, float start_x, float start_y, int stat) {
 	hp = HP;
 	x = start_x;
 	y = start_y;
-	speed = s;
-	collision_size = coll_size;
+	speed = 0;
+	collision_size = 48;
 	stats = stat;
+	mode = 0;
 }
 
 void enemy_sporecore::shot() {
+	if (stats == 1) {
+		for (int i = 0; i < 1; i++) {
+			int free = search_FreeAddress();
+			//bullets[free].rad = 5 * DX_PI_F / 3 * 0.4f * i;
+			bullets[free].speed = 10;
+			bullets[free].x = x;
+			bullets[free].y = y;
+			bullets[free].stats = 1;
+			bullets[free].collision_size = 48;
+		}
+	}
 
 }
 
 void enemy_sporecore::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			bullets[i].x -= test.speed;
+			if (bullets[i].y >= y - 50) {
+				bullets[i].y -= test.speed;
+			}
+		}
+	}
 
 }
 
 void enemy_sporecore::move() {
-	x -= 10.0f;
+	x -= test.speed;
 
+	if (stats == 1) {
 
+		if (mode == 0 && frame % 180 == 0) {
+			mode = 1;
+		}
+
+		if (mode == 1) {
+			shot();
+			mode = 0;
+		}
+
+	}
+	move_shot();
 	draw();
 	collision_Check();
 }
 
 void enemy_sporecore::draw() {
 	if (stats == 1) {
-		DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), FALSE);
+		DrawGraph((int)x - 10, (int)y - 30, enemy_img[10], TRUE);
 	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		DrawBox(bullets[i].x - bullets[i].collision_size, bullets[i].y - bullets[i].collision_size, bullets[i].x + bullets[i].collision_size, bullets[i].y + bullets[i].collision_size, GetColor(255, 255, 255), TRUE);
+		DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ñEéÄ");
+	}
+	init_OutRangeBullets();
+
 }
 
 //ivy
 //y ÇÕç≈ëÂéûÇÃÉcÉ^ÇÃç≈â∫ïî
-void enemy_ivy::init(int HP, float start_x, float start_y, float s, int Height, int stat) {
+void enemy_ivy::init(int HP, float start_x, float start_y, int stat) {
 	hp = HP;
 	x = start_x;
 	y = start_y;
 	prev_x = (int)start_x;
 	prev_y = (int)start_y;
-	speed = s;
-	collision_size = Height;
-	height = Height;
+	speed = 0;
+	collision_size = 64;
+	height = 128;
 	stats = stat;
 	mode = 0; //0:íníÜ 1:êLÇ—ÇƒÇÈç≈íÜ 2:îjâÛéû
 }
 
 void enemy_ivy::move() {
-	x -= speed;
+	x -= test.speed;
 
 	//ê∂ë∂
 	if (stats == 1) {
 
 		//Ç∆ÇËÇ†Ç¶Ç∏1ïbå„Ç…àÁÇ¬
-		if (frame % 60 == 0 && mode == 0) {
+		if (mode == 0 && frame % 60 == 0) {
 			mode = 1;
 		}
 		if (mode == 1) {
+			speed = test.speed;
 			if (y >= prev_y - height) {
-
-				//è„Ç…ê›íuÉoÅ[ÉWÉáÉìÇ∆â∫Ç…ê›íuÉoÅ[ÉWÉáÉì
-				if (y <= WINDOW_SIZE_Y / 2) {
-					y += speed;
-				}
-				else {
-					y -= speed;
-				}
+				y -= speed;
 			}
 
 			//HPÇ™É[ÉçÇ…Ç»Ç¡ÇΩÇÁéÄèÛë‘
 			if (hp <= 0) {
+				temp = x;
 				stats = 0;
 			}
 		}
@@ -756,7 +788,7 @@ void enemy_ivy::move() {
 
 	//éÄ = ïúäà
 	if (stats == 0) {
-		if (frame % 60 == 0) {
+		if (frame % 180 == 0) {
 			stats = 1;
 			hp = 5;
 			mode = 0;
@@ -771,72 +803,102 @@ void enemy_ivy::move() {
 void enemy_ivy::draw() {
 	if (stats == 1) {
 		if (prev_y >= WINDOW_SIZE_Y / 2) {
-			DrawBox((int)x - 15, (int)y + height, (int)x + 15, (int)y, GetColor(255, 255, 255), FALSE);
+			DrawGraph((int)x - 24, (int)y, enemy_img[9],TRUE);
 		}
 		else {
-			DrawBox((int)x - 15, (int)y - height, (int)x + 15, (int)y, GetColor(255, 255, 255), FALSE);
+			DrawGraph((int)x - 24, (int)y, enemy_img[9], TRUE);
 		}
 	}
 }
 
 //stagbeetle
-void enemy_stagbeetle::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+void enemy_stagbeetle::init(int HP, float start_x, float start_y, int stat) {
 	hp = HP;
 	x = start_x;
 	y = start_y;
-	speed = s;
-	collision_size = coll_size;
+	speed = 0;
+	collision_size = 48;
 	stats = stat;
 	temp_x = start_x;
+	temp_y = start_y;
 	mode = 0;
 }
 
 void enemy_stagbeetle::shot() {
-
+	int max = 8;
+	if (stats == 1) {
+		for (int i = 0; i < max; i++) {
+			int free = search_FreeAddress();
+			bullets[free].rad = 5 * DX_PI_F / 3 * 0.4f * i;
+			bullets[free].speed = 10;
+			bullets[free].x = x;
+			bullets[free].y = y;
+			bullets[free].stats = 1;
+		}
+	}
 }
 
 void enemy_stagbeetle::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			bullets[i].x += -sin(bullets[i].rad) * bullets[i].speed;
+			bullets[i].y += -cos(bullets[i].rad) * bullets[i].speed;
+			if (bullets[i].x <= 0 || bullets[i].y <= 0 || bullets[i].x >= 1270 || bullets[i].y >= 710) {
+				bullets[i].rad *= DX_PI_F;
+			}
+		}
+	}
 
 }
 
 void enemy_stagbeetle::move() {
 	if (stats == 1) {
-
-		if (mode == 0) {
-			if (y >= WINDOW_SIZE_Y / 2) {
-				mode = 1;
+		if (mode == 0 && frame % 60 == 0) {
+			if (y >= temp_y) {
+				speed = test.speed;
+				mode = 1;	//to up
 			}
 			else {
-				mode = 2;
+				mode = 2;	//to down
 			}
 		}
 
+		//è„Ç…è„Ç™ÇÈ
 		if (mode == 1) {
-			if (y >= (WINDOW_SIZE_Y / 3)) {
-
-				temp_x -= speed;
-				if (temp_x >= x + collision_size) {
-					speed *= -1;
-				}
-				else if (temp_x <= x - collision_size) {
-					speed *= -1;
-				}
-
-				y = (pow(temp_x - x, 2)) / 320.0f + (WINDOW_SIZE_Y / 3);
+			if (y >= temp_y - 128) {
+				y -= speed;
 			}
 			else {
 				mode = 0;
+				shot();
 			}
 		}
 
+		//â∫Ç…â∫ÇÈ
+		if (mode == 2) {
+			if (y <= temp_y + 128) {
+				y += speed;
+			}
+			else {
+				mode = 0;
+				shot();
+			}
+
+		}
 
 	}
+	move_shot();
 	draw();
 	collision_Check();
 }
 
 void enemy_stagbeetle::draw() {
 	if (stats == 1) {
-		DrawBox((int)x - collision_size, (int)y - collision_size, (int)x + collision_size, (int)y + collision_size, GetColor(255, 255, 255), FALSE);
+		DrawGraph((int)x - collision_size, (int)y - collision_size, enemy_img[11], TRUE);
 	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+		DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "åL");
+	}
+	init_OutRangeBullets();
 }

@@ -117,7 +117,11 @@ void load_Img() {
 	enemy_img[4] = LoadGraph("data/img/enemy/st1/kai.png");		 //カイ
 	enemy_img[5] = LoadGraph("data/img/enemy/st1/genocide_banana.png"); //ジェノサイドバナナ
 	enemy_img[6] = LoadGraph("data/img/enemy/st1/pine.png");		//ぴ根
-	enemy_img[7] = LoadGraph("data/img/enemy/st1/moving_statue.png");	   //moving statue
+	enemy_img[7] = LoadGraph("data/img/enemy/st1/moving_statue.png");	//moving statue
+	enemy_img[8] = LoadGraph("data/img/enemy/st1/meatball_spam.png");	//ミートボールスパム
+	enemy_img[9] = LoadGraph("data/img/enemy/st1/ivy.png");		 //ツタ
+	enemy_img[10] = LoadGraph("data/img/enemy/st1/sporecore.png");//胞子コア
+	enemy_img[11] = LoadGraph("data/img/enemy/st1/kuwagatan.png");//クワガタん
 
 	//自機画像
 	for (int i = 0; i < 2; i++) {
@@ -163,40 +167,46 @@ void debug_Init() {
 	test.set_StagePos(0, 0);
 
 	//debug unis 4tai
-	unis[0].init(3, 1000, 700, 300, 360, 1, 1);
-	unis[1].init(3, 1050, 700, 300, 360, 1, 1);
-	unis[2].init(3, 1100, 700, 300, 360, 1, 1);
-	unis[3].init(3, 1150, 700, 300, 360, 1, 1);
-
+	for (int i = 0; i < 4; i++) {
+		//unis[i].init(3, 1000 + 50 * i, 700, 300, 360, 1, 1);
+	}
 
 	//debug nuts 4tai
-	nuts[0].init(1280, 360, 2, 0, 1);
-	nuts[1].init(1380, 360, 2, 90, 1);
-	nuts[2].init(1480, 360, 2, 180, 1);
-	nuts[3].init(1580, 360, 2, 270, 1);
+	for (int i = 0; i < 4; i++) {
+		//nuts[i].init(1280 + 100 * i, 90 + 90 * i, 2, 90 * i, 1);
+	}
 
 	//debug shell 4tai
-	shell[0].init(5, 700, 650, 1);
-	shell[1].init(5, 740, 650, 1);
-	shell[2].init(5, 780, 650, 1);
-	shell[3].init(5, 820, 650, 1);
+	for (int i = 0; i < 4; i++) {
+		//shell[i].init(5, 700 + 40 * i, 650, 1);
+	}
 
 	//debug banana 4tai
-	banana[0].init(10, 1000, 300, 1);
-	banana[1].init(10, 1200, 300, 1);
-	banana[2].init(10, 1300, 300, 1);
-	banana[3].init(10, 1520, 300, 1);
+	for (int i = 0; i < 4; i++) {
+		//banana[i].init(10, 1000 + 200 * i, 300, 1);
+	}
 
 	//debug pine 4tai
 	for (int i = 0; i < 4; i++) {
-		pine[i].init(5, 1800 + i * 40, 700, 300 + i * 60, 1);
+		//pine[i].init(5, 1800 + i * 40, 700, 300 + i * 60, 1);
 	}
 
 	//debug statue 4tai
 	for (int i = 0; i < 4; i++) {
-		statue[i].init(5, 1200 + i * 70, 600 + i * 40, 1);
+		//statue[i].init(5, 1200 + i * 70, 600 + i * 40, 1);
 	}
 
+	for (int i = 0; i < 4; i++) {
+		//ivy[i].init(5, 1000 + 100 * i, 600, 1);
+	}
+
+	for (int i = 0; i < 1; i++) {
+		//kuwagatan[i].init(5, 1000, 360, 1);
+	}
+
+	for (int i = 0; i < 4; i++) {
+		houshi[i].init(5, 1000 + 100 * i, 650, 1);
+	}
 
 }
 
@@ -217,27 +227,39 @@ void debug_GameMain() {
 	debug_Message();
 
 	for (int i = 0; i < 4; i++) {
-		unis[i].move();
+		//unis[i].move();
 	}
 
 	for (int i = 0; i < 4; i++) {
-		nuts[i].move();
+		//nuts[i].move();
 	}
 
 	for (int i = 0; i < 4; i++) {
-		shell[i].move();
+		//shell[i].move();
 	}
 
 	for (int i = 0; i < 4; i++) {
-		banana[i].move();
+		//banana[i].move();
 	}
 
 	for (int i = 0; i < 4; i++) {
-		pine[i].move();
+		//pine[i].move();
 	}
 
 	for (int i = 0; i < 4; i++) {
-		statue[i].move();
+		//statue[i].move();
+	}
+
+	for (int i = 0; i < 4; i++) {
+		//ivy[i].move();
+	}
+
+	for (int i = 0; i < 1; i++) {
+		//kuwagatan[i].move();
+	}
+
+	for (int i = 0; i < 4; i++) {
+		houshi[i].move();
 	}
 }
 
