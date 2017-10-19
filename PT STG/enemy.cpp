@@ -254,12 +254,12 @@ void enemy_uni::draw() {
 // ジェノサイドバナナ
 //----------------------------------------------------------------------------------------
 //========================================================================================
-void enemy_banana::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+void enemy_banana::init(int HP, float start_x, float start_y, int stat) {
 	x = start_x;
 	y = start_y;
 	hp = HP;
-	speed = s;
-	collision_size = coll_size;
+	speed = 0;
+	collision_size = 64;
 	stats = stat;
 	mode = 0;
 }
@@ -288,6 +288,7 @@ void enemy_banana::move_shot() {
 
 void enemy_banana::move() {
 	if (stats == 1) {
+		x -= test.speed;
 		//mode=1:静止状態
 		if (mode == 0 && frame % (GetRand(299) + 1) == 0) {
 			mode = 1;
@@ -309,14 +310,15 @@ void enemy_banana::move() {
 			}
 		}
 		move_shot();
+		draw();
+
 	}
-	draw();
 	collision_Check();
 }
 
 void enemy_banana::draw() {
 	if (stats == 1) {
-		DrawBox(x - 10, y - 10, x + 10, y + 10, GetColor(255, 255, 255), FALSE);
+		DrawGraph(x , y, enemy_img[5], TRUE);
 		for (int i = 0; i < MAX_BULLET; i++) {
 			if (bullets[i].stats == 1) {
 				DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 0), TRUE);
@@ -333,14 +335,14 @@ void enemy_banana::draw() {
 // ピネ
 //----------------------------------------------------------------------------------------
 //========================================================================================
-void enemy_pine::init(int HP, float s_x, float s_y, float up_y, float s, int coll_size, int stat) {
+void enemy_pine::init(int HP, float s_x, float s_y, float up_y,int stat) {
 	x = s_x;
 	y = s_y;
 	hp = HP;
 	start_y = s_y;
 	upper_y = up_y;
-	speed = s;
-	collision_size = coll_size;
+	speed = 0;
+	collision_size = 24;
 	stats = stat;
 	mode = 0;
 	attack_flag = 0;
@@ -371,7 +373,7 @@ void enemy_pine::move_shot() {
 void enemy_pine::move() {
 	int down;
 	if (stats == 1) {
-		x -= speed;
+		x -= test.speed;
 
 		//mode=0:上昇
 		//ステージ座標が100になったら(仮) upper_y まで上昇
@@ -403,7 +405,7 @@ void enemy_pine::move() {
 
 void enemy_pine::draw() {
 	if (stats == 1) {
-		DrawBox(x, y, x + 10, y + 10, GetColor(255, 255, 255), FALSE);
+		DrawGraph(x, y, enemy_img[6], TRUE);
 		for (int i = 0; i < MAX_BULLET; i++) {
 			if (bullets[i].stats == 1) {
 				DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
@@ -507,13 +509,13 @@ O
 
 
 //meatball
-void enemy_meatball::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+void enemy_meatball::init(int HP, float start_x, float start_y, int stat) {
 	mode = 0;
 	hp = HP;
 	x = start_x;
 	y = start_y;
-	speed = s;
-	collision_size = coll_size;
+	speed = 0;
+	collision_size = 48;
 	stats = stat;
 	deg = 180;
 	r = 0;
@@ -581,26 +583,27 @@ void enemy_meatball::draw() {
 }
 
 //statue
-void enemy_statue::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+void enemy_statue::init(int HP, float start_x, float start_y, int stat) {
 	hidden = 1;
 	mode = 0;
 	rad = 0;
 	hp = HP;
 	x = start_x;
 	y = start_y;
-	speed = s;
-	collision_size = coll_size;
+	speed = 0;
+	collision_size = 48;
 	stats = stat;
 }
 
 void enemy_statue::move() {
 	if (stats == 1) {
+		x -= test.speed;
 		//静止状態(hidden = 1)
 		if (mode == 0) {
-			/*なんか*/
+			collision_size = 0;
 
 			//自機-敵間の距離が 180 以下になった時に戦闘モードに変更し正体を現す
-			if (sqrtf(powf(x - ship.x, 2) + powf(y - ship.y, 2)) <= 180) {
+			if (sqrtf(powf(x - ship.x, 2) + powf(y - ship.y, 2)) <= 512) {
 				mode = 1;
 				hidden = 0;
 			}
@@ -611,12 +614,13 @@ void enemy_statue::move() {
 			if (frame % 120 == 0) {
 				rad = atan2f(ship.x - x, ship.y - y);
 				mode = 2;
+				collision_size = 48;
 			}
 		}
 
 		//実際の移動
 		if (mode == 2) {
-			speed += 0.2f;
+			speed += 0.3f;
 			x += sinf(rad) * speed;
 			y += cosf(rad) * speed;
 		}
@@ -628,10 +632,11 @@ void enemy_statue::move() {
 void enemy_statue::draw() {
 	if (stats == 1) {
 		if (hidden == 0) {
-			DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), FALSE);
+			DrawGraph(x, y, enemy_img[7], TRUE);
+			//DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), FALSE);
 		}
 		else {
-			DrawBox((int)x - 10, (int)y - 30, (int)x + 10, (int)y + 30, GetColor(255, 255, 255), TRUE);
+			DrawBox(x - 24, y - 24, x + 24, y + 24, GetColor(255, 255, 255), TRUE);
 		}
 	}
 }

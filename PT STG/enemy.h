@@ -70,7 +70,7 @@ public:
 class enemy_banana : public enemy {
 public:
 	int mode;
-	void init(int HP, float start_x, float start_y, float s, int coll_size, int stat);
+	void init(int HP, float start_x, float start_y, int stat);
 	void move();
 	void move_shot();
 	void shot();
@@ -84,7 +84,7 @@ public:
 	int attack_flag;
 	float start_y;
 	float upper_y;
-	void init(int HP, float s_x, float s_y, float up_y, float s, int coll_size, int stat);
+	void init(int HP, float s_x, float s_y, float up_y, int stat);
 	void shot();
 	void move();
 	void move_shot();
@@ -113,7 +113,7 @@ public:
 	float deg;
 	float sh_x;	//©‹@‚ÌÀ•W‚ğ•Û‘¶ 
 	float sh_y;
-	void init(int HP, float start_x, float start_y, float s, int coll_size, int stat);
+	void init(int HP, float start_x, float start_y, int stat);
 	void move();
 	void draw();
 
@@ -125,7 +125,7 @@ public:
 	int hidden;
 	int mode;
 	float rad;
-	void init(int HP, float start_x, float start_y, float s, int coll_size, int stat);
+	void init(int HP, float start_x, float start_y, int stat);
 	void move();
 	void draw();
 };
