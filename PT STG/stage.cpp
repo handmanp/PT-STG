@@ -1,13 +1,13 @@
 #include "global.h"
 
-//ステージの初期化
-//sx:ステージ幅 sy:ステージ高さ
+// ステージの初期化
+// sx:ステージ幅 sy:ステージ高さ
 void my_Stage::init(int sx, int sy) {
-	//クラス用再定義
+	// クラス用再定義
 	stage_size_x = sx; //サイズ
 	stage_size_y = sy;
 
-	//3次元配列の動的確保（カッコイイ）
+	// 3次元配列の動的確保（カッコイイ）
 	stage_size = new int**[stage_size_x];
 	for (int i = 0; i < stage_size_x; i++) {
 		stage_size[i] = new int*[stage_size_y];
@@ -15,7 +15,7 @@ void my_Stage::init(int sx, int sy) {
 			stage_size[i][j] = new int[2];
 		}
 	}
-	//初期化
+	// 初期化
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
 			stage_size[i][j][0] = 0;
@@ -24,8 +24,8 @@ void my_Stage::init(int sx, int sy) {
 	}
 }
 
-//ステージの破棄
-//※コレ通さないと死ぬから注意
+// ステージの破棄
+// ※コレ通さないと死ぬから注意
 void my_Stage::del_Stage() {
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
@@ -36,19 +36,19 @@ void my_Stage::del_Stage() {
 	delete[] stage_size;
 }
 
-//ステージの移動
-//s:移動スピート r:移動角度
+// ステージの移動
+// s:移動スピート r:移動角度
 void my_Stage::move(int s, int r) {
-	//スピードをメンバに追加
+	// スピードをメンバに追加
 	speed = s;
 	//ラジアンにする
 	float move_rad = (DX_PI_F / 180.0f) * r;
-	//移動処理
+	// 移動処理
 	x += sinf(move_rad) * s;
 	y += cosf(move_rad) * s;
 }
 
-//ステージを描画(仮)
+// ステージを描画(仮)
 void my_Stage::draw() {
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
@@ -66,14 +66,14 @@ void my_Stage::draw() {
 	}
 }
 
-//ステージの状態を取得
+// ステージの状態を取得
 STAGE_DATA my_Stage::get_StageData(STAGE_DATA data) {
 	data.x = x;
 	data.y = y;
 	return data;
 }
 
-//ステージの位置を移動する
+// ステージの位置を移動する
 void my_Stage::set_StagePos(float sx, float sy) {
 	x = sx;
 	y = sy;

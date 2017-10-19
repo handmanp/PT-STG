@@ -9,7 +9,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	LPSTR lpCmdLine, int nCmdShow){
 
-	//設定
+	// 設定
 	ChangeWindowMode(true);
 	SetGraphMode(WINDOW_SIZE_X, WINDOW_SIZE_Y, 32);
 
@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
 
-	//初期化
+	// 初期化
 	if (DxLib_Init() == -1) {
 		return -1;
 	}
@@ -29,10 +29,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
 
 	// DXライブラリのデバイスロストした時のコールバックを設定
-	//Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+	// Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 	Effekseer_Set2DSetting(WINDOW_SIZE_X, WINDOW_SIZE_Y); // Effekseerに2D描画の設定をする。
 
-	//Zバッファ(エフェクト用)
+	// Zバッファ(エフェクト用)
 	SetUseZBuffer3D(TRUE);
 	SetWriteZBuffer3D(TRUE);
 
@@ -42,20 +42,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	void debug_Init();
 	void debug_GameMain();
 
-	//画像読み込み
+	// 画像読み込み
 	load_Img();
 	load_Effect();
 
-	//フォントデータ
+	// フォントデータ
 	make_FontData();
 
-	//デバッグ
+	// デバッグ
 	debug_Init();
 
 
 
-	//ゲームモード
-	int gamemode  = GAME;
+	// ゲームモード
+	int gamemode  = EDITOR;
 	mode_flag = 0;
 	frame = 0;
 
@@ -102,14 +102,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	return 0;
 }
 
-//画像ヨミコP身
+// 画像ヨミコP身
 void load_Img() {
 
-	//背景
+	// 背景
 	bg_handle = LoadGraph(_T("data/img/bg/bg000.png"));
 
-	//敵画像
-	//stage:1
+	// 敵画像
+	// stage:1
 	enemy_img[0] = LoadGraph("data/img/enemy/st1/unis.png");     //ウニズ
 	enemy_img[1] = LoadGraph("data/img/enemy/st1/edamamen.png"); //エダマメン
 	enemy_img[2] = LoadGraph("data/img/enemy/st1/nuts.png");     //ナッツ
@@ -139,18 +139,18 @@ void load_Img() {
 		}
 	}
 
-	//bg面画像
+	// bg面画像
 	LoadDivGraph("data/img/tip/obj.png", 105, 21, 5, 32, 32, maptip_img);
 
-	//pwup画像
+	// pwup画像
 	LoadDivGraph("data/img/gui/powerup.png", 2, 2, 1, 128, 30, pwrup_img);
 
-	//弾画像
+	// 弾画像
 	LoadDivGraph("data/img/bullet/14x14.png", 84, 14, 6, 14, 14, bullet14_img);
 	LoadDivGraph("data/img/bullet/16x16.png", 48,  6, 7, 14, 14, bullet16_img);
 }
 
-//エフェクトの読み込み
+// エフェクトの読み込み
 void load_Effect() {
 	effects[0] = LoadEffekseerEffect(_T("data/effect/laser.efk"));
 }
@@ -162,39 +162,39 @@ void make_FontData() {
 
 void debug_Init() {
 	
-	//debug ship
+	// debug ship
 	ship.init();
 
-	//debug stage
+	// debug stage
 	test.init(500, 40);
 	test.set_StagePos(0, 0);
 
-	//debug unis 4tai
+	// debug unis 4tai
 	for (int i = 0; i < 4; i++) {
 		//unis[i].init(3, 1000 + 50 * i, 700, 300, 360, 1, 1);
 	}
 
-	//debug nuts 4tai
+	// debug nuts 4tai
 	for (int i = 0; i < 4; i++) {
 		//nuts[i].init(1280 + 100 * i, 90 + 90 * i, 2, 90 * i, 1);
 	}
 
-	//debug shell 4tai
+	// debug shell 4tai
 	for (int i = 0; i < 4; i++) {
 		//shell[i].init(5, 700 + 40 * i, 650, 1);
 	}
 
-	//debug banana 4tai
+	// debug banana 4tai
 	for (int i = 0; i < 4; i++) {
 		//banana[i].init(10, 1000 + 200 * i, 300, 1);
 	}
 
-	//debug pine 4tai
+	// debug pine 4tai
 	for (int i = 0; i < 4; i++) {
 		//pine[i].init(5, 1800 + i * 40, 700, 300 + i * 60, 1);
 	}
 
-	//debug statue 4tai
+	// debug statue 4tai
 	for (int i = 0; i < 4; i++) {
 		//statue[i].init(5, 1200 + i * 70, 600 + i * 40, 1);
 	}
@@ -219,18 +219,18 @@ void debug_Init() {
 
 void debug_GameMain() {
 
-	//エフェクト用背景ヌリ
+	// エフェクト用背景ヌリ
 	DrawGraph(0, 0, bg_handle, TRUE);
 
-	//debug stage move and draw.
+	// debug stage move and draw.
 	test.move(2, 90);
 	test.draw();
 
-	//debug my ship move and draw
+	// debug my ship move and draw
 	ship.move();
 	ship.draw();
 
-	//draw debug message
+	// draw debug message
 	debug_Message();
 
 	for (int i = 0; i < 4; i++) {

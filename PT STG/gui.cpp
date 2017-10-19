@@ -3,7 +3,7 @@
 
 bool gui::draw_Button(int mx, int my, int mw, int mh, unsigned int normal, unsigned int over, const char *str) {
 
-	//ƒƒ“ƒo‚É‘ã“ü
+	// ƒƒ“ƒo‚É‘ã“ü
 	stats = 1;
 	x = mx;
 	y = my;
@@ -16,7 +16,7 @@ bool gui::draw_Button(int mx, int my, int mw, int mh, unsigned int normal, unsig
 	int draw_px = (x + (w / 2)) - GetDrawFormatStringWidthToHandle(font_handle[FONT_BUTTON], "%s", str) / 2;
 	int draw_py = (y + (h / 2)) - 10;
 
-	//”»’è
+	// ”»’è
 	if (mouse_x > x && mouse_x < x + w && mouse_y > y && mouse_y < y + h) {
 		if (mouse_l != 0) {
 			DrawBox(x, y, x + w, y + h, GetColor(255, 0, 0), TRUE);
@@ -49,10 +49,10 @@ int  combo::draw_Combo(int mx, int my, int mw, int list, char **list_str) {
 
 	if (stats == 1) {
 
-		//”wŒi•`‰æ
+		// ”wŒi•`‰æ
 		DrawBox(x, y + 30, x + w, y + 30 + (list_num * 30), GetColor(40, 40, 40), TRUE);
 		
-		//”»’è
+		// ”»’è
 		if (mouse_x > x && mouse_x < x + w && mouse_y > y && mouse_y < y + 30 + (list_num * 30)) {
 			for (int i = 0; i < list_num; i++) {
 				if (mouse_y > y + 30 + (i * 30) && mouse_y < y + 60 + (i * 30)) {
@@ -69,7 +69,7 @@ int  combo::draw_Combo(int mx, int my, int mw, int list, char **list_str) {
 			stats = 0;
 		}
 
-		//•¶š—ñ•`‰æ
+		// •¶š—ñ•`‰æ
 		for (int i = 0; i < list_num; i++) {
 			DrawFormatStringToHandle(x + 5, y + 35 + (i * 30), GetColor(255, 255, 255), font_handle[FONT_BUTTON], "%s", list_str[i]);
 		}
