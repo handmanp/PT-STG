@@ -123,6 +123,8 @@ void load_Img() {
 	enemy_img[10] = LoadGraph("data/img/enemy/st1/sporecore.png");//胞子コア
 	enemy_img[11] = LoadGraph("data/img/enemy/st1/kuwagatan.png");//クワガタん
 	enemy_img[12] = LoadGraph("data/img/enemy/st1/worm_head.png");//ワームヘッド
+	//enemy_img[13] 予約 <ワーム尻尾>
+	//enemy_img[14] 予約 <ワーム胴体>
 
 	//自機画像
 	for (int i = 0; i < 2; i++) {
@@ -206,7 +208,11 @@ void debug_Init() {
 	}
 
 	for (int i = 0; i < 4; i++) {
-		houshi[i].init(5, 1000 + 100 * i, 650, 1);
+		//houshi[i].init(5, 1000 + 100 * i, 650, 1);
+	}
+
+	for (int i = 0; i < 1; i++) {
+		worm[i].init(5, 1000, 0, 1);
 	}
 
 }
@@ -260,7 +266,11 @@ void debug_GameMain() {
 	}
 
 	for (int i = 0; i < 4; i++) {
-		houshi[i].move();
+		//houshi[i].move();
+	}
+
+	for (int i = 0; i < 1; i++) {
+		worm[i].move();
 	}
 }
 

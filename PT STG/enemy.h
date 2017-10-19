@@ -134,12 +134,16 @@ public:
 class enemy_worm : public enemy {
 public:
 	int mode;
-	int ball;
-	void init(int HP, float start_x, float start_y, float s, int coll_size, int stat);
+	int deg;
+	BULLET ball[6];
+	void init(int HP, float start_x, float start_y, int stat);
 	void shot();
 	void move_shot();
 	void move();
 	void draw();
+
+
+
 };
 
 

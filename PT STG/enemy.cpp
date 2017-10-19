@@ -640,41 +640,109 @@ void enemy_statue::draw() {
 }
 
 //warm
-void enemy_worm::init(int HP, float start_x, float start_y, float s, int coll_size, int stat) {
+void enemy_worm::init(int HP, float start_x, float start_y, int stat) {
 	mode = 0;
-	ball = 6;
 	hp = HP;
 	x = start_x;
 	y = start_y;
-	speed = s;
-	collision_size = coll_size;
+	speed = 0;
 	stats = stat;
+
+	for (int i = 0; i < 6; i++) {
+		ball[i].x = x;
+		ball[i].y = y - i * (2 * 24);
+		ball[i].speed = 0;
+		ball[i].rad = 0;
+		ball[i].collision_size = 24;
+		ball[i].stats = 1;
+	}
 }
 
 void enemy_worm::shot() {
-
+	int max = 6;
+	if (stats == 1) {
+		for (int i = 0; i < max; i++) {
+			int free = search_FreeAddress();
+			bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
+			bullets[free].speed = 10;
+			bullets[free].x = ball[5].x;
+			bullets[free].y = ball[5].y;
+			bullets[free].stats = 1;
+		}
+	}
 }
 
 void enemy_worm::move_shot() {
-
+	for (int i = 0; i < MAX_BULLET; i++) {
+		bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
+		bullets[i].y += cos(bullets[i].rad) * bullets[i].speed;
+	}
 }
 
 void enemy_worm::move() {
 	if (stats == 1) {
+		if (mode == 0 && frame % 120 == 0) {
+			mode = 1;
+		}
 
+		/*
+		ƒNƒlƒ‹“®‚«
+		*/
+		if (mode == 1) {
+			for (int i = 1; i < 6; i++) {
+				if (GetRand(1) == 0) {
+					deg += 1;
+				}
+				else {
+					deg -= 1;
+				}
+				
+				ball[i].x = 48 * sinf(a2r(deg * i)) + ball[i-1].x;
+				ball[i].y = 48 * cosf(a2r(deg * i)) + ball[i-1].y;
 
+				if (deg > 360) {
+					deg = 0;
+				}
+				if (deg < 0) {
+					deg = 360;
+				}
+			}
 
+			if (frame % 30 == 0) {
+				shot();
+			}
+		}
 
 	}
+	move_shot();
 	draw();
 	collision_Check();
 }
 
 void enemy_worm::draw() {
 	if (stats == 1) {
-		DrawCircle(x + collision_size, y + collision_size, collision_size, GetColor(255, 255, 255), FALSE, 1);
-	}
+		for (int i = 0; i < 6; i++) {
+			switch (i) {
+			//case 0:
+				//DrawGraph(ball[0].x + ball[0].collision_size, ball[0].y + ball[0].collision_size, enemy_img[13], TRUE);
+				//break;
+			case 5:
+				DrawGraph(ball[5].x - ball[5].collision_size, ball[5].y - ball[5].collision_size, enemy_img[12], TRUE);
+				break;
+			default:
+				DrawCircle(ball[i].x, ball[i].y, ball[i].collision_size, GetColor(255, 255, 255), TRUE, 1);
+				break;
+			}
 
+		}
+	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "’Ž");
+		}
+	}
+	init_OutRangeBullets();
 }
 
 //sporecore

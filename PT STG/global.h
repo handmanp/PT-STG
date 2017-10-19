@@ -119,6 +119,9 @@ GLOBAL enemy_stagbeetle kuwagatan[4];
 //debug sporecore
 GLOBAL enemy_sporecore houshi[4];
 
+//debug worm
+GLOBAL enemy_worm worm[1];
+
 //debug my ship
 GLOBAL my_Ship  ship;
 
