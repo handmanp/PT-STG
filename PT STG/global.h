@@ -79,6 +79,7 @@ GLOBAL unsigned int frame;
 
 GLOBAL int mode_flag;
 GLOBAL gui button;
+GLOBAL combo com;
 
 void debug_Message();
 void main_Editor();

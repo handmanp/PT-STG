@@ -89,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			frame = 0;
 		}
 
-		DrawFormatString(0, 30, GetColor(255, 255, 255), "%d / %d / %d / %d", nuts[0].stats, nuts[1].stats, nuts[2].stats, nuts[3].stats);
+		//DrawFormatString(0, 30, GetColor(255, 255, 255), "%d / %d / %d / %d", nuts[0].stats, nuts[1].stats, nuts[2].stats, nuts[3].stats);
 
 		// Effekseerにより再生中のエフェクトを更新する。
 		UpdateEffekseer2D();

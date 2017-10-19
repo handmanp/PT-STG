@@ -1,24 +1,6 @@
 
 #include "global.h"
-
-#define EDITOR_TOP  0
-#define EDITOR_EDIT 1
-
-//プロトタイプ宣言
-int draw_EditorMainMenu();
-int draw_NewProjectMenu();
-void init_EditorStage();
-void delete_EditorStage();
-int draw_StageEditor();
-
-//Editor Global
-int ss_x[4], ss_y[4];
-int stage_size_x = 0, stage_size_y = 0;
-int stage_left_x = 0, stage_left_y = 0;
-
-int ***stage_editor;
-
-int block_id;
+#include "editor.h"
 
 //エディターメインループ
 void main_Editor() {
@@ -33,28 +15,113 @@ void main_Editor() {
 		draw_NewProjectMenu();
 		break;
 	case 2: //エディタ画面
-	//	draw_StageEditor();
+		draw_StageEditor();
 		break;
 	default:
 		break;
 	}
 }
 
-
+//-------------------------------------------------------------------------------
+//
+//   エディタ
+//
+//-------------------------------------------------------------------------------
+//エディタ本体のメイン
 int draw_StageEditor() {
 
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
-			switch (block_id) {
+			switch (stage_editor[i][j][0]) {
 			case -1:
-				//DrawBox(-stage_left_x + i * STAGE_TIP_SIZE, );
+				DrawBox(stage_left_x + (i * STAGE_TIP_SIZE), stage_left_y + (j * STAGE_TIP_SIZE), stage_left_x + (i * STAGE_TIP_SIZE) + STAGE_TIP_SIZE, stage_left_y + (j * STAGE_TIP_SIZE) + STAGE_TIP_SIZE, GetColor(20, 20, 20), FALSE);
 				break;
 			}
 		}
 	}
+	move_StageEditor();
+	draw_StageEditorRuler();
+	draw_StageEditorMenu();
+
 	return 0;
 }
 
+void draw_StageEditorRuler() {
+
+	//X軸ルーラ
+	for (int i = 0; i < stage_size_x; i++) {
+		if (i == 0 || i % 10 == 0) {
+			DrawLine(stage_left_x + (i * STAGE_TIP_SIZE), 0, stage_left_x + (i * STAGE_TIP_SIZE), 20, GetColor(255, 255, 255));
+			DrawFormatString(stage_left_x + (i * STAGE_TIP_SIZE) + 5, 5, GetColor(255, 255, 255), "%d", i);
+		}
+		else if (i % 5 == 0) {
+			DrawLine(stage_left_x + (i * STAGE_TIP_SIZE), 0, stage_left_x + (i * STAGE_TIP_SIZE), 10, GetColor(255, 255, 255));
+		}
+		else {
+			DrawLine(stage_left_x + (i * STAGE_TIP_SIZE), 0, stage_left_x + (i * STAGE_TIP_SIZE),  5, GetColor(255, 255, 255));
+		}
+	}
+
+	//Y軸ルーラ
+	for (int i = 0; i < stage_size_y; i++) {
+		if (i == 0 || i % 10 == 0) {
+			DrawLine(0, stage_left_y + (i * STAGE_TIP_SIZE), 20, stage_left_y + (i * STAGE_TIP_SIZE), GetColor(255, 255, 255));
+			DrawFormatString(5, stage_left_y + (i * STAGE_TIP_SIZE) + 5, GetColor(255, 255, 255), "%d", i);
+		}
+		else if (i % 5 == 0) {
+			DrawLine(0, stage_left_y + (i * STAGE_TIP_SIZE), 10, stage_left_y + (i * STAGE_TIP_SIZE), GetColor(255, 255, 255));
+		}
+		else {
+			DrawLine(0, stage_left_y + (i * STAGE_TIP_SIZE),  5, stage_left_y + (i * STAGE_TIP_SIZE), GetColor(255, 255, 255));
+		}
+	}
+}
+
+//メニュー類の描画
+void draw_StageEditorMenu() {
+
+	DrawBox(1000, 0, 1280, 720, GetColor(100, 100, 100), TRUE);
+
+	if (button.draw_Button(1000, 200, 70, 30, GetColor(100,   0,   0), GetColor(55,  0,  0), "ｽﾃｰｼﾞ")    == true) editor_mode = 0;
+	if (button.draw_Button(1070, 200, 70, 30, GetColor(  0, 100,   0), GetColor( 0, 55,  0), "ｴﾈﾐｰ")     == true) editor_mode = 1;
+	if (button.draw_Button(1140, 200, 70, 30, GetColor(  0,   0, 100), GetColor( 0,  0, 55), "フラグ")   == true) editor_mode = 2;
+	if (button.draw_Button(1210, 200, 70, 30, GetColor(100, 100,   0), GetColor(55, 55,  0), "工事中")   == true) editor_mode = 3;
+
+	char *list_str[4] = {"ステージ１の敵", "ステージ２の敵", "ステージ３の敵", "ボス", };
+
+	switch (editor_mode) {
+	case 0:
+		DrawBox(1000, 230, 1280, 720, GetColor(100, 0, 0), TRUE);
+		break;
+	case 1:
+		DrawBox(1000, 230, 1280, 720, GetColor(0, 100, 0), TRUE);
+		com.draw_Combo(1010, 300, 250, 4, list_str);
+		break;
+	case 2:
+		DrawBox(1000, 230, 1280, 720, GetColor(0, 0, 100), TRUE);
+		break;
+	case 3:
+		DrawBox(1000, 230, 1280, 720, GetColor(100, 100, 0), TRUE);
+		break;
+	}
+}
+
+//エディタの移動
+void move_StageEditor() {
+	if (mouse_r == 1) {
+		mouse_diff_x = mouse_x - stage_left_x;
+		mouse_diff_y = mouse_y - stage_left_y;
+	}
+	else if (mouse_r == 2){
+		stage_left_x = mouse_x - mouse_diff_x;
+		stage_left_y = mouse_y - mouse_diff_y;
+	}
+}
+//-------------------------------------------------------------------------------
+//
+//   メニュー
+//
+//-------------------------------------------------------------------------------
 //新規作成画面の描画
 int draw_NewProjectMenu() {
 
