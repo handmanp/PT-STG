@@ -74,7 +74,7 @@ int  combo::draw_Combo(int mx, int my, int mw, int list, char **list_str) {
 			DrawFormatStringToHandle(x + 5, y + 35 + (i * 30), GetColor(255, 255, 255), font_handle[FONT_BUTTON], "%s", list_str[i]);
 		}
 	}
-	return -1;
+	return select;
 }
 
 int combo::init_Combo(int selected) {

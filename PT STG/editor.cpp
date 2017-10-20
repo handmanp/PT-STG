@@ -1,4 +1,6 @@
 
+/* editor.cpp  ??top */
+
 // 22275133773333721127155751757755152211275727111711132731155151
 // 75351351373373513557717755531555237255752713375153557117532512
 // 53131551737732223215755323122252531371573311713121113153515137
@@ -22,7 +24,12 @@
 #include "global.h"
 #include "editor.h"
 
-// エディターメインループ
+//-------------------------------------------------------------------------------
+//
+// エディターメインループ ??emain
+//
+//-------------------------------------------------------------------------------
+
 void main_Editor() {
 
 	switch (mode_flag) {
@@ -44,7 +51,7 @@ void main_Editor() {
 
 //-------------------------------------------------------------------------------
 //
-//   エディタ
+//   エディタ  ??tsmain
 //
 //-------------------------------------------------------------------------------
 // エディタ本体のメイン
@@ -55,6 +62,9 @@ int draw_StageEditor() {
 			switch (stage_editor[i][j][0]) {
 			case -1:
 				DrawBox(stage_left_x + (i * STAGE_TIP_SIZE), stage_left_y + (j * STAGE_TIP_SIZE), stage_left_x + (i * STAGE_TIP_SIZE) + STAGE_TIP_SIZE, stage_left_y + (j * STAGE_TIP_SIZE) + STAGE_TIP_SIZE, GetColor(20, 20, 20), FALSE);
+				break;
+			default:
+				DrawGraph(stage_left_x + (i * STAGE_TIP_SIZE), stage_left_y + (j * STAGE_TIP_SIZE), maptip_img[stage_editor[i][j][0]], TRUE);
 				break;
 			}
 		}
@@ -67,7 +77,8 @@ int draw_StageEditor() {
 }
 
 
-// メニュー類の描画
+// メニュー類の描画 ??tsm
+// *------------------------------------------------------------------------------------*
 void draw_StageEditorMenu() {
 
 	DrawBox(1000, 0, 1280, 720, GetColor(100, 100, 100), TRUE);
@@ -97,11 +108,74 @@ void draw_StageEditorMenu() {
 	}
 }
 
+// ステージタブ ??tst
+// *------------------------------------------------------------------------------------*
 void draw_StageEditorMenuStage() {
 
+	DrawFormatStringToHandle(1010, 250, GetColor(255, 255, 255), font_handle[FONT_BUTTON], "マップチップ");
+
+	if (selected_item != -1) {
+		DrawFormatStringToHandle(1110, 300, GetColor(255, 255, 255), font_handle[FONT_BUTTON], "選択ﾌﾞﾛｯｸ:");
+		DrawGraph(1220, 295, maptip_img[selected_item], TRUE);
+	}
+
+	// チップ定数
+	const int tip_x = 1010;
+	const int tip_y = 280;
+
+	// マップチップパレットの背景
+	DrawBox(tip_x, tip_y, tip_x + 96, tip_y + 160, GetColor(0, 0, 0), TRUE);
+
+	// コンボボックスの中を指定して描画して戻り値取得
+	char *list_str[7] = { "草遺跡", "石砂漠", "砂砂漠", "石の村", "城の村", "石洞窟", "氷洞窟" };
+	int margin = com.draw_Combo(1150, 250, 100, 7, list_str) * 3;
+
+	// マップチップパレット描画用
+	int margin_m = margin;
+
+	// マップチップ描画
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 3; j++) {
+			DrawGraph(tip_x + (j * STAGE_TIP_SIZE), tip_y + (i * STAGE_TIP_SIZE), maptip_img[margin_m + j], TRUE);
+		}
+		margin_m += 21;
+	}
+
+	// マップチップクリック判定
+	if (mouse_l == 1) {
+
+		// マップチップパレットの操作
+		if (mouse_x > tip_x && mouse_x < tip_x + (STAGE_TIP_SIZE * 3) &&
+			mouse_y > tip_y && mouse_y < tip_y + (STAGE_TIP_SIZE * 5)) {
+
+			// 相対座標
+			int mpx = mouse_x - tip_x;
+			int mpy = mouse_y - tip_y;
+
+			// 画像ハンドルの添字
+			selected_item = ((mpy / STAGE_TIP_SIZE) * 21) + (mpx / STAGE_TIP_SIZE) + margin;
+		}
+
+		// ステージエディタの操作
+		if (mouse_x < 1000) {
+
+			// エディタ用の座標取得
+			int mpx = (mouse_x - stage_left_x) / STAGE_TIP_SIZE;
+			int mpy = (mouse_y - stage_left_y) / STAGE_TIP_SIZE;
+
+			DrawFormatString(0, 0, 0xFFFFFF, "%d %d", mpx, mpy);
+
+			// エディタの範囲内か調べる
+			if (mpx >= 0 && mpx < stage_size_x &&
+				mpy >= 0 && mpy < stage_size_y) {
+				stage_editor[mpx][mpy][0] = selected_item;
+			}
+		}
+	}
 }
 
-// ルーラの描画
+// ルーラの描画 ??tsru
+// *------------------------------------------------------------------------------------*
 void draw_StageEditorRuler() {
 
 	// X軸ルーラ
@@ -134,6 +208,7 @@ void draw_StageEditorRuler() {
 }
 
 // エディタの移動
+// *------------------------------------------------------------------------------------*
 void move_StageEditor() {
 	if (mouse_r == 1) {
 		mouse_diff_x = mouse_x - stage_left_x;
@@ -144,12 +219,37 @@ void move_StageEditor() {
 		stage_left_y = mouse_y - mouse_diff_y;
 	}
 }
+
+// 出力  true = 多分成功してる, false = 多分失敗してる
+// *------------------------------------------------------------------------------------*
+
+bool io_MapdataFileOutput() {
+
+	char path[128];
+	sprintf_s(path, 128, "data/editor/saves/0%d/mapdata.txt", map_slot);
+
+	FILE *fp;
+
+	errno_t error = fopen_s(&fp, path, "wb");
+	if (error != 0) return false;
+
+	fwrite(&stage_editor, sizeof(stage_editor), stage_size_x * stage_size_y * 2, fp);
+
+	fclose(fp);
+
+	return true;
+}
+
+
+
 //-------------------------------------------------------------------------------
 //
 //   メニュー
 //
 //-------------------------------------------------------------------------------
+
 // 新規作成画面の描画
+// *------------------------------------------------------------------------------------*
 int draw_NewProjectMenu() {
 
 	DrawBox(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y, GetColor(10, 10, 10), TRUE);
@@ -220,6 +320,7 @@ int draw_NewProjectMenu() {
 }
 
 // エディターのメインメニュー描画
+// *------------------------------------------------------------------------------------*
 int draw_EditorMainMenu() {
 
 	DrawBox(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y, GetColor(10, 10, 10), TRUE);
@@ -243,6 +344,7 @@ int draw_EditorMainMenu() {
 }
 
 // エディター用BG面配列の初期化
+// *------------------------------------------------------------------------------------*
 void init_EditorStage() {
 
 	// 3次元配列の動的確保（カッコイイ）
@@ -263,6 +365,8 @@ void init_EditorStage() {
 }
 
 // ステージの破棄
+// *------------------------------------------------------------------------------------*
+
 // ※コレ通さないと死ぬから注意
 void delete_EditorStage() {
 	for (int i = 0; i < stage_size_x; i++) {

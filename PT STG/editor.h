@@ -25,3 +25,6 @@ int mouse_diff_x = 0, mouse_diff_y = 0;
 int ***stage_editor;
 
 int editor_mode = 0;
+int selected_item = -1;
+
+int map_slot = 1;
