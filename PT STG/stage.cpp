@@ -85,7 +85,7 @@ void my_Stage::io_StageDataLoad() {
 	int  lineCount = 0;
 	char (*data)[BufMax];
 
-	if ((fp = fopen("data/maps/stage_1/stagedata.csv", "r")) != NULL) {
+	if ((fopen_s(&fp, "data/maps/stage_1/stagedata.csv", "r")) != NULL) {
 		while (fgets(buf, sizeof(buf), fp) != NULL){
 			lineCount++;
 		}

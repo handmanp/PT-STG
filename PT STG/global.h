@@ -93,8 +93,6 @@ void load_Img();
 void load_Effect();
 void make_FontData();
 
-vector<string> split(string& input, char delimiter);
-
 //-------------------------------
 //debug global area
 //-------------------------------
