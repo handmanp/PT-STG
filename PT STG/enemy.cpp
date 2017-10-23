@@ -985,3 +985,305 @@ void enemy_stagbeetle::draw() {
 	}
 	init_OutRangeBullets();
 }
+
+// genocide : WORK IN PROGRESS
+void enemy_genocide::init(int HP, float start_x, float start_y, int stat) {
+	mode = 1;
+	collision_size = 128;
+	speed = 0;
+	x = start_x;
+	y = start_y;
+	prev_y = start_y;
+	stats = stat;
+}
+
+void enemy_genocide::shot() {
+	int max = 2;
+	if (stats == 1) {
+		for (int i = 0; i < max; i++) {
+			int free = search_FreeAddress();
+			bullets[free].speed = test.speed;
+			bullets[free].x = x + 195;
+			bullets[free].y = y + 230;
+			bullets[free].stats = 1;
+			bullets[free].collision_size = 24;
+		}
+	}
+
+}
+
+void enemy_genocide::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			bullets[i].x = x - 180 + (70 * i);
+			bullets[i].y = y + 85;
+		}
+	}
+
+}
+
+void enemy_genocide::move() {
+	if (stats == 1) {
+
+		int width = 150;
+		x -= test.speed / 2;
+		deg += 2;
+		y = (width * sinf(a2r(deg))) + prev_y;
+
+		if (deg > 360) {
+			deg = 0;
+		}
+
+		if (frame % (120 + random) == 0) {
+			if (mode == 1) {
+				shot();
+				mode = 0;
+				random = GetRand(120);
+			}
+			else if (mode == 0) {
+				for (int i = 0; i < MAX_BULLET; i++) {
+					bullets[i].stats = 0;
+				}
+				mode = 1;
+			}
+		}
+
+
+	}
+	move_shot();
+	draw();
+	collision_Check();
+}
+
+void enemy_genocide::draw() {
+	if (stats == 1) {
+		DrawGraph(x - 370, y - 140, enemy_img[15], TRUE);
+	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			DrawBox(bullets[i].x, bullets[i].y, bullets[i].x + 20, bullets[i].y + 40, GetColor(255, 255, 255), TRUE);
+			DrawFormatString(bullets[i].x + 1, bullets[i].y + 15, GetColor(0, 0, 0), "ｱﾌ");
+		}
+
+		
+	}
+
+	init_OutRangeBullets();
+}
+
+// kimobako : WORK IN PROGRESS
+void enemy_kimobako::init(int HP, float start_x, float start_y, int stat) {
+
+}
+
+void enemy_kimobako::shot() {
+
+}
+
+void enemy_kimobako::move_shot() {
+
+}
+
+void enemy_kimobako::move() {
+
+}
+
+void enemy_kimobako::draw() {
+
+}
+
+// shindarla
+void enemy_shindarla::init(int HP, float start_x, float start_y, int stat) {
+	mode = 0;
+	collision_size = 24;
+	hp = HP;
+	x = start_x;
+	y = start_y;
+	stats = stat;
+
+}
+
+void enemy_shindarla::shot() {
+	int max = 4;
+	for (int i = 0; i < max; i++) {
+		int free = search_FreeAddress();
+		bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
+		bullets[free].speed = 6;
+		bullets[free].x = x;
+		bullets[free].y = y;
+		bullets[free].stats = 1;
+	}
+
+}
+
+void enemy_shindarla::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1 && mode == 2) {
+			bullets[i].rad = ((2.0f * DX_PI_F) / 4) * i;
+		}
+		else if (bullets[i].stats == 1 && mode == 3) {
+			rad = bullets[i].rad; // 最終角度取得用
+			bullets[i].rad = atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y) - a2r(45);
+		}
+		else if (bullets[i].stats == 1 && mode == 4) {
+			bullets[i].rad = rad;
+		}
+
+		bullets[i].x += sinf(bullets[i].rad) * bullets[i].speed;
+		bullets[i].y += cosf(bullets[i].rad) * bullets[i].speed;
+	}
+}
+
+void enemy_shindarla::move() {
+
+	// alive
+	if (stats == 1) {
+		x -= test.speed;
+	}
+	
+	// dead
+	if (stats != 1) {
+		if (mode == 0) {
+			mode = 1;
+		}
+
+		// 一旦十字に出てくる
+		if (mode == 1) {
+			shot();
+			mode = 2;
+		}
+
+		// すぐホーミングを始める
+		if (frame % 30 == 0 && mode == 2) {
+			mode = 3;
+		}
+
+		// 時間が経ったら最終角度で直進
+		if (frame % 300 == 0 && mode == 3) {
+			mode = 4;
+		}
+	}
+	move_shot();
+	draw();
+	collision_Check();
+}
+
+void enemy_shindarla::draw() {
+	if (stats == 1) {
+		// DrawGraph((int)x - collision_size, (int)y - collision_size, enemy_img[11], TRUE);
+		DrawBox(x - collision_size, y - collision_size, x + collision_size, y + collision_size, GetColor(255, 255, 255), FALSE);
+	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "死");
+		}
+	}
+	init_OutRangeBullets();
+
+}
+
+// detecrew : WORK IN PROGRESS
+void enemy_detecrew::init(int HP, float start_x, float start_y, int stat) {
+	mode = 0;
+	speed = 16;
+	hp = HP;
+	x = start_x;
+	y = start_y;
+	prev_x = start_x;
+	prev_y = start_y;
+	stats = stat;
+	collision_size = 24;
+}
+
+void enemy_detecrew::shot() {
+	int max = 10;
+	for (int i = 0; i < max; i++) {
+		int free = search_FreeAddress();
+		bullets[free].rad = rad;
+		bullets[free].speed = 10;
+		bullets[free].stats = 1;
+		bullets[free].x = x;
+		bullets[free].y = y;
+		if (rad == a2r(0)) {
+			//bullets[i].x = prev_x;
+			bullets[free].y = prev_y + (32 * i);
+		}
+		else if (rad == a2r(90)) {
+			bullets[free].x = x + (32 * i);
+			bullets[free].y = prev_y;
+		}
+		else if (rad == a2r(180)) {
+			//bullets[i].x = prev_x;
+			bullets[free].y = prev_y - (32 * i);
+		}
+		else if (rad == a2r(270)) {
+			bullets[free].x = x - (32 * i);
+			bullets[free].y = prev_y;
+		}
+
+
+	}
+}
+
+void enemy_detecrew::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			bullets[i].x -= test.speed;
+
+		}
+	}
+}
+
+void enemy_detecrew::move() {
+	if (stats == 1) {
+
+		if (mode == 0) {
+			x -= test.speed;
+		}
+
+		// 自機との距離を取得
+		r = sqrtf(powf(x - ship.x, 2) + powf(y - ship.y, 2));
+
+		if (r <= 200 && mode == 0) {
+			mode = 1;
+		}
+
+		if (mode == 1) {
+			rad = a2r(GetRand(4)*90);
+			random = GetRand(300);
+			shot();
+			mode = 2;
+			temp_x = x;
+		}
+
+		if (mode == 2) {
+			x -= test.speed;
+
+			if (y >= 100 + random && y <= WINDOW_SIZE_Y) {
+				x += sinf(rad) * speed;
+				y += cosf(rad) * speed;
+			}
+		}
+	}
+	move_shot();
+	draw();
+	collision_Check();
+}
+
+void enemy_detecrew::draw() {
+	if (mode == 2) {
+		for (int i = 0; i < MAX_BULLET; i++) {
+			if (bullets[i].stats == 1) {
+				DrawBox(bullets[i].x - 16, bullets[i].y - 16, bullets[i].x + 16, bullets[i].y + 16, GetColor(255, 255, 255), TRUE);
+				DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "棘");
+
+			}
+		}
+	}
+	if (stats == 1) {
+		// DrawGraph(x - collision_size, y - collision_size, enemy_img[17], TRUE);
+		DrawBox(x - collision_size, y - collision_size, x + collision_size, y + collision_size, GetColor(255, 255, 255), FALSE);
+	}
+	init_OutRangeBullets();
+}

@@ -194,3 +194,59 @@ public:
 	void move();
 	void draw();
 };
+
+
+class enemy_genocide : public enemy {
+public:
+	int mode;
+	int deg;
+	int random;
+	float prev_y;
+	void init(int HP, float start_x, float start_y, int stat);
+	void shot();
+	void move_shot();
+	void move();
+	void draw();
+};
+
+
+class enemy_kimobako : public enemy {
+public:
+	int mode;
+	float prev_y;
+	void init(int HP, float start_x, float start_y, int stat);
+	void shot();
+	void move_shot();
+	void move();
+	void draw();
+};
+
+
+class enemy_shindarla : public enemy {
+public:
+	int mode;
+	float rad;
+	float prev_y;
+	void init(int HP, float start_x, float start_y, int stat);
+	void shot();
+	void move_shot();
+	void move();
+	void draw();
+
+};
+
+
+class enemy_detecrew : public enemy {
+public:
+	int mode;
+	int random;
+	float rad;
+	float prev_x;
+	float prev_y;
+	float temp_x;
+	void init(int HP, float start_x, float start_y, int stat);
+	void shot();
+	void move_shot();
+	void move();
+	void draw();
+};
