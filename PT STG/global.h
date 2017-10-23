@@ -122,6 +122,15 @@ GLOBAL enemy_sporecore houshi[4];
 //debug worm
 GLOBAL enemy_worm worm[1];
 
+//debug genocide
+GLOBAL enemy_genocide genocide[1];
+
+//debug sindarla
+GLOBAL enemy_shindarla sindarla[4];
+
+//debug detecrew
+GLOBAL enemy_detecrew detecrew[4];
+
 //debug my ship
 GLOBAL my_Ship  ship;
 

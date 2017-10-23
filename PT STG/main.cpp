@@ -54,8 +54,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 
-	// ゲームモード
-	int gamemode  = EDITOR;
+	// ゲームモード : TOP_MENU / GAME / EDITOR
+	int gamemode  = GAME;
 	mode_flag = 0;
 	frame = 0;
 
@@ -89,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			frame = 0;
 		}
 
-		//DrawFormatString(0, 30, GetColor(255, 255, 255), "%d / %d / %d / %d", nuts[0].stats, nuts[1].stats, nuts[2].stats, nuts[3].stats);
+		DrawFormatString(0, 30, GetColor(255, 255, 255), "%d / %d / %d / %d", detecrew[0].mode, (int)genocide[0].mode, nuts[2].stats, nuts[3].stats);
 
 		// Effekseerにより再生中のエフェクトを更新する。
 		UpdateEffekseer2D();
@@ -125,6 +125,11 @@ void load_Img() {
 	enemy_img[12] = LoadGraph("data/img/enemy/st1/worm_head.png");//ワームヘッド
 	//enemy_img[13] 予約 <ワーム尻尾>
 	//enemy_img[14] 予約 <ワーム胴体>
+	enemy_img[15] = LoadGraph("data/img/enemy/st1/genocide.png"); //ジェノサイド
+	//enemy_img[16] = LoadGraph("data/img/enemy/st1/????");		  //キモバコ
+	//enemy_img[17] = LoadGraph("data/img/enemy/st1/????");		  //シンダーラ
+	//enemy_img[18] = LoadGraph("data/img/enemy/st1/????");		  //デテクルー
+
 
 	//自機画像
 	for (int i = 0; i < 2; i++) {
@@ -212,7 +217,20 @@ void debug_Init() {
 	}
 
 	for (int i = 0; i < 1; i++) {
-		worm[i].init(5, 1000, 0, 1);
+		//worm[i].init(5, 1000, 0, 1);
+	}
+
+	for (int i = 0; i < 1; i++) {
+		//genocide[i].init(5, 1000, 360, 1);
+	}
+
+	for (int i = 0; i < 4; i++) {
+		//detecrew[i].init(5, 1200 + i * 100, 600, 1);
+	}
+
+	for (int i = 0; i < 4; i++) {
+		//sindarla[i].init(5, 1200 + i * 100, 200 + i * 50, 1);
+
 	}
 
 }
@@ -270,7 +288,20 @@ void debug_GameMain() {
 	}
 
 	for (int i = 0; i < 1; i++) {
-		worm[i].move();
+		//worm[i].move();
+	}
+
+	for (int i = 0; i < 1; i++) {
+		//genocide[i].move();
+	}
+
+	for (int i = 0; i < 4; i++) {
+		//detecrew[i].move();
+	}
+
+	for (int i = 0; i < 4; i++) {
+		//sindarla[i].move();
+
 	}
 }
 
