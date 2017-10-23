@@ -1,5 +1,7 @@
 #include "global.h"
 
+using namespace std;
+
 // ステージの初期化
 // sx:ステージ幅 sy:ステージ高さ
 void my_Stage::init(int sx, int sy) {
@@ -66,15 +68,40 @@ void my_Stage::draw() {
 	}
 }
 
-// ステージの状態を取得
-STAGE_DATA my_Stage::get_StageData(STAGE_DATA data) {
-	data.x = x;
-	data.y = y;
-	return data;
-}
-
 // ステージの位置を移動する
 void my_Stage::set_StagePos(float sx, float sy) {
 	x = sx;
 	y = sy;
+}
+
+// CSV読み込み
+void my_Stage::io_StageDataLoad() {
+
+	const int BufMax = 64;
+	char buf[BufMax];
+
+	FILE *fp = NULL;
+
+	int  lineCount = 0;
+	char (*data)[BufMax];
+
+	if ((fp = fopen("data/maps/stage_1/stagedata.csv", "r")) != NULL) {
+		while (fgets(buf, sizeof(buf), fp) != NULL){
+			lineCount++;
+		}
+	}
+
+
+}
+
+// 文字列を分割する
+vector<string> split(string& input, char delimiter){
+
+	istringstream stream(input);
+	string field;
+	vector<string> result;
+	while (getline(stream, field, delimiter)) {
+		result.push_back(field);
+	}
+	return result;
 }
