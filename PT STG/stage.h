@@ -2,32 +2,40 @@
 #define STAGE_TIP_SIZE 32
 
 typedef struct {
-	float x;
-	float y;
+	int		start_x;
+	int		enemy_type;
+
+	int		var_1;
+	int		var_2;
+	int		var_3;
+	int		var_4;
+	int		var_5;
+	int		var_6;
+	int		var_7;
 }STAGE_DATA;
 
 //ステージ親クラス
 class my_Stage {
 public:
 	//ステージの大きさ
-	int stage_size_x;
-	int stage_size_y;
+	int		stage_size_x;
+	int		stage_size_y;
 
 	//ステージの現在の座標
-	float x;
-	float y;
+	float	x;
+	float	y;
 
-	float speed;
+	float	speed;
 
 	//動的確保用ポインタ
-	int ***stage_size;
+	int			***stage_size;
+	STAGE_DATA	*stage_data;
 
-	void move(int s, int r);
-	void init(int sx, int sy);
-	void draw();
-	void del_Stage();
-	void set_StagePos(float sx, float sy);
-	STAGE_DATA get_StageData(STAGE_DATA data);
+	void	move(int s, int r);
+	void	init(int sx, int sy);
+	void	draw();
+	void	del_Stage();
+	void	set_StagePos(float sx, float sy);
+	void	io_StageDataLoad();
 
 };
-GLOBAL STAGE_DATA s_Data;

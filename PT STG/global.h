@@ -12,8 +12,13 @@
 #include "stage.h"
 #include "enemy.h"
 #include "gui.h"
-#include <Math.h>
-#include <string.h>
+
+#include <cmath>
+#include <cstring>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
 
 #define WINDOW_SIZE_X 1280
 #define WINDOW_SIZE_Y 720
