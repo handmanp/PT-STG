@@ -114,6 +114,16 @@ public:
 	void draw();
 };
 
+class enemy_brain : public enemy {
+public:
+	int mode;
+	void init(int HP, float start_x, float start_y, int stat);
+	void shot();
+	void move_shot();
+	void move();
+	void draw();
+};
+
 /*----------------------------------------------------------*/
 /*--------------------------STAGE2--------------------------*/
 /*----------------------------------------------------------*/
