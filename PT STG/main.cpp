@@ -89,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			frame = 0;
 		}
 
-		DrawFormatString(0, 30, GetColor(255, 255, 255), "%d / %d / %d / %d", (int)brain[0].p0_x, (int)genocide[0].mode, nuts[2].stats, nuts[3].stats);
+		//DrawFormatString(0, 30, GetColor(255, 255, 255), "%d / %d / %d / %d", detecrew[0].mode, (int)genocide[0].mode, nuts[2].stats, nuts[3].stats);
 
 		// Effekseerにより再生中のエフェクトを更新する。
 		UpdateEffekseer2D();
@@ -189,10 +189,6 @@ void debug_Init() {
 		//shell[i].init(5, 700 + 40 * i, 650, 1);
 	}
 
-	for (int i = 0; i < 1; i++) {
-		brain[i].init(5, 1000, 360, 1);
-	}
-
 	// debug banana 4tai
 	for (int i = 0; i < 4; i++) {
 		//banana[i].init(10, 1000 + 200 * i, 300, 1);
@@ -265,10 +261,6 @@ void debug_GameMain() {
 
 	for (int i = 0; i < 4; i++) {
 		//shell[i].move();
-	}
-
-	for (int i = 0; i < 1; i++) {
-		brain[i].move();
 	}
 
 	for (int i = 0; i < 4; i++) {

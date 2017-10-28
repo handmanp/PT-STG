@@ -97,47 +97,21 @@ void make_FontData();
 //debug global area
 //-------------------------------
 
-//debug unis
-GLOBAL enemy_uni unis[4];
-
-//debug pine
-GLOBAL enemy_pine pine[4];
-
-//debug nuts
-GLOBAL enemy_nuts nuts[4];
-
-//debug shell
-GLOBAL enemy_shell shell[4];
-
-//debug brain
-GLOBAL enemy_brain brain[1];
-
-//debug banana
-GLOBAL enemy_banana banana[4];
-
-//debug statue
-GLOBAL enemy_statue statue[4];
-
-//debug ivy
-GLOBAL enemy_ivy ivy[4];
-
-//debug kuwagaran
-GLOBAL enemy_stagbeetle kuwagatan[4];
-
-//debug sporecore
-GLOBAL enemy_sporecore houshi[4];
-
-//debug worm
-GLOBAL enemy_worm worm[1];
-
-//debug genocide
-GLOBAL enemy_genocide genocide[1];
-
-//debug sindarla
-GLOBAL enemy_shindarla sindarla[4];
-
-//debug detecrew
-GLOBAL enemy_detecrew detecrew[4];
+// もはやデバッグではなく消してはいけないものになりました。
+GLOBAL enemy_uni		unis[EACH_ENEMY_MAX];
+GLOBAL enemy_pine		pine[EACH_ENEMY_MAX];
+GLOBAL enemy_nuts		nuts[EACH_ENEMY_MAX];
+GLOBAL enemy_shell		shell[EACH_ENEMY_MAX];
+GLOBAL enemy_banana		banana[EACH_ENEMY_MAX];
+GLOBAL enemy_statue		statue[EACH_ENEMY_MAX];
+GLOBAL enemy_ivy		ivy[EACH_ENEMY_MAX];
+GLOBAL enemy_stagbeetle kuwagatan[EACH_ENEMY_MAX];
+GLOBAL enemy_sporecore	houshi[EACH_ENEMY_MAX];
+GLOBAL enemy_worm		worm[EACH_ENEMY_MAX];
+GLOBAL enemy_genocide	genocide[EACH_ENEMY_MAX];
+GLOBAL enemy_shindarla	sindarla[EACH_ENEMY_MAX];
+//GLOBAL enemy_detecrew	detecrew[EACH_ENEMY_MAX];
+GLOBAL enemy_meatball	meat[EACH_ENEMY_MAX];
 
 //debug my ship
 GLOBAL my_Ship  ship;
