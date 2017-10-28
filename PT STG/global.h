@@ -109,6 +109,9 @@ GLOBAL enemy_nuts nuts[4];
 //debug shell
 GLOBAL enemy_shell shell[4];
 
+//debug brain
+GLOBAL enemy_brain brain[1];
+
 //debug banana
 GLOBAL enemy_banana banana[4];
 

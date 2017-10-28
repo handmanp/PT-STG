@@ -496,22 +496,141 @@ void enemy_shell::draw() {
 
 
 void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
+	mode = 0;
+	speed_max = 20;
+	speed = 0;
+	collision_size = 32;
+	for (int i = 0; i < MAX_BULLET; i++) {
+		t[i] = 0;
+	}
+	p0_x = 0;
+	p1_x = 0;
+	p2_x = 0;
+	p0_y = 0;
+	p1_y = 0;
+	p2_y = 0;
+	hp = HP;
+	x = start_x;
+	y = start_y;
+	stats = stat;
 
 }
 
 void enemy_brain::shot() {
+	int max;
+	if (mode == 1) {
+		max = 15;
+	}
+	else if (mode == 2) {
+		max = 1;
+	}
 
+	for (int i = 0; i < max; i++) {
+		int free = search_FreeAddress();
+		if (mode == 1) {
+			bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
+			circle[free] = free;
+		}
+		else if (mode == 2) {
+			bullets[free].rad = 0;
+			super[free] = free;
+		}
+		bullets[free].speed = 20;
+		bullets[free].x = x;
+		bullets[free].y = y;
+		bullets[free].stats = 1;
+	}
 }
 
 void enemy_brain::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			// ‰~Œ`’e‚ÌˆÚ“®
+			if (circle[i] == i) {
+				if (bullets[i].speed <= speed_max) {
+					bullets[i].speed -= 1;
+				}
+				if (circle[i] != 0) {
+					bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
+					bullets[i].y += cos(bullets[i].rad) * bullets[i].speed;
+				}
+			}
 
+			// ‚·‚²‚¢’e‚ÌˆÚ“®
+			if (super[i] == i) {
+
+
+			}
+		}
+	}
 }
 
 void enemy_brain::move() {
+	if (stats == 1) {
 
+		if (mode == 0 && frame % 180 == 0) {
+			if (GetRand(100) <= 50) {
+				mode = 1;
+			}
+			else {
+				mode = 2;
+			}
+		}
+
+		// ‰~Œ`’e
+		if (mode == 1) {
+			shot();
+			mode = 0;
+		}
+
+		// ‚·‚²‚¢’e
+		if (mode == 2) {
+			shot();
+			mode = 3;
+		}
+		// ‚·‚²‚¢’e‚Ì“®‚«
+		if (mode == 3) {
+			if (frame % 60 == 0) {
+				p0_x = GetRand(WINDOW_SIZE_X);
+				p1_x = GetRand(WINDOW_SIZE_X);
+				p2_x = GetRand(WINDOW_SIZE_X);
+
+				p0_y = GetRand(WINDOW_SIZE_Y);
+				p1_y = GetRand(WINDOW_SIZE_Y);
+				p2_y = GetRand(WINDOW_SIZE_Y);
+				
+			}
+		}
+
+		
+		if (mode == 3) {
+			mode = 0;
+		}
+
+	}
+	move_shot();
+	draw();
+	collision_Check();
 }
 
+
+// 0.0 <= t && t <= 1.0 ‚Æ‚·‚éB‚±‚Ì’l‚ð•Ï‰»‚³‚¹‚Ä‹Èü‚ðì‚é
+//2ŽŸ‚ÌƒxƒWƒG‹Èü
+//(p_x,p_y)‚Í‚»‚Ìt‚Ì’l‚Å‚ÌƒxƒWƒG‹Èü‚Ì“_‚ÌˆÊ’u
+//	p_x = (1 - t)*(1 - t)*p0_x + 2 * (1 - t)*t*p1_x + t*t*p2_x;
+//	p_y = (1 - t)*(1 - t)*p0_y + 2 * (1 - t)*t*p1_y + t*t*p2_y;
+
 void enemy_brain::draw() {
+	if (stats == 1) {
+		DrawGraph(x, y, enemy_img[4], TRUE);
+	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ŠL");
+		}
+	}
+	init_OutRangeBullets();
 
 }
 

@@ -117,6 +117,12 @@ public:
 class enemy_brain : public enemy {
 public:
 	int mode;
+	int speed_max;
+	int circle[MAX_BULLET];
+	int super[MAX_BULLET];
+	int p0_x, p1_x, p2_x;
+	int p0_y, p1_y, p2_y;
+	float t[MAX_BULLET];
 	void init(int HP, float start_x, float start_y, int stat);
 	void shot();
 	void move_shot();
