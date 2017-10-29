@@ -117,6 +117,98 @@ bool enemy::init_OutRangeBullets() {
 	}
 	return flag;
 }
+
+// ----------------------------------------------------------------------------
+// “G’eƒAƒjƒ[ƒVƒ‡ƒ“
+// ----------------------------------------------------------------------------
+void bullet_animation_14(int x, int y, int color, int type) {
+	int temp[6];
+	for (int i = 0; i < 6; i++) {
+		if (color == i - 1) {
+			if (type == 1) {
+				temp[1] = bullet14_img[1 + (i * 14)];
+				temp[2] = bullet14_img[2 + (i * 14)];
+				temp[3] = bullet14_img[3 + (i * 14)];
+				temp[4] = bullet14_img[4 + (i * 14)];
+			}
+			else if (type == 2) {
+				temp[1] = bullet14_img[5 + (i * 14)];
+				temp[2] = bullet14_img[6 + (i * 14)];
+				temp[3] = bullet14_img[7 + (i * 14)];
+				temp[4] = bullet14_img[8 + (i * 14)];
+			}
+			else if (type == 3) {
+				temp[1] = bullet14_img[9 + (i * 14)];
+				temp[2] = bullet14_img[10 + (i * 14)];
+				temp[3] = bullet14_img[11 + (i * 14)];
+				temp[4] = bullet14_img[12 + (i * 14)];
+				temp[5] = bullet14_img[13 + (i * 14)];
+				temp[6] = bullet14_img[14 + (i * 14)];
+			}
+		}
+	}
+
+	if (type == 3) {
+		if ((frame % 1) + 10 == 0) {
+			DrawGraph(x, y, temp[1], TRUE);
+		}
+		else if ((frame % 2) + 10 == 0) {
+			DrawGraph(x, y, temp[2], TRUE);
+		}
+		else if ((frame % 3) + 10 == 0) {
+			DrawGraph(x, y, temp[3], TRUE);
+		}
+		else if ((frame % 5) + 10 == 0) {
+			DrawGraph(x, y, temp[4], TRUE);
+		}
+	}
+	else {
+		if ((frame % 1) + 10 == 0) {
+			DrawGraph(x, y, temp[1], TRUE);
+		}
+		else if ((frame % 2) + 10 == 0) {
+			DrawGraph(x, y, temp[2], TRUE);
+		}
+		else if ((frame % 3) + 10 == 0) {
+			DrawGraph(x, y, temp[3], TRUE);
+		}
+		else if ((frame % 5) + 10 == 0) {
+			DrawGraph(x, y, temp[4], TRUE);
+		}
+		else if ((frame % 7) + 10 == 0) {
+			DrawGraph(x, y, temp[5], TRUE);
+		}
+		else if ((frame % 11) + 10 == 0) {
+			DrawGraph(x, y, temp[6], TRUE);
+		}
+	}
+}
+
+void bullet_animation_16(int color, int type) {
+	int temp[3];
+	int start;
+	int max;
+
+	if (type == 1) {
+		max = 3;
+		start = 1;
+	}
+	else if (type == 2) {
+		max = 2;
+		start = 19;
+	}
+	else {
+		max = 3;
+		start = 31;
+	}
+
+	for (int i = 1; i <= max; i++) {
+		temp[i] = bullet16_img[(i + color - 1) + start - 1];
+	}
+
+}
+
+
 /*----------------------------------------------------------*/
 /*--------------------------BOSSES--------------------------*/
 /*----------------------------------------------------------*/
@@ -512,12 +604,16 @@ void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 
 void enemy_brain::shot() {
 	int max;
+	int count = 0;
 
 	// “®‚«‚Ìí—Ş‚É‚æ‚Á‚Ä’eŠÛ‚ÌÅ‘å”‚ğŒˆ’è
 	if (mode == 1 || mode == 2) {
 		max = GetRand(20) + 1;
 	}
 	else if (mode == 3) {
+		max = 40;
+	}
+	else if (mode == 4) {
 		max = 1;
 	}
 
@@ -527,14 +623,35 @@ void enemy_brain::shot() {
 		// ƒf[ƒ^‚Ì“ü‚Á‚Ä‚¢‚é“Yš‚ğ‘ã“ü‚·‚é(“®‚«‚ğ•ª‚¯‚é‚½‚ß)
 		if (mode == 1 || mode == 2) {
 			bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
+
+			// ‰~Œ`’e
 			if (mode == 1) {
 				circle[free] = free;
+				bullets[free].speed = 10;
+				bullets[free].x = x;
+				bullets[free].y = y;
+				bullets[free].stats = 1;
 			}
-			else {
+			// ‚¶‚í‚é’e
+			else if (mode == 2) {
 				circle2[free] = free;
+				bullets[free].speed = 10;
+				bullets[free].x = x;
+				bullets[free].y = y;
+				bullets[free].stats = 1;
 			}
 		}
+		// ƒŒ[ƒU[
 		else if (mode == 3) {
+			lazer[free] = free;
+			bullets[free].speed = 0;
+			count += 1;
+			bullets[free].x = WINDOW_SIZE_X - 10 - (count * collision_size);
+			bullets[free].y = y;
+			bullets[free].stats = 1;
+		}
+		// ‚·‚²‚¢’e
+		else if (mode == 4) {
 			bullets[free].rad = 0;
 			super[free] = free;
 			t[i] = 0.0f;
@@ -544,11 +661,12 @@ void enemy_brain::shot() {
 			p2_x[i] = GetRand(WINDOW_SIZE_X);
 			p1_y[i] = GetRand(WINDOW_SIZE_Y);
 			p2_y[i] = GetRand(WINDOW_SIZE_Y);
+
+			bullets[free].speed = 10;
+			bullets[free].x = x;
+			bullets[free].y = y;
+			bullets[free].stats = 1;
 		}
-		bullets[free].speed = 10;
-		bullets[free].x = x;
-		bullets[free].y = y;
-		bullets[free].stats = 1;
 	}
 }
 
@@ -566,25 +684,23 @@ void enemy_brain::move_shot() {
 				}
 			}
 
-			// ‰~Œ`’e‚ÌˆÚ“®(ƒoƒEƒ“ƒX)
+			// ‚¶‚í‚é’e
 			if (circle2[i] == i) {
-				if (circle[i] == i) {
-					if (bullets[i].speed < speed_max) {
-						bullets[i].speed -= 0.5;
-					}
-					else {
-						bullets[i].speed = speed_max;
-					}
-					if (circle[i] != 0) {
-						bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
-						bullets[i].y += cos(bullets[i].rad) * bullets[i].speed;
-					}
+				if (bullets[i].speed < speed_max) {
+					bullets[i].speed += 0.5;
+				}
 
-					// ‰æ–Ê‰E’[‚É’B‚µ‚½“_‚Å•ûŒü“]Š·
-					if (bullets[i].x >= WINDOW_SIZE_X - 10) {
-						bullets[i].speed = bullets[i].speed * -1;
-					}
+				if (circle2[i] != 0) {
+					bullets[i].x += sin(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed;
+					bullets[i].y += cos(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed;
+				}
+			}
 
+			// ƒŒ[ƒU[ ~ Black Widow ~
+			if (lazer[i] == i) {
+				speed += 1;
+				if (speed >= 3000) {
+					bullets[i].stats = 0;
 				}
 			}
 
@@ -603,30 +719,30 @@ void enemy_brain::move_shot() {
 			}
 		}
 
-		if (bullets[i].stats == 0 && super[i] != 0) {
-			super[i] = 0;
-		}
 	}
 }
 
 void enemy_brain::move() {
 	if (stats == 1) {
-
+		//x -= test.speed;
 		if (mode == 0 && frame % 120 == 0) {
 			int random = GetRand(100);
-			if (random < 34) {
+			if (random < 25) {
 				mode = 1;
 			}
-			else if (random > 68) {
+			else if (random < 50) {
 				mode = 2;
 			}
-			else {
+			else if (random < 75) {
 				mode = 3;
+			}
+			else {
+				mode = 4;
 			}
 		}
 
 		// ‰~Œ`’e mode = 1:’Êí 2:ƒoƒEƒ“ƒX 3:‚·‚²‚¢’e
-		if (mode == 1 || mode == 2 || mode == 3) {
+		if (mode == 1 || mode == 2 || mode == 3 || mode == 4) {
 			shot();
 			mode = 0;
 		}
@@ -650,8 +766,9 @@ void enemy_brain::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ŠL");
+			//DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+			//DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "”]");
+			bullet_animation_14(bullets[i].x, bullets[i].y, 1, 1);
 		}
 	}
 	init_OutRangeBullets();
