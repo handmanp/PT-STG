@@ -119,10 +119,14 @@ public:
 	int mode;
 	int speed_max;
 	int circle[MAX_BULLET];
+	int circle2[MAX_BULLET];
 	int super[MAX_BULLET];
-	int p0_x, p1_x, p2_x;
-	int p0_y, p1_y, p2_y;
+	int p1_x[MAX_BULLET];
+	int p2_x[MAX_BULLET];
+	int p1_y[MAX_BULLET];
+	int p2_y[MAX_BULLET];
 	float t[MAX_BULLET];
+	float s_x, s_y;
 	void init(int HP, float start_x, float start_y, int stat);
 	void shot();
 	void move_shot();

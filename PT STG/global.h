@@ -100,6 +100,7 @@ void make_FontData();
 // もはやデバッグではなく消してはいけないものになりました。
 GLOBAL enemy_uni		unis[EACH_ENEMY_MAX];
 GLOBAL enemy_pine		pine[EACH_ENEMY_MAX];
+GLOBAL enemy_brain		brain[EACH_ENEMY_MAX];
 GLOBAL enemy_nuts		nuts[EACH_ENEMY_MAX];
 GLOBAL enemy_shell		shell[EACH_ENEMY_MAX];
 GLOBAL enemy_banana		banana[EACH_ENEMY_MAX];
