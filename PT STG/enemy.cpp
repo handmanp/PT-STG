@@ -497,18 +497,12 @@ void enemy_shell::draw() {
 
 void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 	mode = 0;
-	speed_max = 20;
+	speed_max = 30;
 	speed = 0;
 	collision_size = 32;
 	for (int i = 0; i < MAX_BULLET; i++) {
 		t[i] = 0;
 	}
-	p0_x = 0;
-	p1_x = 0;
-	p2_x = 0;
-	p0_y = 0;
-	p1_y = 0;
-	p2_y = 0;
 	hp = HP;
 	x = start_x;
 	y = start_y;
@@ -518,24 +512,40 @@ void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 
 void enemy_brain::shot() {
 	int max;
-	if (mode == 1) {
-		max = 15;
+
+	// ìÆÇ´ÇÃéÌóﬁÇ…ÇÊÇ¡Çƒíeä€ÇÃç≈ëÂêîÇåàíË
+	if (mode == 1 || mode == 2) {
+		max = GetRand(20) + 1;
 	}
-	else if (mode == 2) {
+	else if (mode == 3) {
 		max = 1;
 	}
 
 	for (int i = 0; i < max; i++) {
 		int free = search_FreeAddress();
-		if (mode == 1) {
+
+		// ÉfÅ[É^ÇÃì¸Ç¡ÇƒÇ¢ÇÈìYéöÇë„ì¸Ç∑ÇÈ(ìÆÇ´Çï™ÇØÇÈÇΩÇﬂ)
+		if (mode == 1 || mode == 2) {
 			bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
-			circle[free] = free;
+			if (mode == 1) {
+				circle[free] = free;
+			}
+			else {
+				circle2[free] = free;
+			}
 		}
-		else if (mode == 2) {
+		else if (mode == 3) {
 			bullets[free].rad = 0;
 			super[free] = free;
+			t[i] = 0.0f;
+
+			// ÉxÉWÉFã»ÇÃÉfÅ[É^
+			p1_x[i] = GetRand(WINDOW_SIZE_X);
+			p2_x[i] = GetRand(WINDOW_SIZE_X);
+			p1_y[i] = GetRand(WINDOW_SIZE_Y);
+			p2_y[i] = GetRand(WINDOW_SIZE_Y);
 		}
-		bullets[free].speed = 20;
+		bullets[free].speed = 10;
 		bullets[free].x = x;
 		bullets[free].y = y;
 		bullets[free].stats = 1;
@@ -548,7 +558,7 @@ void enemy_brain::move_shot() {
 			// â~å`íeÇÃà⁄ìÆ
 			if (circle[i] == i) {
 				if (bullets[i].speed <= speed_max) {
-					bullets[i].speed -= 1;
+					bullets[i].speed -= 0.5;
 				}
 				if (circle[i] != 0) {
 					bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
@@ -556,11 +566,45 @@ void enemy_brain::move_shot() {
 				}
 			}
 
+			// â~å`íeÇÃà⁄ìÆ(ÉoÉEÉìÉX)
+			if (circle2[i] == i) {
+				if (circle[i] == i) {
+					if (bullets[i].speed < speed_max) {
+						bullets[i].speed -= 0.5;
+					}
+					else {
+						bullets[i].speed = speed_max;
+					}
+					if (circle[i] != 0) {
+						bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
+						bullets[i].y += cos(bullets[i].rad) * bullets[i].speed;
+					}
+
+					// âÊñ âEí[Ç…íBÇµÇΩéûì_Ç≈ï˚å¸ì]ä∑
+					if (bullets[i].x >= WINDOW_SIZE_X - 10) {
+						bullets[i].speed = bullets[i].speed * -1;
+					}
+
+				}
+			}
+
 			// Ç∑Ç≤Ç¢íeÇÃà⁄ìÆ
 			if (super[i] == i) {
+				if (t[i] >= 1.0f) {
+					bullets[i].x += sinf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed;
+					bullets[i].y += cosf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed;
 
-
+				}
+				else {
+					t[i] += 0.001f;
+					bullets[i].x = (1 - t[i]) * bullets[i].x + 2 * (1 - t[i]) * t[i] * p1_x[i] + t[i] * t[i] * p2_x[i];
+					bullets[i].y = (1 - t[i]) * bullets[i].y + 2 * (1 - t[i]) * t[i] * p1_y[i] + t[i] * t[i] * p2_y[i];
+				}
 			}
+		}
+
+		if (bullets[i].stats == 0 && super[i] != 0) {
+			super[i] = 0;
 		}
 	}
 }
@@ -568,42 +612,22 @@ void enemy_brain::move_shot() {
 void enemy_brain::move() {
 	if (stats == 1) {
 
-		if (mode == 0 && frame % 180 == 0) {
-			if (GetRand(100) <= 50) {
+		if (mode == 0 && frame % 120 == 0) {
+			int random = GetRand(100);
+			if (random < 34) {
 				mode = 1;
 			}
-			else {
+			else if (random > 68) {
 				mode = 2;
 			}
-		}
-
-		// â~å`íe
-		if (mode == 1) {
-			shot();
-			mode = 0;
-		}
-
-		// Ç∑Ç≤Ç¢íe
-		if (mode == 2) {
-			shot();
-			mode = 3;
-		}
-		// Ç∑Ç≤Ç¢íeÇÃìÆÇ´
-		if (mode == 3) {
-			if (frame % 60 == 0) {
-				p0_x = GetRand(WINDOW_SIZE_X);
-				p1_x = GetRand(WINDOW_SIZE_X);
-				p2_x = GetRand(WINDOW_SIZE_X);
-
-				p0_y = GetRand(WINDOW_SIZE_Y);
-				p1_y = GetRand(WINDOW_SIZE_Y);
-				p2_y = GetRand(WINDOW_SIZE_Y);
-				
+			else {
+				mode = 3;
 			}
 		}
 
-		
-		if (mode == 3) {
+		// â~å`íe mode = 1:í èÌ 2:ÉoÉEÉìÉX 3:Ç∑Ç≤Ç¢íe
+		if (mode == 1 || mode == 2 || mode == 3) {
+			shot();
 			mode = 0;
 		}
 
