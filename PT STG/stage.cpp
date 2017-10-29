@@ -122,112 +122,128 @@ void my_Stage::stage_Progression() {
 
 			// 敵のインスタンス作成
 			switch (stage_data[i].enemy_type) {
-			
-			// *------------------------ Stage 1 ------------------------*
 
-			// [0] ナッツ
+				// *------------------------ Stage 1 ------------------------*
+
+				// [0] ナッツ
 			case EneNuts:
 				nuts[enemy_count[EneNuts]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4, stage_data[i].var_5);
 				enemy_count[EneNuts]++;
 				break;
 
-			// [1] エダマメン wip
+				// [1] エダマメン wip
 			case EneEdamamen:
 				// wip
 				break;
 
-			// [2] ウニズ
+				// [2] ウニズ
 			case EneUnis:
 				unis[enemy_count[EneUnis]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4, stage_data[i].var_5, stage_data[i].var_6, stage_data[i].var_7);
 				enemy_count[EneUnis]++;
 				break;
 
-			// [3] ジェノサイドバナナ
+				// [3] ジェノサイドバナナ
 			case EneBanana:
 				banana[enemy_count[EneBanana]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneBanana]++;
 				break;
 
-			// [4] ピネ
+				// [4] ピネ
 			case EnePine:
 				pine[enemy_count[EnePine]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4, stage_data[i].var_5);
 				enemy_count[EnePine]++;
 				break;
 
-			// [5] カイ
+				// [5] カイ
 			case EneKai:
 				shell[enemy_count[EneKai]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneKai]++;
 				break;
 
-			// [6] タケノコン wip
+				// [6] タケノコン wip
 			case EneTakenokon:
 				break;
 
-			// [7] キノコン wip
+				// [7] キノコン wip
 			case EneKinokon:
 				break;
 
-			// *------------------------ Stage 2 ------------------------*
+				// *------------------------ Stage 2 ------------------------*
 
-			// [8] クワガタン
+				// [8] クワガタン
 			case EneKuwagatan:
 				kuwagatan[enemy_count[EneKuwagatan]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneKuwagatan]++;
 				break;
 
-			// [9] ミートボールスパム
+				// [9] ミートボールスパム
 			case EneMeatball:
 				meat[enemy_count[EneMeatball]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneMeatball]++;
 				break;
 
-			// [10] 胞子
+				// [10] 胞子
 			case EneHoushi:
 				houshi[enemy_count[EneHoushi]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneHoushi]++;
 				break;
 
-			// [11] ワーム
+				// [11] ワーム
 			case EneWarm:
 				worm[enemy_count[EneWarm]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneWarm]++;
 				break;
 
-			// [12] ツタン
+				// [12] ツタン
 			case EneTutan:
 				ivy[enemy_count[EneTutan]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneTutan]++;
 				break;
 
-			// [13] ムービングスタチュー
+				// [13] ムービングスタチュー
 			case EneStatue:
 				statue[enemy_count[EneStatue]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneStatue]++;
 				break;
 
-			// *------------------------ Stage 3 ------------------------*
+				// *------------------------ Stage 3 ------------------------*
 
-			// [14] キモ箱 wip
+				// [14] キモ箱 wip
 			case EneKimobako:
 				break;
 
-			// [15] デテクルーノ（花） wip
+				// [15] デテクルーノ（花） wip
 			case EneDetekuruno:
 				break;
 
-			// [16] デテクルーノ（茎） wip
+				// [16] デテクルーノ（茎） wip
 			case EneDetekuki:
 				break;
 
-			// [17] シンダーラタマウツ
+				// [17] シンダーラタマウツ
 			case EneTamautsu:
 				sindarla[enemy_count[EneTamautsu]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneTamautsu]++;
 				break;
 
-			// [18] 戦艦ジェノサイド wip
+				// [18] 戦艦ジェノサイド wip
 			case EneGenocide:
+				break;
+
+				// *------------------------ Stage 3 ------------------------*
+
+				// [19] タコス wip
+			case BossTacos:
+				break;
+
+				// [20] ノウミソン wip
+			case BossNoumison:
+				brain[enemy_count[BossNoumison]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
+				enemy_count[BossNoumison]++;
+				break;
+
+				// [21] ワーミン wip
+			case BossWarmin:
 				break;
 			}
 		}
@@ -300,6 +316,11 @@ void my_Stage::stage_EnemyMove() {
 	}
 	for (int i = 0; i < enemy_count[EneGenocide]; i++) {
 		//genocide[i].move(); wip
+	}
+
+	// *------------------------ Stage 3 ------------------------*
+	for (int i = 0; i < enemy_count[BossNoumison]; i++) {
+		brain[i].move();
 	}
 }
 
