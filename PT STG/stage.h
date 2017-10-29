@@ -34,7 +34,7 @@ public:
 
 	// 動的確保用ポインタ
 	int        **stage_size;
-	STAGE_DATA	*stage_data;
+	STAGE_DATA	stage_data[200];
 
 	void	move(int s, int r);
 	void	init(int sx, int sy);

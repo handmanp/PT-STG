@@ -174,65 +174,8 @@ void debug_Init() {
 	test.init(500, 40);
 	test.set_StagePos(0, 0);
 
-	// debug unis 4tai
-	for (int i = 0; i < 4; i++) {
-		//unis[i].init(3, 1000 + 50 * i, 700, 300, 360, 1, 1);
-	}
-
-	// debug nuts 4tai
-	for (int i = 0; i < 4; i++) {
-		//nuts[i].init(1280 + 100 * i, 90 + 90 * i, 2, 90 * i, 1);
-	}
-
-	// debug shell 4tai
-	for (int i = 0; i < 4; i++) {
-		//shell[i].init(5, 700 + 40 * i, 650, 1);
-	}
-
-	// debug banana 4tai
-	for (int i = 0; i < 4; i++) {
-		//banana[i].init(10, 1000 + 200 * i, 300, 1);
-	}
-
-	// debug pine 4tai
-	for (int i = 0; i < 4; i++) {
-		//pine[i].init(5, 1800 + i * 40, 700, 300 + i * 60, 1);
-	}
-
-	// debug statue 4tai
-	for (int i = 0; i < 4; i++) {
-		//statue[i].init(5, 1200 + i * 70, 600 + i * 40, 1);
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//ivy[i].init(5, 1000 + 100 * i, 600, 1);
-	}
-
-	for (int i = 0; i < 1; i++) {
-		//kuwagatan[i].init(5, 1000, 360, 1);
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//houshi[i].init(5, 1000 + 100 * i, 650, 1);
-	}
-
-	for (int i = 0; i < 1; i++) {
-		//worm[i].init(5, 1000, 0, 1);
-	}
-
-	for (int i = 0; i < 1; i++) {
-		//genocide[i].init(5, 1000, 360, 1);
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//detecrew[i].init(5, 1200 + i * 100, 600, 1);
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//sindarla[i].init(5, 1200 + i * 100, 200 + i * 50, 1);
-
-	}
-
+	// CSVリーダ
+	test.io_StageDataLoad();
 }
 
 void debug_GameMain() {
@@ -244,65 +187,16 @@ void debug_GameMain() {
 	test.move(2, 90);
 	test.draw();
 
+	// ステージ進行
+	test.stage_Progression(); // CSV解析
+	test.stage_EnemyMove();   // 敵動作
+
 	// debug my ship move and draw
 	ship.move();
 	ship.draw();
 
 	// draw debug message
 	debug_Message();
-
-	for (int i = 0; i < 4; i++) {
-		//unis[i].move();
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//nuts[i].move();
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//shell[i].move();
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//banana[i].move();
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//pine[i].move();
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//statue[i].move();
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//ivy[i].move();
-	}
-
-	for (int i = 0; i < 1; i++) {
-		//kuwagatan[i].move();
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//houshi[i].move();
-	}
-
-	for (int i = 0; i < 1; i++) {
-		//worm[i].move();
-	}
-
-	for (int i = 0; i < 1; i++) {
-		//genocide[i].move();
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//detecrew[i].move();
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//sindarla[i].move();
-
-	}
 }
 
 void debug_Message() {
