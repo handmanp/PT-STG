@@ -59,19 +59,27 @@ int draw_StageEditor() {
 
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
-			switch (stage_editor[i][j][0]) {
+			switch (stage_editor[i][j]) {
 			case -1:
 				DrawBox(stage_left_x + (i * STAGE_TIP_SIZE), stage_left_y + (j * STAGE_TIP_SIZE), stage_left_x + (i * STAGE_TIP_SIZE) + STAGE_TIP_SIZE, stage_left_y + (j * STAGE_TIP_SIZE) + STAGE_TIP_SIZE, GetColor(20, 20, 20), FALSE);
 				break;
 			default:
-				DrawGraph(stage_left_x + (i * STAGE_TIP_SIZE), stage_left_y + (j * STAGE_TIP_SIZE), maptip_img[stage_editor[i][j][0]], TRUE);
+				DrawGraph(stage_left_x + (i * STAGE_TIP_SIZE), stage_left_y + (j * STAGE_TIP_SIZE), maptip_img[stage_editor[i][j]], TRUE);
 				break;
 			}
 		}
 	}
+
 	move_StageEditor();
 	draw_StageEditorRuler();
 	draw_StageEditorMenu();
+
+	unsigned int nc = GetColor(100, 100, 100);
+	unsigned int oc = GetColor(150, 150, 150);
+
+	if (button.draw_Button(1010, 40, 200, 28, nc, oc, "ステージを上書き保存") == true) {
+		io_MapdataFileOutput();
+	}
 
 	return 0;
 }
@@ -127,33 +135,33 @@ void draw_StageEditorMenuStage() {
 	DrawBox(tip_x, tip_y, tip_x + 96, tip_y + 160, GetColor(0, 0, 0), TRUE);
 
 	// コンボボックスの中を指定して描画して戻り値取得
-	char *list_str[7] = { "草遺跡", "石砂漠", "砂砂漠", "石の村", "城の村", "石洞窟", "氷洞窟" };
-	int margin = com.draw_Combo(1150, 250, 100, 7, list_str) * 3;
+	char *list_str[22] = { "宇宙窓1", "宇宙窓2", "宇宙窓3", "回路1", "回路2", "ハイテク1", "ハイテク2", "ロステク", "細胞1", "細胞2", "細胞3", "LSI1", "壁", "LSI2", "ハイテク3", "ハイテク4", "宇宙窓4", "MATRIX", "ロステク2", "壊死1", "壊死2", "ロステク壁" };
+	int margin = com.draw_Combo(1150, 250, 100, 22, list_str) * 4;
 
 	// マップチップパレット描画用
 	int margin_m = margin;
 
 	// マップチップ描画
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 3; j++) {
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 4; j++) {
 			DrawGraph(tip_x + (j * STAGE_TIP_SIZE), tip_y + (i * STAGE_TIP_SIZE), maptip_img[margin_m + j], TRUE);
 		}
-		margin_m += 21;
+		margin_m += 88;
 	}
 
 	// マップチップクリック判定
 	if (mouse_l == 1) {
 
 		// マップチップパレットの操作
-		if (mouse_x > tip_x && mouse_x < tip_x + (STAGE_TIP_SIZE * 3) &&
-			mouse_y > tip_y && mouse_y < tip_y + (STAGE_TIP_SIZE * 5)) {
+		if (mouse_x > tip_x && mouse_x < tip_x + (STAGE_TIP_SIZE * 4) &&
+			mouse_y > tip_y && mouse_y < tip_y + (STAGE_TIP_SIZE * 10)) {
 
 			// 相対座標
 			int mpx = mouse_x - tip_x;
 			int mpy = mouse_y - tip_y;
 
 			// 画像ハンドルの添字
-			selected_item = ((mpy / STAGE_TIP_SIZE) * 21) + (mpx / STAGE_TIP_SIZE) + margin;
+			selected_item = ((mpy / STAGE_TIP_SIZE) * 88) + (mpx / STAGE_TIP_SIZE) + margin;
 		}
 
 		// ステージエディタの操作
@@ -168,7 +176,7 @@ void draw_StageEditorMenuStage() {
 			// エディタの範囲内か調べる
 			if (mpx >= 0 && mpx < stage_size_x &&
 				mpy >= 0 && mpy < stage_size_y) {
-				stage_editor[mpx][mpy][0] = selected_item;
+				stage_editor[mpx][mpy] = selected_item;
 			}
 		}
 	}
@@ -226,20 +234,34 @@ void move_StageEditor() {
 bool io_MapdataFileOutput() {
 
 	char path[128];
-	sprintf_s(path, 128, "data/editor/saves/0%d/mapdata.txt", map_slot);
-
+	//sprintf_s(path, 128, "data/editor/saves/0%d/mapdata.txt", map_slot);
+	sprintf_s(path, 128, "data/maps/stage_%d/mapdata.txt", map_slot);
 	FILE *fp;
 
 	errno_t error = fopen_s(&fp, path, "wb");
 	if (error != 0) return false;
 
-	fwrite(&stage_editor, sizeof(stage_editor), stage_size_x * stage_size_y * 2, fp);
+	fwrite(&stage_editor, sizeof(stage_editor), stage_size_x * stage_size_y, fp);
 
 	fclose(fp);
 
 	return true;
 }
+/*
+bool io_MapdataFileLoad() {
 
+	char path[128];
+	//sprintf_s(path, 128, "data/editor/saves/0%d/mapdata.txt", map_slot);
+	sprintf_s(path, 128, "data/maps/stage_%d/mapdata.txt", map_slot);
+
+	FILE *fp;
+	errno_t error = fopen_s(&fp, path, "wb");
+
+	fclose(fp);
+
+	return true;
+}
+*/
 
 
 //-------------------------------------------------------------------------------
@@ -348,18 +370,15 @@ int draw_EditorMainMenu() {
 void init_EditorStage() {
 
 	// 3次元配列の動的確保（カッコイイ）
-	stage_editor = new int**[stage_size_x];
+	stage_editor = new int*[stage_size_x];
 	for (int i = 0; i < stage_size_x; i++) {
-		stage_editor[i] = new int*[stage_size_y];
-		for (int j = 0; j < stage_size_y; j++) {
-			stage_editor[i][j] = new int[2];
-		}
+		stage_editor[i] = new int[stage_size_y];
 	}
 	// 初期化
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
-			stage_editor[i][j][0] = -1;
-			stage_editor[i][j][1] = -1;
+			stage_editor[i][j] = -1;
+			stage_editor[i][j] = -1;
 		}
 	}
 }
@@ -370,9 +389,6 @@ void init_EditorStage() {
 // ※コレ通さないと死ぬから注意
 void delete_EditorStage() {
 	for (int i = 0; i < stage_size_x; i++) {
-		for (int j = 0; j < stage_size_y; j++) {
-			delete[] stage_editor[i][j];
-		}
 		delete[] stage_editor[i];
 	}
 	delete[] stage_editor;

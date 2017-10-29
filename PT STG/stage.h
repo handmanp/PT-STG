@@ -1,5 +1,5 @@
 
-#define STAGE_TIP_SIZE 32
+#define STAGE_TIP_SIZE 24
 #define EACH_ENEMY_MAX 40
 
 typedef struct {

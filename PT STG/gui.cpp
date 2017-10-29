@@ -41,24 +41,24 @@ int  combo::draw_Combo(int mx, int my, int mw, int list, char **list_str) {
 	w = mw;
 	list_num = list;
 
-	DrawBox(x, y, x + w, y + 30, GetColor(40, 40, 40), TRUE);
-	DrawBox(x, y, x + w, y + 30, GetColor(140, 140, 140), FALSE);
-	if (com_button.draw_Button(x + w - 30, y, 30, 30, GetColor(140, 140, 140), GetColor(160, 160, 160), "¥") == true) stats = 1;
+	DrawBox(x, y, x + w, y + 14, GetColor(40, 40, 40), TRUE);
+	DrawBox(x, y, x + w, y + 14, GetColor(140, 140, 140), FALSE);
+	if (com_button.draw_Button(x + w - 14, y, 14, 14, GetColor(140, 140, 140), GetColor(160, 160, 160), "¥") == true) stats = 1;
 
-	DrawFormatStringToHandle(x + 5, y + 5, GetColor(255, 255, 255), font_handle[FONT_BUTTON], "%s", list_str[select]);
+	DrawFormatStringToHandle(x, y, GetColor(255, 255, 255), font_handle[FONT_COMBOX], "%s", list_str[select]);
 
 	if (stats == 1) {
 
 		// ”wŒi•`‰æ
-		DrawBox(x, y + 30, x + w, y + 30 + (list_num * 30), GetColor(40, 40, 40), TRUE);
+		DrawBox(x, y + 14, x + w, y + 14 + (list_num * 14), GetColor(40, 40, 40), TRUE);
 		
 		// ”»’è
-		if (mouse_x > x && mouse_x < x + w && mouse_y > y && mouse_y < y + 30 + (list_num * 30)) {
+		if (mouse_x > x && mouse_x < x + w && mouse_y > y && mouse_y < y + 14 + (list_num * 14)) {
 			for (int i = 0; i < list_num; i++) {
-				if (mouse_y > y + 30 + (i * 30) && mouse_y < y + 60 + (i * 30)) {
-					DrawBox(x, y + 30 + (i * 30), x + w, y + 60 + (i * 30), GetColor(255, 0, 0), TRUE);
+				if (mouse_y > y + 14 + (i * 14) && mouse_y < y + 28 + (i * 14)) {
+					DrawBox(x, y + 14 + (i * 14), x + w, y + 28 + (i * 14), GetColor(255, 0, 0), TRUE);
 					if (mouse_l == 1) {
-						select = (mouse_y - (y + 30)) / 30;
+						select = (mouse_y - (y + 14)) / 14;
 						if (select > list_num) select = list_num;
 						stats = 0;
 					}
@@ -71,7 +71,7 @@ int  combo::draw_Combo(int mx, int my, int mw, int list, char **list_str) {
 
 		// •¶š—ñ•`‰æ
 		for (int i = 0; i < list_num; i++) {
-			DrawFormatStringToHandle(x + 5, y + 35 + (i * 30), GetColor(255, 255, 255), font_handle[FONT_BUTTON], "%s", list_str[i]);
+			DrawFormatStringToHandle(x, y + 14 + (i * 14), GetColor(255, 255, 255), font_handle[FONT_COMBOX], "%s", list_str[i]);
 		}
 	}
 	return select;

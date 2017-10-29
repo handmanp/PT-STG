@@ -55,7 +55,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 	// ÉQÅ[ÉÄÉÇÅ[Éh : TOP_MENU / GAME / EDITOR
-	int gamemode  = GAME;
+	int gamemode  = EDITOR;
 	mode_flag = 0;
 	frame = 0;
 
@@ -145,7 +145,7 @@ void load_Img() {
 	}
 
 	// bgñ âÊëú
-	LoadDivGraph("data/img/tip/obj.png", 105, 21, 5, 32, 32, maptip_img);
+	LoadDivGraph("data/img/tip/obj.png", 880, 88, 10, 24, 24, maptip_img);
 
 	// pwupâÊëú
 	LoadDivGraph("data/img/gui/powerup.png", 2, 2, 1, 128, 30, pwrup_img);
@@ -163,6 +163,7 @@ void load_Effect() {
 void make_FontData() {
 	font_handle[FONT_BUTTON]  = CreateFontToHandle("Meiryo", 18, 2, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 	font_handle[FONT_HEADING] = CreateFontToHandle("Meiryo", 40, 5, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
+	font_handle[FONT_COMBOX]  = CreateFontToHandle("Meiryo", 10, 2, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 }
 
 void debug_Init() {

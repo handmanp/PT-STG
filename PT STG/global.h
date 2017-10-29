@@ -29,6 +29,7 @@
 #define FONT_BUTTON  1
 #define FONT_HEADING 2
 #define FONT_YELLOW  3
+#define FONT_COMBOX  4
 
 typedef struct {
 	int stats;
@@ -70,7 +71,7 @@ GLOBAL XINPUT_STATE ctrl_pad;
 //‰æ‘œƒnƒ“ƒhƒ‹Œn
 GLOBAL int enemy_img[32];
 GLOBAL int ship_img[5][2];
-GLOBAL int maptip_img[105];
+GLOBAL int maptip_img[880];
 GLOBAL int pwrup_img[2];
 
 GLOBAL int bullet14_img[84];
