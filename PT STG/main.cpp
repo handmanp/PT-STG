@@ -55,7 +55,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 	// ÉQÅ[ÉÄÉÇÅ[Éh : TOP_MENU / GAME / EDITOR
-	int gamemode  = GAME;
+	int gamemode = EDITOR;
 	mode_flag = 0;
 	frame = 0;
 

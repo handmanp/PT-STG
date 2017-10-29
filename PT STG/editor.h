@@ -8,7 +8,10 @@ typedef struct {
 	int y;
 }STAGE_META;
 
+
+
 // プロトタイプ宣言
+void main_Editor();
 int draw_EditorMainMenu();
 int draw_NewProjectMenu();
 
@@ -21,6 +24,8 @@ void draw_StageEditorMenuStage();
 void draw_StageEditorRuler();
 void move_StageEditor();
 bool io_MapdataFileOutput();
+bool io_MapdataFileLoad();
+void io_LoadMetaData(char *path);
 
 // Editor Global
 int ss_x[4], ss_y[4];

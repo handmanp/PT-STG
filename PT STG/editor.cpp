@@ -24,6 +24,8 @@
 #include "global.h"
 #include "editor.h"
 
+using namespace std;
+
 //-------------------------------------------------------------------------------
 //
 // エディターメインループ ??emain
@@ -32,11 +34,33 @@
 
 void main_Editor() {
 
+	int menu_b = -1;
+	char path[128];
+
 	switch (mode_flag) {
 	case 0: // エディタメニュー画面
-		if (draw_EditorMainMenu() != -1) {
-			mode_flag++;
+
+		menu_b = draw_EditorMainMenu();
+
+		if (menu_b != -1) {
+
+			sprintf_s(path, 128, "data/maps/stage_%d/mapmeta.txt", menu_b + 1);
+
+			if (PathFileExists(path)) {
+
+				io_LoadMetaData(path);
+
+				char a[128];
+				sprintf_s(a, 128, "%d,%d", stage_size_x, stage_size_y);
+
+				io_MapdataFileLoad();
+				mode_flag = 2;
+			}
+			else {
+				mode_flag++;
+			}
 		}
+
 		break;
 	case 1: // 新規作成画面
 		draw_NewProjectMenu();
@@ -47,6 +71,19 @@ void main_Editor() {
 	default:
 		break;
 	}
+}
+
+void io_LoadMetaData(char *path) {
+
+	FILE *fp_meta;
+	fopen_s(&fp_meta, path, "r");
+
+	STAGE_META meta;
+
+	fread_s(&meta, sizeof(STAGE_META), sizeof(STAGE_META), 1, fp_meta);
+
+	stage_size_x = meta.x;
+	stage_size_y = meta.y;
 }
 
 //-------------------------------------------------------------------------------
@@ -77,7 +114,7 @@ int draw_StageEditor() {
 	unsigned int nc = GetColor(100, 100, 100);
 	unsigned int oc = GetColor(150, 150, 150);
 
-	if (button.draw_Button(1010, 40, 200, 28, nc, oc, "ステージを上書き保存") == true) {
+	if (button.draw_Button(1010, 40, 200, 28, nc, oc, "ステージを上書き保存")) {
 		io_MapdataFileOutput();
 	}
 
@@ -96,7 +133,7 @@ void draw_StageEditorMenu() {
 	if (button.draw_Button(1140, 200, 70, 30, GetColor(  0,   0, 100), GetColor( 0,  0, 55), "フラグ")   == true) editor_mode = 2;
 	if (button.draw_Button(1210, 200, 70, 30, GetColor(100, 100,   0), GetColor(55, 55,  0), "工事中")   == true) editor_mode = 3;
 
-	char *list_str[4] = {"ステージ１の敵", "ステージ２の敵", "ステージ３の敵", "ボス", };
+	char *list_str2[4] = {"ステージ１の敵", "ステージ２の敵", "ステージ３の敵", "ボス", };
 
 	switch (editor_mode) {
 	case 0:
@@ -105,7 +142,7 @@ void draw_StageEditorMenu() {
 		break;
 	case 1:
 		DrawBox(1000, 230, 1280, 720, GetColor(0, 100, 0), TRUE);
-		com.draw_Combo(1010, 300, 250, 4, list_str);
+		com.draw_Combo(1010, 300, 250, 4, list_str2);
 		break;
 	case 2:
 		DrawBox(1000, 230, 1280, 720, GetColor(0, 0, 100), TRUE);
@@ -121,6 +158,13 @@ void draw_StageEditorMenu() {
 void draw_StageEditorMenuStage() {
 
 	DrawFormatStringToHandle(1010, 250, GetColor(255, 255, 255), font_handle[FONT_BUTTON], "マップチップ");
+
+	unsigned int nc = GetColor(100, 100, 100);
+	unsigned int oc = GetColor(150, 150, 150);
+
+	if (button.draw_Button(1010, 600, 100, 28, nc, oc, "消しゴム")) {
+		selected_item = -1;
+	}
 
 	if (selected_item != -1) {
 		DrawFormatStringToHandle(1110, 300, GetColor(255, 255, 255), font_handle[FONT_BUTTON], "選択ﾌﾞﾛｯｸ:");
@@ -236,32 +280,58 @@ bool io_MapdataFileOutput() {
 	char path[128];
 	//sprintf_s(path, 128, "data/editor/saves/0%d/mapdata.txt", map_slot);
 	sprintf_s(path, 128, "data/maps/stage_%d/mapdata.txt", map_slot);
-	FILE *fp;
 
-	errno_t error = fopen_s(&fp, path, "wb");
-	if (error != 0) return false;
+	char path_meta[128];
+	//sprintf_s(path, 128, "data/editor/saves/0%d/mapdata.txt", map_slot);
+	sprintf_s(path_meta, 128, "data/maps/stage_%d/mapmeta.txt", map_slot);
 
-	fwrite(&stage_editor, sizeof(stage_editor), stage_size_x * stage_size_y, fp);
+	FILE *fp_meta;
 
-	fclose(fp);
+	errno_t error_2 = fopen_s(&fp_meta, path_meta, "w+");
+	if (error_2 == 0) {
+		STAGE_META meta;
+		meta.stats = 0;
+		meta.x = stage_size_x;
+		meta.y = stage_size_y;
+
+		fwrite(&meta, sizeof(meta), 1, fp_meta);
+
+		fclose(fp_meta);
+	}
+
+	ofstream ofs; ofs.open(path);
+	for (int i = 0; i < stage_size_x; i++) {
+		for (int j = 0; j < stage_size_y; j++) {
+			ofs << stage_editor[i][j] << endl;
+		}
+	}
+	ofs.close();
 
 	return true;
 }
-/*
+
+// 入力  true = 多分成功してる, false = 多分失敗してる
+// *------------------------------------------------------------------------------------*
+
 bool io_MapdataFileLoad() {
+
+	init_EditorStage();
 
 	char path[128];
 	//sprintf_s(path, 128, "data/editor/saves/0%d/mapdata.txt", map_slot);
 	sprintf_s(path, 128, "data/maps/stage_%d/mapdata.txt", map_slot);
 
-	FILE *fp;
-	errno_t error = fopen_s(&fp, path, "wb");
-
-	fclose(fp);
+	ifstream ifs; ifs.open(path);
+	for (int i = 0; i < stage_size_x; ++i) {
+		for (int j = 0; j < stage_size_y; ++j) {
+			ifs >> stage_editor[i][j];
+		}
+	}
+	ifs.close();
 
 	return true;
 }
-*/
+
 
 
 //-------------------------------------------------------------------------------

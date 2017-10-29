@@ -21,6 +21,11 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <Windows.h>
+#include <iostream>
+#include <Shlwapi.h>
+
+#pragma comment(lib, "Shlwapi.lib")
 
 #define WINDOW_SIZE_X 1280
 #define WINDOW_SIZE_Y 720
