@@ -64,7 +64,7 @@ void my_Stage::del_Stage() {
 		delete[] stage_size[i];
 	}
 	delete[] stage_size;
-	delete[] stage_data;
+	//delete[] stage_data;
 }
 
 // ステージの移動
@@ -94,6 +94,13 @@ void my_Stage::draw() {
 				}
 			}
 		}
+	}
+	for (int i = 0; i < enemy_max; i++) {
+		DrawFormatString(10, 100 + (i * 20), GetColor(200, 200, 200), "%d, %d, %d, %d, %d, %d, %d",
+			stage_data[i].start_x, stage_data[i].enemy_type,
+			stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3,
+			stage_data[i].var_4, stage_data[i].var_5, stage_data[i].var_6,
+			stage_data[i].var_7);
 	}
 }
 
@@ -229,32 +236,69 @@ void my_Stage::stage_Progression() {
 
 void my_Stage::stage_EnemyMove() {
 
-	// 敵移動
-	for (int i = 0; i < EACH_ENEMY_MAX; i++) { // リテラル 22 は現在の敵の総数
+	// *------------------------ Stage 1 ------------------------*
 
-		// *------------------------ Stage 1 ------------------------*
+	for (int i = 0; i < enemy_count[EneNuts]; i++) {
 		nuts[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneEdamamen]; i++) {
 		//edamamen[i].move(); wip
+	}
+	for (int i = 0; i < enemy_count[EneUnis]; i++) {
 		unis[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneBanana]; i++) {
 		banana[i].move();
+	}
+	for (int i = 0; i < enemy_count[EnePine]; i++) {
 		pine[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneKai]; i++) {
 		shell[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneTakenokon]; i++) {
 		//takenokon[i].move(); wip
+	}
+	for (int i = 0; i < enemy_count[EneKinokon]; i++) {
 		//nokonoko[i].move(); wip
+	}
 
-		// *------------------------ Stage 2 ------------------------*
+	// *------------------------ Stage 2 ------------------------*
+
+	for (int i = 0; i < enemy_count[EneKuwagatan]; i++) {
 		kuwagatan[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneMeatball]; i++) {
 		meat[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneHoushi]; i++) {
 		houshi[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneWarm]; i++) {
 		worm[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneTutan]; i++) {
 		ivy[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneStatue]; i++) {
 		statue[i].move();
+	}
 
-		// *------------------------ Stage 3 ------------------------*
+	// *------------------------ Stage 3 ------------------------*
+
+	for (int i = 0; i < enemy_count[EneKimobako]; i++) {
 		//kimobako[i].move(); wip
+	}
+	for (int i = 0; i < enemy_count[EneDetekuruno]; i++) {
 		//detekuruno[i].move(); wip
+	}
+	for (int i = 0; i < enemy_count[EneDetekuki]; i++) {
 		//detekuki[i].move(); wip
+	}
+	for (int i = 0; i < enemy_count[EneTamautsu]; i++) {
 		sindarla[i].move();
+	}
+	for (int i = 0; i < enemy_count[EneGenocide]; i++) {
 		//genocide[i].move(); wip
 	}
 }
@@ -272,7 +316,9 @@ void my_Stage::io_StageDataLoad() {
 	char (*data)[BufMax];
 
 	// CSVを開く
-	if ((fopen_s(&fp, "data/maps/stage_1/stagedata.csv", "r")) != NULL) {
+	errno_t err;
+	err = fopen_s(&fp, _T("data/maps/stage_1/stagedata.csv"), "r");
+	if (err == 0) {
 		while (fgets(buf, sizeof(buf), fp) != NULL){
 			line_count++;
 		}
@@ -280,8 +326,9 @@ void my_Stage::io_StageDataLoad() {
 	// 今後のループ用に
 	enemy_max = line_count - 1;
 
-	// 敵データ保存用構造体配列の動的確保
-	stage_data = new STAGE_DATA[line_count - 1];
+	fp = NULL;
+	// CSVを開く(読み込まないとFPのポインタが初期化されなくてなんかうまくいかないけど汚いよね)
+	err = fopen_s(&fp, _T("data/maps/stage_1/stagedata.csv"), "r");
 
 	// 格納時に使う変数初期化
 	int c;
@@ -292,15 +339,14 @@ void my_Stage::io_StageDataLoad() {
 
 	// ここから先は結構マジック
 	// ヘッダ読み飛ばし
-	while (fgetc(fp) != '\n');
+	//while (fgetc(fp) != '\n');
 	while (1) {
 		while (1) {
 
 			c = fgetc(fp);
 
 			// 末尾ならループを抜ける。
-			if (c == EOF)
-				goto LOOP_OUT;
+			if (c == EOF) goto LOOP_OUT;
 
 			// カンマか改行でなければ、文字としてつなげる
 			if (c != ',' && c != '\n') {
@@ -354,7 +400,8 @@ void my_Stage::io_StageDataLoad() {
 		}
 	}
 LOOP_OUT: // ループパス用のラベル
-	int YUTA_SASAKI = 0; //←これがないと何故かエラー出る（ガチ）
+	fclose(fp);
+
 }
 
 /*
