@@ -345,7 +345,7 @@ void my_Stage::io_StageDataLoad() {
 		}
 	}
 	// 今後のループ用に
-	enemy_max = line_count - 1;
+	enemy_max = line_count;
 
 	fp = NULL;
 	// CSVを開く(読み込まないとFPのポインタが初期化されなくてなんかうまくいかないけど汚いよね)
