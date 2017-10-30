@@ -13,10 +13,6 @@ typedef struct {
 	float collision_size;
 }BULLET;
 
-// 弾のアニメーション
-void bullet_animation_14(float x, float y, int color, int type);
-void bullet_animation_16(int color, int type);
-
 //親クラス
 class enemy {
 public:
@@ -121,6 +117,7 @@ public:
 class enemy_brain : public enemy {
 public:
 	int mode;
+	int counter;
 	int speed_max;
 	int circle[MAX_BULLET];
 	int circle2[MAX_BULLET];
