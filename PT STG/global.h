@@ -94,12 +94,18 @@ GLOBAL int mode_flag;
 GLOBAL gui button;
 GLOBAL combo com;
 
+GLOBAL int b_anim_3, b_anim_4, b_anim_6, b_dir_6, b_dir_3;
+
 void debug_Message();
 void main_Editor();
 void input_key();
 void load_Img();
 void load_Effect();
 void make_FontData();
+
+void bullet_animation_14(int x, int y, int color, int type);
+void bullet_animation_16(int x, int y, int color, int type);
+void bullet_Animation_Update();
 
 //-------------------------------
 //debug global area

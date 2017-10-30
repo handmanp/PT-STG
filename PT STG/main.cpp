@@ -179,6 +179,10 @@ void debug_Init() {
 
 	// CSVƒŠ[ƒ_
 	test.io_StageDataLoad();
+
+	// ’eŠÖ”—p‰Šú‰»
+	b_anim_3 = b_anim_4 = b_anim_6 = 0;
+	b_dir_3 = b_dir_6 = 1;
 }
 
 void debug_GameMain() {
@@ -200,6 +204,9 @@ void debug_GameMain() {
 
 	// draw debug message
 	debug_Message();
+
+	// bullet update
+	bullet_Animation_Update();
 }
 
 void debug_Message() {
