@@ -124,8 +124,8 @@ bool enemy::init_OutRangeBullets() {
 // type 0 ~ 2 / color 0 ~ 5
 void bullet_animation_14(int x, int y, int color, int type) {
 
-	int a = (type * 30) + (b_anim_3 * 6) + color;
-	DrawGraph(x - 8, y - 8, bullet16_img[a], TRUE);
+	int a = (type * 4) + (color * 14) + b_anim_4;
+	DrawGraph(x - 7, y - 7, bullet14_img[a], TRUE);
 }
 // type 0 or 1 / color 0 ~ 5
 void bullet_animation_16(int x, int y, int color, int type) {
