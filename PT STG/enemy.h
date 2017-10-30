@@ -117,6 +117,7 @@ public:
 class enemy_brain : public enemy {
 public:
 	int mode;
+	int max;
 	int counter;
 	int speed_max;
 	int circle[MAX_BULLET];

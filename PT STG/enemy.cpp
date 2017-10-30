@@ -539,7 +539,6 @@ void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 }
 
 void enemy_brain::shot() {
-	int max;
 	int count = 0;
 
 	// 動きの種類によって弾丸の最大数を決定
@@ -547,7 +546,7 @@ void enemy_brain::shot() {
 		max = GetRand(20) + 1;
 	}
 	else if (mode == 3) {
-		max = 80;
+		max = 30;
 	}
 	else if (mode == 5) {
 		max = 80;
@@ -558,13 +557,13 @@ void enemy_brain::shot() {
 
 		// データの入っている添字を代入する(動きを分けるため)
 		if (mode == 1 || mode == 2) {
-			bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
+			bullets[free].rad = ((2.0f * DX_PI_F) / (float)max) * i;
 
 
 			// 円形弾
 			if (mode == 1) {
 				circle[free] = free;
-				bullets[free].speed = 10 * frame_Time;
+				bullets[free].speed = 10;
 				bullets[free].x = x;
 				bullets[free].y = y;
 				bullets[free].stats = 1;
@@ -572,7 +571,7 @@ void enemy_brain::shot() {
 			// じわる弾
 			else if (mode == 2) {
 				circle2[free] = free;
-				bullets[free].speed = 10 * frame_Time;
+				bullets[free].speed = 10;
 				bullets[free].x = x;
 				bullets[free].y = y;
 				bullets[free].stats = 1;
@@ -599,7 +598,7 @@ void enemy_brain::shot() {
 			p1_y[free] = GetRand(WINDOW_SIZE_Y);
 			p2_y[free] = GetRand(WINDOW_SIZE_Y);
 
-			bullets[free].speed = 10 * frame_Time;
+			bullets[free].speed = 10;
 			bullets[free].x = x;
 			bullets[free].y = y;
 			bullets[free].stats = 1;
@@ -616,7 +615,7 @@ void enemy_brain::move_shot() {
 		if (bullets[i].stats == 1) {
 			// 円形弾の移動
 			if (circle[i] == i) {
-				if (bullets[i].speed <= speed_max) {
+				if (bullets[i].speed * frame_Time <= speed_max * frame_Time) {
 					bullets[i].speed -= 0.5 * frame_Time;
 				}
 				if (circle[i] != 0) {
@@ -635,6 +634,7 @@ void enemy_brain::move_shot() {
 					bullets[i].x += sin(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed * frame_Time;
 					bullets[i].y += cos(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed * frame_Time;
 				}
+
 			}
 
 			// レーザー ~ Black Widow ~
@@ -654,7 +654,7 @@ void enemy_brain::move_shot() {
 
 				}
 				else {
-					t[i] += 0.001f;
+					t[i] += 0.00001f * frame_Time;
 					bullets[i].x = (1 - t[i]) * bullets[i].x + 2 * (1 - t[i]) * t[i] * p1_x[i] + t[i] * t[i] * p2_x[i];
 					bullets[i].y = (1 - t[i]) * bullets[i].y + 2 * (1 - t[i]) * t[i] * p1_y[i] + t[i] * t[i] * p2_y[i];
 				}
@@ -667,7 +667,7 @@ void enemy_brain::move_shot() {
 void enemy_brain::move() {
 	if (stats == 1) {
 
-		if (mode == 0 && frame % 120 == 0) {
+		if (mode == 0 && frame % (5 * (int)fps) == 0) {
 			// 円形弾
 			if (counter == 0) {
 				mode = 1;
@@ -702,7 +702,7 @@ void enemy_brain::move() {
 			counter++;
 		}
 		else if (mode == 4) {
-			if (frame % 180 == 0) {
+			if (frame % (3 * (int)fps) == 0) {
 				// エフェクトの再生開始
 				effect_hnd = PlayEffekseer2DEffect(effects[1]);
 				// スケール変更
