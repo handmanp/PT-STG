@@ -74,8 +74,8 @@ void my_Ship::shot() {
 void my_Ship::shot_Move() {
 	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
 		if (s[i].stats == 1) {
-			s[i].x += sin(s[i].rad) * s[i].speed;
-			s[i].y += cos(s[i].rad) * s[i].speed;
+			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
+			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
 			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
 				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
 				s[i].stats = 0;
@@ -149,8 +149,8 @@ void my_Ship::move() {
 
 	//移動
 	if (rad != -1.0f) {
-		x += sinf(rad) * speed;
-		y += cosf(rad) * speed;
+		x += (sinf(rad) * speed) * frame_Time;
+		y += (cosf(rad) * speed) * frame_Time;
 	}
 
 	//アニメーション管理

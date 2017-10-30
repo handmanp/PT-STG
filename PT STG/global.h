@@ -83,9 +83,7 @@ GLOBAL int bullet14_img[84];
 GLOBAL int bullet16_img[48];
 
 GLOBAL int font_handle[16];
-
 GLOBAL int effects[16];
-
 GLOBAL int bg_handle;
 
 GLOBAL unsigned int frame;
@@ -96,12 +94,23 @@ GLOBAL combo com;
 
 GLOBAL int b_anim_3, b_anim_4, b_anim_6, b_dir_6, b_dir_3;
 
+//fpsä÷òAïœêî
+GLOBAL int fps_Time[2];
+GLOBAL int fps_Time_i;
+GLOBAL double fps;
+
+GLOBAL float frame_Time;
+GLOBAL LONGLONG prev_Time;
+
 void debug_Message();
 void main_Editor();
 void input_key();
 void load_Img();
 void load_Effect();
 void make_FontData();
+
+float  variable_Fps();
+double fps_Calc();
 
 void bullet_animation_14(int x, int y, int color, int type);
 void bullet_animation_16(int x, int y, int color, int type);

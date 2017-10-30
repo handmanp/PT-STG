@@ -9,8 +9,6 @@ int counter = 0, FpsTime[2] = { 0, }, FpsTime_i = 0;
 int color_white;
 double Fps = 0.0;
 
-void FpsTimeFanction();
-
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	LPSTR lpCmdLine, int nCmdShow){
@@ -18,11 +16,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// 設定
 	ChangeWindowMode(true);
 	SetGraphMode(WINDOW_SIZE_X, WINDOW_SIZE_Y, 32);
+	SetMainWindowText("Lunette Presentation Edition");
 
 	SetDrawScreen( DX_SCREEN_BACK ); 
 
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
-
+	SetWaitVSyncFlag(FALSE);
 	// 初期化
 	if (DxLib_Init() == -1) {
 		return -1;
@@ -57,8 +56,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	// デバッグ
 	debug_Init();
-
-
 
 	// ゲームモード : TOP_MENU / GAME / EDITOR
 	int gamemode = GAME;
@@ -101,7 +98,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		UpdateEffekseer2D();
 		DrawEffekseer2D();
 
-		FpsTimeFanction();
+		fps_Calc();
+		variable_Fps();
 	}
 	test.del_Stage();
 	Effkseer_End();
@@ -191,12 +189,15 @@ void debug_Init() {
 	// 弾関数用初期化
 	b_anim_3 = b_anim_4 = b_anim_6 = 0;
 	b_dir_3 = b_dir_6 = 1;
+
+	frame_Time = 1.0f / 60.0f;
+	prev_Time = GetNowHiPerformanceCount();
 }
 
 void debug_GameMain() {
 
 	// エフェクト用背景ヌリ
-	DrawGraph(0, 0, bg_handle, TRUE);
+	//DrawGraph(0, 0, bg_handle, TRUE);
 
 	// debug stage move and draw.
 	test.move(2, 90);
@@ -221,17 +222,25 @@ void debug_Message() {
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "Scroll_X:%d / Scroll_Y:%d", (int)test.x, (int)test.y);
 }
 
-void FpsTimeFanction() {
-	if (FpsTime_i == 0)
-		FpsTime[0] = GetNowCount();               //1周目の時間取得
-	if (FpsTime_i == 49) {
-		FpsTime[1] = GetNowCount();               //50周目の時間取得
-		Fps = 1000.0f / ((FpsTime[1] - FpsTime[0]) / 50.0f);//測定した値からfpsを計算
-		FpsTime_i = 0;//カウントを初期化
+double fps_Calc() {
+
+	if (fps_Time_i == 0) fps_Time[0] = GetNowCount();
+	if (fps_Time_i == 49) {
+		fps_Time[1] = GetNowCount();
+		fps = 1000.0f / ((fps_Time[1] - fps_Time[0]) / 50.0f);
+		fps_Time_i = 0;
 	}
-	else
-		FpsTime_i++;//現在何周目かカウント
-	if (Fps != 0)
-		DrawFormatStringToHandle(1180, 700, 0xFFFFFF, font_handle[FONT_BUTTON], "FPS %.1f", Fps);
-	return;
+	else {
+		fps_Time_i++;
+	}
+	return fps;
+}
+
+float variable_Fps() {
+
+	//可変フレーム計算
+	frame_Time = (float)(GetNowHiPerformanceCount() - prev_Time) / 25600.0f;
+	prev_Time = GetNowHiPerformanceCount();
+
+	return 0;
 }
