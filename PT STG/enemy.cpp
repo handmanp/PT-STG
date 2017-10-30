@@ -159,10 +159,6 @@ void boss_stage1::init() {
 	stats = 1;
 }
 
-
-
-
-
 /*----------------------------------------------------------*/
 /*--------------------------STAGE1--------------------------*/
 /*----------------------------------------------------------*/
@@ -231,8 +227,8 @@ void enemy_nuts::shot() {
 void enemy_nuts::move_shot() {
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats != 0) {
-			bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
-			bullets[i].y += cos(bullets[i].rad) * bullets[i].speed;
+			bullets[i].x += sin(bullets[i].rad) * bullets[i].speed * frame_Time;
+			bullets[i].y += cos(bullets[i].rad) * bullets[i].speed * frame_Time;
 		}
 	}
 }
@@ -243,7 +239,7 @@ void enemy_nuts::move() {
 
 	if (stats != 0) {
 		// â°à⁄ìÆ
-		x -= speed;
+		x -= speed * frame_Time;
 		// ê≥å∑îgà⁄ìÆ
 		r += 10;
 		if (r >= 360) r = 0;
@@ -279,7 +275,7 @@ void enemy_uni::init(int HP, float start_x, float start_y, float reverse_x, floa
 
 void enemy_uni::move() {
 	if (stats == 1) {
-		y -= speed;
+		y -= speed * frame_Time;
 
 		// 2éüä÷êîìIìÆÇ´ Quadratic functionally Moving
 		x = ((y - ry) * (y - ry)) / 100.0f + rx;
@@ -322,19 +318,18 @@ void enemy_banana::shot() {
 			bullets[free].stats = 1;
 		}
 	}
-
 }
 
 void enemy_banana::move_shot() {
 	for (int i = 0; i < MAX_BULLET; i++) {
-		bullets[i].x += cos(bullets[i].rad) * bullets[i].speed;
-		bullets[i].y += sin(bullets[i].rad) * bullets[i].speed;
+		bullets[i].x += cos(bullets[i].rad) * bullets[i].speed * frame_Time;
+		bullets[i].y += sin(bullets[i].rad) * bullets[i].speed * frame_Time;
 	}
 }
 
 void enemy_banana::move() {
 	if (stats == 1) {
-		x -= test.speed;
+		x -= test.speed * frame_Time;
 		// mode=1:ê√é~èÛë‘
 		if (mode == 0 && frame % (GetRand(299) + 1) == 0) {
 			mode = 1;
@@ -343,10 +338,10 @@ void enemy_banana::move() {
 		// mode=2:à⁄ìÆíÜ
 		if (mode == 1) {
 			if (y < ship.y) {
-				y += 10;
+				y += 10 * frame_Time;
 			}
 			else if (y > ship.y) {
-				y -= 10;
+				y -= 10 * frame_Time;
 			}
 
 			// é©ã@ïtãﬂÇÃçÇÇ≥Ç…Ç»Ç¡ÇΩÇÁíeÇê∂ê¨
@@ -410,19 +405,19 @@ void enemy_pine::shot() {
 
 void enemy_pine::move_shot() {
 	for (int i = 0; i < MAX_BULLET; i++) {
-		bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
-		bullets[i].y += cos(bullets[i].rad) * bullets[i].speed;
+		bullets[i].x += (sin(bullets[i].rad) * bullets[i].speed) * frame_Time;
+		bullets[i].y += (cos(bullets[i].rad) * bullets[i].speed) * frame_Time;
 	}
 }
 
 void enemy_pine::move() {
 	if (stats == 1) {
-		x -= test.speed;
-
+		x -= test.speed * frame_Time;
+		DrawFormatString(300, 10, GetColor(0, 0, 0), "%d", x);
 		// mode=0:è„è∏
 		// ÉXÉeÅ[ÉWç¿ïWÇ™100Ç…Ç»Ç¡ÇΩÇÁ(âº) upper_y Ç‹Ç≈è„è∏
 		if (mode == 0 && y >= upper_y && x - ship.x <= 256 && x - ship.x >= -256) {
-			y -= 10.0f;
+			y -= 10.0f * frame_Time;
 			if (y == upper_y) { mode = 1; }  //  upper_y Ç…íBÇµÇΩÇÁê√é~èÛë‘Ç…à⁄çs
 		}
 
@@ -438,7 +433,7 @@ void enemy_pine::move() {
 
 		// mode=2:â∫ç~
 		if (mode == 2 && y != start_y) {
-			y += 10;
+			y += 10 * frame_Time;
 		}
 
 	}
@@ -492,16 +487,16 @@ void enemy_shell::shot() {
 void enemy_shell::move_shot() {
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
-			bullets[i].y += cos(bullets[i].rad) * bullets[i].speed;
+			bullets[i].x += sin(bullets[i].rad) * bullets[i].speed * frame_Time;
+			bullets[i].y += cos(bullets[i].rad) * bullets[i].speed * frame_Time;
 		}
 	}
 }
 
 void enemy_shell::move() {
 	if (stats == 1) {
-		speed = test.speed;
-		x -= speed;
+		speed = test.speed * frame_Time;
+		x -= speed * frame_Time;
 
 		// 1~180ÉtÉåÅ[ÉÄä‘(0~3ïb)ÉâÉìÉ_ÉÄÇ≈íeÇê∂ê¨
 		if (frame % (GetRand(179) + 1) == 0) {
@@ -569,7 +564,7 @@ void enemy_brain::shot() {
 			// â~å`íe
 			if (mode == 1) {
 				circle[free] = free;
-				bullets[free].speed = 10;
+				bullets[free].speed = 10 * frame_Time;
 				bullets[free].x = x;
 				bullets[free].y = y;
 				bullets[free].stats = 1;
@@ -577,7 +572,7 @@ void enemy_brain::shot() {
 			// Ç∂ÇÌÇÈíe
 			else if (mode == 2) {
 				circle2[free] = free;
-				bullets[free].speed = 10;
+				bullets[free].speed = 10 * frame_Time;
 				bullets[free].x = x;
 				bullets[free].y = y;
 				bullets[free].stats = 1;
@@ -604,7 +599,7 @@ void enemy_brain::shot() {
 			p1_y[free] = GetRand(WINDOW_SIZE_Y);
 			p2_y[free] = GetRand(WINDOW_SIZE_Y);
 
-			bullets[free].speed = 10;
+			bullets[free].speed = 10 * frame_Time;
 			bullets[free].x = x;
 			bullets[free].y = y;
 			bullets[free].stats = 1;
@@ -622,29 +617,29 @@ void enemy_brain::move_shot() {
 			// â~å`íeÇÃà⁄ìÆ
 			if (circle[i] == i) {
 				if (bullets[i].speed <= speed_max) {
-					bullets[i].speed -= 0.5;
+					bullets[i].speed -= 0.5 * frame_Time;
 				}
 				if (circle[i] != 0) {
-					bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
-					bullets[i].y += cos(bullets[i].rad) * bullets[i].speed;
+					bullets[i].x += sin(bullets[i].rad) * bullets[i].speed * frame_Time;
+					bullets[i].y += cos(bullets[i].rad) * bullets[i].speed * frame_Time;
 				}
 			}
 
 			// Ç∂ÇÌÇÈíe
 			if (circle2[i] == i) {
 				if (bullets[i].speed < speed_max) {
-					bullets[i].speed += 0.5;
+					bullets[i].speed += 0.5 * frame_Time;
 				}
 
 				if (circle2[i] != 0) {
-					bullets[i].x += sin(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed;
-					bullets[i].y += cos(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed;
+					bullets[i].x += sin(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed * frame_Time;
+					bullets[i].y += cos(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed * frame_Time;
 				}
 			}
 
 			// ÉåÅ[ÉUÅ[ ~ Black Widow ~
 			if (lazer[i] == i) {
-				speed += 1;
+				speed += 1 * frame_Time;
 				if (speed >= 3000) {
 					bullets[i].stats = 0;
 					lazer[i] = 0;
@@ -654,8 +649,8 @@ void enemy_brain::move_shot() {
 			// Ç∑Ç≤Ç¢íeÇÃà⁄ìÆ
 			if (super[i] == i) {
 				if (t[i] >= 1.0f) {
-					bullets[i].x += sinf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed;
-					bullets[i].y += cosf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed;
+					bullets[i].x += sinf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed * frame_Time;
+					bullets[i].y += cosf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed * frame_Time;
 
 				}
 				else {
@@ -824,7 +819,7 @@ void enemy_meatball::move() {
 
 		// é©ã@Ç∆ x Ç™hoboìØÇ∂Ç…Ç»ÇÈÇ‹Ç≈íºêi
 		if (mode == 0 && x >= ship.x) {
-			x -= speed;
+			x -= speed * frame_Time;
 
 			if (x <= ship.x + 10.0f && x > ship.x) {
 				mode = 1;
@@ -861,7 +856,7 @@ void enemy_meatball::move() {
 
 		// â~â^ìÆèIóπå„íºêi
 		if (mode == 3) {
-			x -= speed;
+			x -= speed * frame_Time;
 		}
 	}
 	draw();
@@ -889,7 +884,7 @@ void enemy_statue::init(int HP, float start_x, float start_y, int stat) {
 
 void enemy_statue::move() {
 	if (stats == 1) {
-		x -= test.speed;
+		x -= test.speed * frame_Time;
 		// ê√é~èÛë‘(hidden = 1)
 		if (mode == 0) {
 			collision_size = 0;
@@ -913,8 +908,8 @@ void enemy_statue::move() {
 		// é¿ç€ÇÃà⁄ìÆ
 		if (mode == 2) {
 			speed += 0.3f;
-			x += sinf(rad) * speed;
-			y += cosf(rad) * speed;
+			x += sinf(rad) * speed * frame_Time;
+			y += cosf(rad) * speed * frame_Time;
 		}
 	}
 	draw();
@@ -967,8 +962,8 @@ void enemy_worm::shot() {
 
 void enemy_worm::move_shot() {
 	for (int i = 0; i < MAX_BULLET; i++) {
-		bullets[i].x += sin(bullets[i].rad) * bullets[i].speed;
-		bullets[i].y += cos(bullets[i].rad) * bullets[i].speed;
+		bullets[i].x += sin(bullets[i].rad) * bullets[i].speed * frame_Time;
+		bullets[i].y += cos(bullets[i].rad) * bullets[i].speed * frame_Time;
 	}
 }
 
@@ -1068,9 +1063,9 @@ void enemy_sporecore::shot() {
 void enemy_sporecore::move_shot() {
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			bullets[i].x -= test.speed;
+			bullets[i].x -= test.speed * frame_Time;
 			if (bullets[i].y >= y - 50) {
-				bullets[i].y -= test.speed;
+				bullets[i].y -= test.speed * frame_Time;
 			}
 		}
 	}
@@ -1078,7 +1073,7 @@ void enemy_sporecore::move_shot() {
 }
 
 void enemy_sporecore::move() {
-	x -= test.speed;
+	x -= test.speed * frame_Time;
 
 	if (stats == 1) {
 
@@ -1125,7 +1120,7 @@ void enemy_ivy::init(int HP, float start_x, float start_y, int stat) {
 }
 
 void enemy_ivy::move() {
-	x -= test.speed;
+	x -= test.speed * frame_Time;
 
 	// ê∂ë∂
 	if (stats == 1) {
@@ -1135,9 +1130,9 @@ void enemy_ivy::move() {
 			mode = 1;
 		}
 		if (mode == 1) {
-			speed = test.speed;
+			speed = test.speed * frame_Time;
 			if (y >= prev_y - height) {
-				y -= speed;
+				y -= speed * frame_Time;
 			}
 
 			// HPÇ™É[ÉçÇ…Ç»Ç¡ÇΩÇÁéÄèÛë‘
@@ -1203,8 +1198,8 @@ void enemy_stagbeetle::shot() {
 void enemy_stagbeetle::move_shot() {
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			bullets[i].x += -sin(bullets[i].rad) * bullets[i].speed;
-			bullets[i].y += -cos(bullets[i].rad) * bullets[i].speed;
+			bullets[i].x += -sin(bullets[i].rad) * bullets[i].speed * frame_Time;
+			bullets[i].y += -cos(bullets[i].rad) * bullets[i].speed * frame_Time;
 			if (bullets[i].x <= 0 || bullets[i].y <= 0 || bullets[i].x >= 1270 || bullets[i].y >= 710) {
 				bullets[i].rad *= DX_PI_F;
 			}
@@ -1228,7 +1223,7 @@ void enemy_stagbeetle::move() {
 		// è„Ç…è„Ç™ÇÈ
 		if (mode == 1) {
 			if (y >= temp_y - 128) {
-				y -= speed;
+				y -= speed * frame_Time;
 			}
 			else {
 				mode = 0;
@@ -1239,7 +1234,7 @@ void enemy_stagbeetle::move() {
 		// â∫Ç…â∫ÇÈ
 		if (mode == 2) {
 			if (y <= temp_y + 128) {
-				y += speed;
+				y += speed * frame_Time;
 			}
 			else {
 				mode = 0;
@@ -1307,7 +1302,7 @@ void enemy_genocide::move() {
 		// ÉTÉCÉìÉJÅ[ÉuÇÃïù
 		int width = 150;
 
-		x -= test.speed / 2;
+		x -= test.speed / 2 * frame_Time;
 		deg += 2;
 		y = (width * sinf(a2r(deg))) + prev_y;
 		if (deg > 360) {
@@ -1416,8 +1411,8 @@ void enemy_shindarla::move_shot() {
 		else if (bullets[i].stats == 1 && mode == 4) {
 			bullets[i].rad = rad;
 		}
-		bullets[i].x += sinf(bullets[i].rad) * bullets[i].speed;
-		bullets[i].y += cosf(bullets[i].rad) * bullets[i].speed;
+		bullets[i].x += sinf(bullets[i].rad) * bullets[i].speed * frame_Time;
+		bullets[i].y += cosf(bullets[i].rad) * bullets[i].speed * frame_Time;
 	}
 }
 
@@ -1425,7 +1420,7 @@ void enemy_shindarla::move() {
 
 	// alive
 	if (stats == 1) {
-		x -= test.speed;
+		x -= test.speed * frame_Time;
 	}
 	
 	// dead
@@ -1493,7 +1488,7 @@ void enemy_detecrew::move_shot() {
 
 void enemy_detecrew::move() {
 	if (stats == 1) {
-		x -= test.speed;
+		x -= test.speed * frame_Time;
 
 		if (mode == 1) {
 

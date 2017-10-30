@@ -75,8 +75,8 @@ void my_Stage::move(int s, int r) {
 	//ラジアンにする
 	float move_rad = (DX_PI_F / 180.0f) * r;
 	// 移動処理
-	x += sinf(move_rad) * s;
-	y += cosf(move_rad) * s;
+	x += sinf(move_rad) * s * frame_Time;
+	y += cosf(move_rad) * s * frame_Time;
 }
 
 // ステージを描画(仮)
@@ -118,7 +118,7 @@ void my_Stage::stage_Progression() {
 	for (int i = 0; i < enemy_max; i++) {
 
 		// 登場X座標を迎えたら
-		if (stage_data[i].start_x == x) {
+		if (stage_data[i].start_x == (int)x) {
 
 			// 敵のインスタンス作成
 			switch (stage_data[i].enemy_type) {
