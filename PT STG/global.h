@@ -99,7 +99,7 @@ GLOBAL int fps_Time[2];
 GLOBAL int fps_Time_i;
 GLOBAL double fps;
 
-GLOBAL float frame_Time;
+GLOBAL float frame_Time, frame_Time_2;
 GLOBAL LONGLONG prev_Time;
 
 void debug_Message();

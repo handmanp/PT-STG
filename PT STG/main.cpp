@@ -191,6 +191,7 @@ void debug_Init() {
 	b_dir_3 = b_dir_6 = 1;
 
 	frame_Time = 1.0f / 60.0f;
+	frame_Time_2 = 1.0f;
 	prev_Time = GetNowHiPerformanceCount();
 }
 
@@ -239,7 +240,8 @@ double fps_Calc() {
 float variable_Fps() {
 
 	//‰Â•ÏƒtƒŒ[ƒ€ŒvZ
-	frame_Time = (float)(GetNowHiPerformanceCount() - prev_Time) / 25600.0f;
+	frame_Time_2 = (float)(GetNowHiPerformanceCount() - prev_Time);
+	frame_Time = frame_Time_2 / 25600.0f;
 	prev_Time = GetNowHiPerformanceCount();
 
 	return 0;
