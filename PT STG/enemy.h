@@ -14,7 +14,7 @@ typedef struct {
 }BULLET;
 
 // 弾のアニメーション
-void bullet_animation_14(int x, int y, int color, int type);
+void bullet_animation_14(float x, float y, int color, int type);
 void bullet_animation_16(int color, int type);
 
 //親クラス

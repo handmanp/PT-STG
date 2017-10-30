@@ -55,7 +55,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 	// ゲームモード : TOP_MENU / GAME / EDITOR
-	int gamemode = EDITOR;
+	int gamemode = GAME;
 	mode_flag = 0;
 	frame = 0;
 
@@ -110,25 +110,27 @@ void load_Img() {
 
 	// 敵画像
 	// stage:1
-	enemy_img[0] = LoadGraph("data/img/enemy/st1/unis.png");     //ウニズ
-	enemy_img[1] = LoadGraph("data/img/enemy/st1/edamamen.png"); //エダマメン
-	enemy_img[2] = LoadGraph("data/img/enemy/st1/nuts.png");     //ナッツ
-	enemy_img[3] = LoadGraph("data/img/enemy/st1/pine.png");     //ピネ
-	enemy_img[4] = LoadGraph("data/img/enemy/st1/kai.png");		 //カイ
-	enemy_img[5] = LoadGraph("data/img/enemy/st1/genocide_banana.png"); //ジェノサイドバナナ
-	enemy_img[6] = LoadGraph("data/img/enemy/st1/pine.png");		//ぴ根
-	enemy_img[7] = LoadGraph("data/img/enemy/st1/moving_statue.png");	//moving statue
-	enemy_img[8] = LoadGraph("data/img/enemy/st1/meatball_spam.png");	//ミートボールスパム
-	enemy_img[9] = LoadGraph("data/img/enemy/st1/ivy.png");		 //ツタ
-	enemy_img[10] = LoadGraph("data/img/enemy/st1/sporecore.png");//胞子コア
-	enemy_img[11] = LoadGraph("data/img/enemy/st1/kuwagatan.png");//クワガタん
-	enemy_img[12] = LoadGraph("data/img/enemy/st1/worm_head.png");//ワームヘッド
+	enemy_img[0] = LoadGraph("data/img/enemy/st1/unis.png");			// ウニズ
+	enemy_img[1] = LoadGraph("data/img/enemy/st1/edamamen.png");		// エダマメン
+	enemy_img[2] = LoadGraph("data/img/enemy/st1/nuts.png");			// ナッツ
+	enemy_img[3] = LoadGraph("data/img/enemy/st1/pine.png");			// ピネ
+	enemy_img[4] = LoadGraph("data/img/enemy/st1/kai.png");				// カイ
+	enemy_img[5] = LoadGraph("data/img/enemy/st1/genocide_banana.png"); // ジェノサイドバナナ
+	enemy_img[6] = LoadGraph("data/img/enemy/st1/pine.png");			// ぴ根
+	enemy_img[7] = LoadGraph("data/img/enemy/st1/moving_statue.png");	// moving statue
+	enemy_img[8] = LoadGraph("data/img/enemy/st1/meatball_spam.png");	// ミートボールスパム
+	enemy_img[9] = LoadGraph("data/img/enemy/st1/ivy_1.png");			// ツタ
+	enemy_img[10] = LoadGraph("data/img/enemy/st1/sporecore.png");		// 胞子コア
+	enemy_img[11] = LoadGraph("data/img/enemy/st1/kuwagatan.png");		// クワガタん
+	enemy_img[12] = LoadGraph("data/img/enemy/st1/worm_head.png");		// ワームヘッド
 	//enemy_img[13] 予約 <ワーム尻尾>
-	//enemy_img[14] 予約 <ワーム胴体>
-	enemy_img[15] = LoadGraph("data/img/enemy/st1/genocide.png"); //ジェノサイド
-	//enemy_img[16] = LoadGraph("data/img/enemy/st1/????");		  //キモバコ
-	//enemy_img[17] = LoadGraph("data/img/enemy/st1/????");		  //シンダーラ
-	//enemy_img[18] = LoadGraph("data/img/enemy/st1/????");		  //デテクルー
+	enemy_img[14] = LoadGraph("data/img/enemy/st1/worm_body.png");		// ワームボディ
+	enemy_img[15] = LoadGraph("data/img/enemy/st1/genocide.png");		// ジェノサイド
+	enemy_img[16] = LoadGraph("data/img/enemy/st1/kimobako");			// キモバコ
+	enemy_img[17] = LoadGraph("data/img/enemy/st1/sindarla.png");		// シンダーラ
+	enemy_img[18] = LoadGraph("data/img/enemy/st1/detecrewno.png");		// デテクルーノ本体
+	enemy_img[19] = LoadGraph("data/img/enemy/st1/detecrewno_kuki.png");// デテクルーノ茎
+	enemy_img[20] = LoadGraph("data/img/enemy/st1/noumison.png");		// ノウミソン
 
 
 	//自機画像
