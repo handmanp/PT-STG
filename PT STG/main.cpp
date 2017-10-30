@@ -5,6 +5,12 @@
 #define GAME     2
 #define EDITOR   3
 
+int counter = 0, FpsTime[2] = { 0, }, FpsTime_i = 0;
+int color_white;
+double Fps = 0.0;
+
+void FpsTimeFanction();
+
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	LPSTR lpCmdLine, int nCmdShow){
@@ -94,6 +100,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		// Effekseerにより再生中のエフェクトを更新する。
 		UpdateEffekseer2D();
 		DrawEffekseer2D();
+
+		FpsTimeFanction();
 	}
 	test.del_Stage();
 	Effkseer_End();
@@ -211,4 +219,19 @@ void debug_GameMain() {
 
 void debug_Message() {
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "Scroll_X:%d / Scroll_Y:%d", (int)test.x, (int)test.y);
+}
+
+void FpsTimeFanction() {
+	if (FpsTime_i == 0)
+		FpsTime[0] = GetNowCount();               //1周目の時間取得
+	if (FpsTime_i == 49) {
+		FpsTime[1] = GetNowCount();               //50周目の時間取得
+		Fps = 1000.0f / ((FpsTime[1] - FpsTime[0]) / 50.0f);//測定した値からfpsを計算
+		FpsTime_i = 0;//カウントを初期化
+	}
+	else
+		FpsTime_i++;//現在何周目かカウント
+	if (Fps != 0)
+		DrawFormatStringToHandle(1180, 700, 0xFFFFFF, font_handle[FONT_BUTTON], "FPS %.1f", Fps);
+	return;
 }

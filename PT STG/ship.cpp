@@ -1,4 +1,6 @@
+
 #include "global.h"
+#include "ship.h"
 
 #define NORMAL (10)
 #define BRO_ (11)
