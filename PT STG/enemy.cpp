@@ -121,91 +121,32 @@ bool enemy::init_OutRangeBullets() {
 // ----------------------------------------------------------------------------
 // 敵弾アニメーション
 // ----------------------------------------------------------------------------
-void bullet_animation_14(int x, int y, int color, int type) {
-	int temp[6];
-	for (int i = 0; i < 6; i++) {
-		if (color == i - 1) {
-			if (type == 1) {
-				temp[1] = bullet14_img[1 + (i * 14)];
-				temp[2] = bullet14_img[2 + (i * 14)];
-				temp[3] = bullet14_img[3 + (i * 14)];
-				temp[4] = bullet14_img[4 + (i * 14)];
-			}
-			else if (type == 2) {
-				temp[1] = bullet14_img[5 + (i * 14)];
-				temp[2] = bullet14_img[6 + (i * 14)];
-				temp[3] = bullet14_img[7 + (i * 14)];
-				temp[4] = bullet14_img[8 + (i * 14)];
-			}
-			else if (type == 3) {
-				temp[1] = bullet14_img[9 + (i * 14)];
-				temp[2] = bullet14_img[10 + (i * 14)];
-				temp[3] = bullet14_img[11 + (i * 14)];
-				temp[4] = bullet14_img[12 + (i * 14)];
-				temp[5] = bullet14_img[13 + (i * 14)];
-				temp[6] = bullet14_img[14 + (i * 14)];
-			}
-		}
-	}
 
-	if (type == 3) {
-		if ((frame % 1) + 10 == 0) {
-			DrawGraph(x, y, temp[1], TRUE);
-		}
-		else if ((frame % 2) + 10 == 0) {
-			DrawGraph(x, y, temp[2], TRUE);
-		}
-		else if ((frame % 3) + 10 == 0) {
-			DrawGraph(x, y, temp[3], TRUE);
-		}
-		else if ((frame % 5) + 10 == 0) {
-			DrawGraph(x, y, temp[4], TRUE);
-		}
-	}
-	else {
-		if ((frame % 1) + 10 == 0) {
-			DrawGraph(x, y, temp[1], TRUE);
-		}
-		else if ((frame % 2) + 10 == 0) {
-			DrawGraph(x, y, temp[2], TRUE);
-		}
-		else if ((frame % 3) + 10 == 0) {
-			DrawGraph(x, y, temp[3], TRUE);
-		}
-		else if ((frame % 5) + 10 == 0) {
-			DrawGraph(x, y, temp[4], TRUE);
-		}
-		else if ((frame % 7) + 10 == 0) {
-			DrawGraph(x, y, temp[5], TRUE);
-		}
-		else if ((frame % 11) + 10 == 0) {
-			DrawGraph(x, y, temp[6], TRUE);
-		}
-	}
+// type 0 ~ 2 / color 0 ~ 5
+void bullet_animation_14(int x, int y, int color, int type) {
+
+	int a = (type * 4) + (color * 14) + b_anim_4;
+	DrawGraph(x - 7, y - 7, bullet14_img[a], TRUE);
 }
 
-void bullet_animation_16(int color, int type) {
-	int temp[3];
-	int start;
-	int max;
+// type 0 or 1 / color 0 ~ 5
+void bullet_animation_16(int x, int y, int color, int type) {
 
-	if (type == 1) {
-		max = 3;
-		start = 1;
-	}
-	else if (type == 2) {
-		max = 2;
-		start = 19;
-	}
-	else {
-		max = 3;
-		start = 31;
-	}
+	int a = (type * 30) + (b_anim_3 * 6) + color;
+	DrawGraph(x - 8, y - 8, bullet16_img[a], TRUE);
+}
 
-	for (int i = 1; i <= max; i++) {
-		temp[i] = bullet16_img[(i + color - 1) + start - 1];
-	}
+// anim update
+void bullet_Animation_Update() {
 
+	b_anim_3 += b_dir_3;
+	if (b_anim_3 > 3 || b_anim_3 < 0) b_dir_3 *= -1;
+
+	b_anim_4++;
+	if (b_anim_4 > 4) b_anim_4 = 0;
+
+	b_anim_6 += b_dir_6;
+	if (b_anim_6 > 6 || b_anim_6 < 0) b_dir_6 *= -1;
 }
 
 
@@ -514,8 +455,10 @@ void enemy_pine::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ピ");
+			// DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+			// DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ピ");
+			bullet_animation_14(bullets[i].x, bullets[i].y, 0, 0);
+
 		}
 	}
 	init_OutRangeBullets();

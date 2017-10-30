@@ -55,7 +55,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 	// ゲームモード : TOP_MENU / GAME / EDITOR
-	int gamemode = EDITOR;
+	int gamemode = GAME;
 	mode_flag = 0;
 	frame = 0;
 
@@ -177,6 +177,10 @@ void debug_Init() {
 
 	// CSVリーダ
 	test.io_StageDataLoad();
+
+	// 弾関数用初期化
+	b_anim_3 = b_anim_4 = b_anim_6 = 0;
+	b_dir_3 = b_dir_6 = 1;
 }
 
 void debug_GameMain() {
@@ -198,6 +202,9 @@ void debug_GameMain() {
 
 	// draw debug message
 	debug_Message();
+
+	// bullet update
+	bullet_Animation_Update();
 }
 
 void debug_Message() {
