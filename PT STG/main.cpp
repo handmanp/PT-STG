@@ -166,6 +166,7 @@ void load_Img() {
 // エフェクトの読み込み
 void load_Effect() {
 	effects[0] = LoadEffekseerEffect(_T("data/effect/laser.efk"));
+	effects[1] = LoadEffekseerEffect(_T("data/effect/noumison_Laser.efk"));
 }
 
 void make_FontData() {

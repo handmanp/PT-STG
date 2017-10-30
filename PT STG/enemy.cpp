@@ -525,6 +525,7 @@ void enemy_shell::draw() {
 
 void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 	mode = 0;
+	counter = 0;
 	speed_max = 30;
 	speed = 0;
 	collision_size = 32;
@@ -535,7 +536,6 @@ void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 	x = start_x;
 	y = start_y;
 	stats = stat;
-
 }
 
 void enemy_brain::shot() {
@@ -547,10 +547,10 @@ void enemy_brain::shot() {
 		max = GetRand(20) + 1;
 	}
 	else if (mode == 3) {
-		max = 40;
+		max = 80;
 	}
-	else if (mode == 4) {
-		max = 1;
+	else if (mode == 5) {
+		max = 80;
 	}
 
 	for (int i = 0; i < max; i++) {
@@ -559,6 +559,7 @@ void enemy_brain::shot() {
 		// データの入っている添字を代入する(動きを分けるため)
 		if (mode == 1 || mode == 2) {
 			bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
+
 
 			// 円形弾
 			if (mode == 1) {
@@ -578,30 +579,34 @@ void enemy_brain::shot() {
 			}
 		}
 		// レーザー
-		else if (mode == 3) {
+		else if (mode == 5) {
 			lazer[free] = free;
 			bullets[free].speed = 0;
 			count += 1;
-			bullets[free].x = WINDOW_SIZE_X - 10 - (count * collision_size);
+			bullets[free].x = x - (count * 16);
 			bullets[free].y = y;
 			bullets[free].stats = 1;
 		}
 		// すごい弾
-		else if (mode == 4) {
+		else if (mode == 3) {
 			bullets[free].rad = 0;
 			super[free] = free;
-			t[i] = 0.0f;
+			t[free] = 0.0f;
 
 			// ベジェ曲のデータ
-			p1_x[i] = GetRand(WINDOW_SIZE_X);
-			p2_x[i] = GetRand(WINDOW_SIZE_X);
-			p1_y[i] = GetRand(WINDOW_SIZE_Y);
-			p2_y[i] = GetRand(WINDOW_SIZE_Y);
+			p1_x[free] = GetRand(WINDOW_SIZE_X);
+			p2_x[free] = GetRand(WINDOW_SIZE_X);
+			p1_y[free] = GetRand(WINDOW_SIZE_Y);
+			p2_y[free] = GetRand(WINDOW_SIZE_Y);
 
 			bullets[free].speed = 10 * frame_Time;
 			bullets[free].x = x;
 			bullets[free].y = y;
 			bullets[free].stats = 1;
+		}
+
+		if (mode != 3) {
+			bullets[i].collision_size = 4;
 		}
 	}
 }
@@ -637,6 +642,7 @@ void enemy_brain::move_shot() {
 				speed += 1 * frame_Time;
 				if (speed >= 3000) {
 					bullets[i].stats = 0;
+					lazer[i] = 0;
 				}
 			}
 
@@ -660,33 +666,66 @@ void enemy_brain::move_shot() {
 
 void enemy_brain::move() {
 	if (stats == 1) {
-		//x -= test.speed;
+
 		if (mode == 0 && frame % 120 == 0) {
-			int random = GetRand(100);
-			if (random < 25) {
+			// 円形弾
+			if (counter == 0) {
 				mode = 1;
 			}
-			else if (random < 50) {
+			// じわる弾
+			else if (counter == 1) {
 				mode = 2;
 			}
-			else if (random < 75) {
+			// レーザー
+			else if (counter == 2) {
 				mode = 3;
 			}
-			else {
+			// すごい弾
+			else if (counter == 3) {
 				mode = 4;
 			}
 		}
 
-		// 円形弾 mode = 1:通常 2:バウンス 3:すごい弾
-		if (mode == 1 || mode == 2 || mode == 3 || mode == 4) {
+		if (mode == 1) {
 			shot();
 			mode = 0;
+			counter++;
 		}
-
+		else if (mode == 2) {
+			shot();
+			mode = 0;
+			counter++;
+		}
+		else if (mode == 3) {
+			shot();
+			mode = 0;
+			counter++;
+		}
+		else if (mode == 4) {
+			if (frame % 180 == 0) {
+				// エフェクトの再生開始
+				effect_hnd = PlayEffekseer2DEffect(effects[1]);
+				// スケール変更
+				SetScalePlayingEffekseer2DEffect(effect_hnd, -50.0f, 50.0f, 50.0f);
+				// 敵の位置にエフェクトをあわせる
+				SetPosPlayingEffekseer2DEffect(effect_hnd, x, y, 0);
+				mode = 5;
+			}
+		}
+		else if (mode == 5) {
+			shot();
+			mode = 0;
+			counter = 0;
+		}
 	}
 	move_shot();
 	draw();
-	collision_Check();
+	int remove = collision_Check();
+
+	if (remove >= 0 ) {
+
+		bullets[remove].stats = 0;
+	}
 }
 
 
@@ -698,13 +737,30 @@ void enemy_brain::move() {
 
 void enemy_brain::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 128, y - 128, enemy_img[20], TRUE);
+		DrawGraph(x, y - 128, enemy_img[20], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			//DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-			//DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "脳");
-			bullet_animation_14(bullets[i].x, bullets[i].y, 2, 1);
+			if (lazer[i] == i) {
+				//DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
+				//DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "脳");
+				//bullet_animation_16(bullets[i].x, bullets[i].y, 0, 0);
+
+			}
+			else {
+				bullet_animation_14(bullets[i].x, bullets[i].y, 0, 2);
+			}
+		}
+		else {
+			if (circle[i] == i && circle[i] != 0) {
+				circle[i] = 0;
+			}
+			if (circle2[i] == i && circle2[i] != 0) {
+				circle2[i] = 0;
+			}
+			if (lazer[i] == i && lazer[i] != 0) {
+				lazer[i] = 0;
+			}
 		}
 	}
 	init_OutRangeBullets();

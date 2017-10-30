@@ -67,6 +67,15 @@ public:
 	void shot_Move();
 };
 
+// アイテム構造体
+typedef struct {
+	float x;
+	float y;
+	int type;
+	int stats;
+
+}ITEM;
+
 //入力関連
 GLOBAL char ctrl_key[256];
 GLOBAL int  mouse_x, mouse_y;
