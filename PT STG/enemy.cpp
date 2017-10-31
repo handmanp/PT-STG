@@ -548,10 +548,13 @@ void enemy_shell::draw() {
 
 void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 	mode = 0;
+	mode_move = 0;
 	counter = 0;
 	speed_max = 30;
+	speed_move = 4;
 	speed = 0;
 	collision_size = 32;
+	temp_y = start_y;
 	for (int i = 0; i < MAX_BULLET; i++) {
 		t[i] = 0;
 	}
@@ -563,16 +566,15 @@ void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 
 void enemy_brain::shot() {
 	int count = 0;
-
 	// 動きの種類によって弾丸の最大数を決定
 	if (mode == 1 || mode == 2) {
-		max = GetRand(20) + 1;
+		max = GetRand(10) + 5;
 	}
 	else if (mode == 3) {
-		max = 30;
+		max = 12;
 	}
 	else if (mode == 5) {
-		max = 80;
+		max = 40;
 	}
 
 	for (int i = 0; i < max; i++) {
@@ -591,13 +593,14 @@ void enemy_brain::shot() {
 				bullets[free].y = y;
 				bullets[free].stats = 1;
 			}
-			// じわる弾
+			// 直線弾
 			else if (mode == 2) {
 				circle2[free] = free;
-				bullets[free].speed = 10;
+				bullets[free].speed = 5;
 				bullets[free].x = x;
-				bullets[free].y = y;
+				bullets[free].y = WINDOW_SIZE_Y - ((WINDOW_SIZE_Y / max) * i);
 				bullets[free].stats = 1;
+				bullets[free].collision_size = 3;
 			}
 		}
 		// レーザー
@@ -605,9 +608,10 @@ void enemy_brain::shot() {
 			lazer[free] = free;
 			bullets[free].speed = 0;
 			count += 1;
-			bullets[free].x = x - (count * 16);
+			bullets[free].x = x - (count * 24);
 			bullets[free].y = y;
 			bullets[free].stats = 1;
+			bullets[free].collision_size = 24;
 		}
 		// すごい弾
 		else if (mode == 3) {
@@ -621,13 +625,13 @@ void enemy_brain::shot() {
 			p1_y[free] = GetRand(WINDOW_SIZE_Y);
 			p2_y[free] = GetRand(WINDOW_SIZE_Y);
 
-			bullets[free].speed = 10;
+			bullets[free].speed = 12;
 			bullets[free].x = x;
 			bullets[free].y = y;
 			bullets[free].stats = 1;
 		}
 
-		if (mode != 3) {
+		if (mode != 2 || mode != 3) {
 			bullets[i].collision_size = 7;
 		}
 	}
@@ -647,37 +651,33 @@ void enemy_brain::move_shot() {
 				}
 			}
 
-			// じわる弾
+			// 直線弾
 			if (circle2[i] == i) {
-				if (bullets[i].speed < speed_max) {
-					bullets[i].speed += 0.5 * frame_Time;
-				}
-
 				if (circle2[i] != 0) {
-					bullets[i].x += sin(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed * frame_Time;
-					bullets[i].y += cos(atan2f(ship.x - bullets[i].x, ship.y - bullets[i].y)) * bullets[i].speed * frame_Time;
+					bullets[i].x -= bullets[i].speed * frame_Time;
 				}
 
 			}
 
 			// レーザー ~ Black Widow ~
 			if (lazer[i] == i) {
-				speed += 1 * frame_Time;
-				if (speed >= 3000) {
+				speed += 1;
+				if (speed >= 3 * (int)fps) {
 					bullets[i].stats = 0;
 					lazer[i] = 0;
+					speed = 0;
 				}
 			}
 
 			// すごい弾の移動
 			if (super[i] == i) {
-				if (t[i] >= 1.0f) {
+				if (t[i] <= 1.0f) {
 					bullets[i].x += sinf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed * frame_Time;
 					bullets[i].y += cosf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed * frame_Time;
 
 				}
 				else {
-					t[i] += 0.000001f * frame_Time;
+					t[i] += 0.005f * frame_Time;
 					bullets[i].x = (1 - t[i]) * bullets[i].x + 2 * (1 - t[i]) * t[i] * p1_x[i] + t[i] * t[i] * p2_x[i];
 					bullets[i].y = (1 - t[i]) * bullets[i].y + 2 * (1 - t[i]) * t[i] * p1_y[i] + t[i] * t[i] * p2_y[i];
 				}
@@ -689,12 +689,14 @@ void enemy_brain::move_shot() {
 
 void enemy_brain::move() {
 	if (stats == 1) {
-		if (mode == 0 && frame % (5 * (int)fps) == 0) {
+		//x -= test.speed * frame_Time;
+
+		if (mode == 0 && frame % (2 * (int)fps) == 0) {
 			// 円形弾
 			if (counter == 0) {
 				mode = 1;
 			}
-			// じわる弾
+			// 直線弾
 			else if (counter == 1) {
 				mode = 2;
 			}
@@ -724,13 +726,13 @@ void enemy_brain::move() {
 			counter++;
 		}
 		else if (mode == 4) {
-			if (frame % (3 * (int)fps) == 0) {
-				// エフェクトの再生開始
-				effect_hnd = PlayEffekseer2DEffect(effects[1]);
-				// スケール変更
-				SetScalePlayingEffekseer2DEffect(effect_hnd, -50.0f, 50.0f, 50.0f);
-				// 敵の位置にエフェクトをあわせる
-				SetPosPlayingEffekseer2DEffect(effect_hnd, x, y, 0);
+			// エフェクトの再生開始
+			effect_hnd = PlayEffekseer2DEffect(effects[1]);
+			// スケール変更
+			SetScalePlayingEffekseer2DEffect(effect_hnd, -50.0f, 50.0f, 50.0f);
+			// 敵の位置にエフェクトをあわせる
+			SetPosPlayingEffekseer2DEffect(effect_hnd, x, y, 0);
+			if (frame % (1 * (int)fps) == 0) {
 				mode = 5;
 			}
 		}
@@ -740,6 +742,39 @@ void enemy_brain::move() {
 			counter = 0;
 		}
 	}
+
+	// 上下に移動系
+	if (mode_move == 0 && frame % (2 * (int)fps) == 0 && (mode != 4 || mode != 5)) {
+		if (y >= temp_y) {
+			mode_move = 1;	// to up
+		}
+		else {
+			mode_move = 2;	// to down
+		}
+	}
+
+	// 上に上がる
+	if (mode_move == 1) {
+		if (y >= temp_y - 128) {
+			y -= speed_move * frame_Time;
+		}
+		else {
+			mode_move = 0;
+		}
+	}
+
+	// 下に下る
+	if (mode_move == 2) {
+		if (y <= temp_y + 128) {
+			y += speed_move * frame_Time;
+		}
+		else {
+			mode_move = 0;
+		}
+
+	}
+
+
 	move_shot();
 	draw();
 	int remove = collision_Check();
@@ -841,7 +876,7 @@ void enemy_meatball::move() {
 
 		// 自機と x がhobo同じになるまで直進
 		if (mode == 0 && x >= ship.x) {
-			x -= speed * frame_Time;
+			x -= 2 * test.speed * frame_Time;
 
 			if (x <= ship.x + 10.0f && x > ship.x) {
 				mode = 1;
@@ -878,7 +913,7 @@ void enemy_meatball::move() {
 
 		// 円運動終了後直進
 		if (mode == 3) {
-			x -= speed * frame_Time;
+			x -= 2 * test.speed * frame_Time;
 		}
 	}
 	draw();
@@ -1104,12 +1139,19 @@ void enemy_sporecore::move() {
 
 	if (stats == 1) {
 
-		if (mode == 0 && frame % (3 * (int)fps) == 0) {
+		if (mode == 0 && frame % (int)(3230.f * frame_Time) == 0) {
 			mode = 1;
 		}
 
 		if (mode == 1) {
 			shot();
+			mode = 2;
+		}
+
+		if (mode == 2 && frame % (int)(2000.f * frame_Time) == 0) {
+			for (int i = 0; i < MAX_BULLET; i++) {
+				bullets[i].stats = 0;
+			}
 			mode = 0;
 		}
 
@@ -1124,8 +1166,10 @@ void enemy_sporecore::draw() {
 		DrawGraph((int)x - 48, (int)y - 48, enemy_img[10], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
-		DrawBox(bullets[i].x - bullets[i].collision_size, bullets[i].y - bullets[i].collision_size, bullets[i].x + bullets[i].collision_size, bullets[i].y + bullets[i].collision_size, GetColor(255, 255, 255), TRUE);
-		DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "胞死");
+		if (bullets[i].stats == 1) {
+			DrawBox(bullets[i].x - bullets[i].collision_size, bullets[i].y - bullets[i].collision_size, bullets[i].x + bullets[i].collision_size, bullets[i].y + bullets[i].collision_size, GetColor(255, 255, 255), TRUE);
+			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "胞死");
+		}
 	}
 	init_OutRangeBullets();
 
