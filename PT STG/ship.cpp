@@ -92,15 +92,15 @@ void my_Ship::move() {
 	float rad = 0.0f;
 
 	//ショットキー
-	if (ctrl_key[KEY_INPUT_X] == 1 && frame % 2 == 0) shot();
+	if ((ctrl_key[KEY_INPUT_Z] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_X] == 1) && frame % 2 == 0) shot();
 
 	shot_Move();
 
 	//移動キー
-	if (ctrl_key[KEY_INPUT_UP]    == 1 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_UP]    == 1) input_stats += 2;
-	if (ctrl_key[KEY_INPUT_DOWN]  == 1 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_DOWN]  == 1) input_stats += 1;
-	if (ctrl_key[KEY_INPUT_LEFT]  == 1 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_LEFT]  == 1) input_stats += 4;
-	if (ctrl_key[KEY_INPUT_RIGHT] == 1 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_RIGHT] == 1) input_stats += 8;
+	if (ctrl_key[KEY_INPUT_UP]    == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_UP]    == 1) input_stats += 2;
+	if (ctrl_key[KEY_INPUT_DOWN]  == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_DOWN]  == 1) input_stats += 1;
+	if (ctrl_key[KEY_INPUT_LEFT]  == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_LEFT]  == 1) input_stats += 4;
+	if (ctrl_key[KEY_INPUT_RIGHT] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_RIGHT] == 1) input_stats += 8;
 
 	//移動キーから角度を求める
 	switch (input_stats) {

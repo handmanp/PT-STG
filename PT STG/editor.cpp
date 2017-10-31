@@ -114,8 +114,15 @@ int draw_StageEditor() {
 	unsigned int nc = GetColor(100, 100, 100);
 	unsigned int oc = GetColor(150, 150, 150);
 
+	// 保存ボタン
 	if (button.draw_Button(1010, 40, 200, 28, nc, oc, "ステージを上書き保存")) {
 		io_MapdataFileOutput();
+	}
+	// タイトルに戻るボタン
+	if (button.draw_Button(1010, 75, 200, 28, nc, oc, "保存してタイトルへ")) {
+		io_MapdataFileOutput();
+		gamemode  = 1; // タイトルに戻るフラグ
+		mode_flag = 0; // エディタのメニュー初期化
 	}
 
 	return 0;

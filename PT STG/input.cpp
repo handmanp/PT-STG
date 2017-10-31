@@ -19,7 +19,17 @@ void input_key() {
 	else mouse_r = 0;
 
 	// キーボード入力を取得
-	GetHitKeyStateAll(ctrl_key);
+	static char buf[256];
+	GetHitKeyStateAll(buf);
+
+	//トリガー判定
+	for (int i = 0; i < 256; i++) {
+		if (buf[i]) {
+			if (ctrl_key[i] == 0) ctrl_key[i] = 1;
+			else if (ctrl_key[i] == 1) ctrl_key[i] = 2;
+		}
+		else ctrl_key[i] = 0;
+	}
 
 	// ゲームパッド入力を取得
 	GetJoypadXInputState(DX_INPUT_PAD1, &ctrl_pad);

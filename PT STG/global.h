@@ -35,26 +35,27 @@
 #define FONT_HEADING 2
 #define FONT_YELLOW  3
 #define FONT_COMBOX  4
+#define FONT_TI_MENU 5
 
 typedef struct {
-	int stats;
-	float x;
-	float y;
-	float rad;
-	float speed;
-	float length;
+	int		stats;
+	float	x;
+	float	y;
+	float	rad;
+	float	speed;
+	float	length;
 }SHIP_SHOT;
 
 class my_Ship {
 public:
-	float x;
-	float y;
-	float speed;
-	int left;
-	int option;
-	int collision_size;
-	int anim;
-	int type;
+	float	x;
+	float	y;
+	float	speed;
+	int		left;
+	int		option;
+	int		collision_size;
+	int		anim;
+	int		type;
 	SHIP_SHOT s[100];
 
 	int powerup[6];
@@ -77,53 +78,60 @@ typedef struct {
 }ITEM;
 
 //入力関連
-GLOBAL char ctrl_key[256];
-GLOBAL int  mouse_x, mouse_y;
-GLOBAL int  mouse_l, mouse_r;
+GLOBAL char			ctrl_key[256];
+GLOBAL int			mouse_x, mouse_y;
+GLOBAL int			mouse_l, mouse_r;
 GLOBAL XINPUT_STATE ctrl_pad;
 
 //画像ハンドル系
-GLOBAL int enemy_img[32];
-GLOBAL int ship_img[5][2];
-GLOBAL int maptip_img[880];
-GLOBAL int pwrup_img[2];
+GLOBAL int		enemy_img[32];
+GLOBAL int		ship_img[5][2];
+GLOBAL int		maptip_img[880];
+GLOBAL int		pwrup_img[2];
+GLOBAL int		chara_img[2];
 
-GLOBAL int bullet14_img[84];
-GLOBAL int bullet16_img[48];
+GLOBAL int		bullet14_img[84];
+GLOBAL int		bullet16_img[48];
 
-GLOBAL int font_handle[16];
-GLOBAL int effects[16];
-GLOBAL int bg_handle;
+GLOBAL int		font_handle[16];
+GLOBAL int		effects[16];
+GLOBAL int		bg_handle;
 
 GLOBAL unsigned int frame;
 
-GLOBAL int mode_flag;
-GLOBAL gui button;
-GLOBAL combo com;
+GLOBAL int		mode_flag;
+GLOBAL gui		button;
+GLOBAL combo	com;
+
+GLOBAL int		gamemode;
+GLOBAL bool		quit;
 
 GLOBAL int b_anim_3, b_anim_4, b_anim_6, b_dir_6, b_dir_3;
 
 //fps関連変数
-GLOBAL int fps_Time[2];
-GLOBAL int fps_Time_i;
-GLOBAL double fps;
+GLOBAL int		fps_Time[2];
+GLOBAL int		fps_Time_i;
+GLOBAL double	fps;
 
-GLOBAL float frame_Time, frame_Time_2;
+GLOBAL float	frame_Time, frame_Time_2;
 GLOBAL LONGLONG prev_Time;
 
-void debug_Message();
-void main_Editor();
-void input_key();
-void load_Img();
-void load_Effect();
-void make_FontData();
+void	debug_Message();
+void	main_Editor();
+void	input_key();
+void	load_Img();
+void	load_Effect();
+void	make_FontData();
 
-float  variable_Fps();
-double fps_Calc();
+float	variable_Fps();
+double	fps_Calc();
 
-void bullet_animation_14(int x, int y, int color, int type);
-void bullet_animation_16(int x, int y, int color, int type);
-void bullet_Animation_Update();
+void	init_Title();
+void	draw_Menu();
+
+void	bullet_animation_14(int x, int y, int color, int type);
+void	bullet_animation_16(int x, int y, int color, int type);
+void	bullet_Animation_Update();
 
 //-------------------------------
 //debug global area

@@ -654,7 +654,7 @@ void enemy_brain::move_shot() {
 
 				}
 				else {
-					t[i] += 0.00001f * frame_Time;
+					t[i] += 0.000001f * frame_Time;
 					bullets[i].x = (1 - t[i]) * bullets[i].x + 2 * (1 - t[i]) * t[i] * p1_x[i] + t[i] * t[i] * p2_x[i];
 					bullets[i].y = (1 - t[i]) * bullets[i].y + 2 * (1 - t[i]) * t[i] * p1_y[i] + t[i] * t[i] * p2_y[i];
 				}

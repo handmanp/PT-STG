@@ -5,9 +5,7 @@
 #define GAME     2
 #define EDITOR   3
 
-int counter = 0, FpsTime[2] = { 0, }, FpsTime_i = 0;
-int color_white;
-double Fps = 0.0;
+
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
@@ -16,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// 設定
 	ChangeWindowMode(true);
 	SetGraphMode(WINDOW_SIZE_X, WINDOW_SIZE_Y, 32);
-	SetMainWindowText("Lunette Presentation Edition");
+	SetMainWindowText("LUNETTE <Presentation Edition v0.9.1>");
 
 	SetDrawScreen( DX_SCREEN_BACK ); 
 
@@ -58,18 +56,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	debug_Init();
 
 	// ゲームモード : TOP_MENU / GAME / EDITOR
-	int gamemode = GAME;
+	gamemode  = TOP_MENU;
 	mode_flag = 0;
-	frame = 0;
+	frame     = 0;
+	quit      = true;
 
 	//----------メインループ------------------------------------------------------------
-	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
+	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() && quit) {
 
 		input_key();
 
 		switch (gamemode) {
 		//------トップ画面------------------------------------------------------------
 		case TOP_MENU:
+			draw_Menu();
 			break;
 
 		//------ゲーム進行------------------------------------------------------------
@@ -101,7 +101,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		fps_Calc();
 		variable_Fps();
 	}
+
 	test.del_Stage();
+
 	Effkseer_End();
 	DxLib_End();
 
@@ -138,6 +140,15 @@ void load_Img() {
 	enemy_img[19] = LoadGraph("data/img/enemy/st1/detecrewno_kuki.png");// デテクルーノ茎
 	enemy_img[20] = LoadGraph("data/img/enemy/st1/noumison.png");		// ノウミソン
 
+	// キャラ画像
+	chara_img[0] = LoadGraph("data/img/chara/sis_old.png");
+	chara_img[1] = LoadGraph("data/img/chara/sis_young.png");
+
+	for (int i = 0; i < 2; i++)
+		GraphFilter(chara_img[i], DX_GRAPH_FILTER_DOWN_SCALE, 2);
+
+	// タイトルの画像読み込み
+	init_Title();
 
 	//自機画像
 	for (int i = 0; i < 2; i++) {
@@ -173,6 +184,7 @@ void make_FontData() {
 	font_handle[FONT_BUTTON]  = CreateFontToHandle("Meiryo", 18, 2, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 	font_handle[FONT_HEADING] = CreateFontToHandle("Meiryo", 40, 5, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 	font_handle[FONT_COMBOX]  = CreateFontToHandle("Meiryo", 10, 2, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
+	font_handle[FONT_TI_MENU] = CreateFontToHandle("Voyager Grotesque Light", 40, 2, DX_FONTTYPE_ANTIALIASING_4X4);
 }
 
 void debug_Init() {

@@ -1,0 +1,200 @@
+
+#include "global.h"
+#include "menu.h"
+
+void init_Title() {
+
+	title_img_1 = LoadGraph("data/img/title/title_1.png");
+	title_img_2 = LoadGraph("data/img/title/title_2.png");
+
+	menu_bg_1 = LoadGraph("data/img/title/bg_1.png");
+	menu_bg_2 = LoadGraph("data/img/title/bg_2.png");
+
+	title_selected = LoadGraph("data/img/title/selected.png");
+
+	LPCSTR font_path = "data/font/Veger(light).ttf";
+
+	menu_sehnd[0] = LoadSoundMem("data/sound/se/menu/sele_u.wav");
+	menu_sehnd[1] = LoadSoundMem("data/sound/se/menu/sele_d.wav");
+	menu_sehnd[2] = LoadSoundMem("data/sound/se/menu/sele_c.wav");
+
+	if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) > 0) {
+	}
+	else {
+		// フォント読込エラー処理
+		MessageBox(NULL, "フォントの読込に失敗しちゃった...", "ごめんね＞＜", MB_OK);
+	}
+}
+
+void draw_Menu() {
+	switch (menu_mode) {
+	case Title:
+		draw_Title();
+		break;
+	case CharaSelect:
+		draw_CharSelect();
+		break;
+	}
+}
+
+// タイトルメニュー
+// ----------------------------------------------------------
+void draw_Title() {
+
+	// 元タイトル
+	DrawGraph(0, 0, title_img_1, TRUE);
+
+	// ファーファーなるやつ
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, title_alpha);
+	DrawGraph(0, 0, title_img_2, TRUE);
+
+	// 元に戻す
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	if (frame % ((((int)fps + 1) / 60) + 1) == 0) {
+		title_alpha += title_dir;
+		if (title_alpha > 255 || title_alpha < 0) title_dir *= -1;
+	}
+
+	// 各メニューへ移動
+	switch (title.draw(5, title_str)) {
+	// GAME START
+	case 0:
+		menu_mode = CharaSelect;
+		break;
+	// STAGE EDITOR
+	case 2:
+		gamemode = 3; // エディタ起動
+	// QUIT GAME
+	case 4:
+		quit = false;
+		break;
+	default:
+		break;
+	}
+}
+
+// キャラ選択メニュー
+// ----------------------------------------------------------
+void draw_CharSelect() {
+
+	// 元タイトル
+	DrawGraph(0, 0, menu_bg_1, TRUE);
+
+	// ファーファーなるやつ
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, title_alpha);
+	DrawGraph(0, 0, menu_bg_2, TRUE);
+
+	// 元に戻す
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	if (chara.selected < 2) 
+		DrawGraph(100, 100, chara_img[chara.selected], TRUE);
+
+	if (frame % ((((int)fps + 1) / 60) + 1) == 0) {
+		title_alpha += title_dir;
+		if (title_alpha > 255 || title_alpha < 0) title_dir *= -1;
+	}
+	// 各メニューへ移動
+	switch (chara.draw(3, charSelect_str)) {
+	case 0:
+		gamemode = 2;
+		break;
+	case 1:
+		gamemode = 2;
+		break;
+	case 2:
+		menu_mode = Title;
+		break;
+	default:
+		break;
+	}
+}
+
+// かっこいいメニュー
+// =========================================================================================
+int coolmenu::draw(int n, char **str) {
+
+	// イージング
+	if (ease_flag != 0) {
+		double tx = OutQuint(ease_time, 1.0, x - ((double)selected * 36), x - (((double)selected + ease_flag) * 36));
+		double ty = OutQuint(ease_time, 1.0, y + ((double)selected * 61), y + (((double)selected + ease_flag) * 61));
+		int color = OutQuint(ease_time, 1.0, 222, 122);
+
+		DrawGraph(tx, ty, title_selected, TRUE);
+		int str_x = (x + 560) - ((selected * 36) + GetDrawFormatStringWidthToHandle(font_handle[FONT_TI_MENU], "%s", str[selected]));
+		DrawFormatStringToHandle(str_x, y + (selected * 61) + 8, GetColor(color, color, color), font_handle[FONT_TI_MENU], "%s", str[selected]);
+		
+		ease_time += 0.05 * frame_Time;
+		if (ease_time > 1.0) ease_flag = 0;
+	}
+
+	// 順に表示
+	for (int i = 0; i < n; i++) {
+		int str_x = (x + 560) - ((i * 36) + GetDrawFormatStringWidthToHandle(font_handle[FONT_TI_MENU], "%s", str[i]));
+		if (selected == i) {
+			if (ease_flag == 0) {
+				DrawGraph(x - (i * 36), y + (i * 61), title_selected, TRUE);
+				DrawFormatStringToHandle(str_x, y + (i * 61) + 8, GetColor(222, 222, 222), font_handle[FONT_TI_MENU], "%s", str[i]);
+			}
+		}
+		else {
+			DrawFormatStringToHandle(str_x, y + (i * 61) + 8, GetColor(122, 122, 122), font_handle[FONT_TI_MENU], "%s", str[i]);
+		}
+	}
+	// かっこいい横線
+	DrawLineAA(x + 600, y, x + 600 - (n * 36), y + (n * 61), GetColor(122, 122, 122));
+
+	// コントローラトリガー化
+	ctrl_trigg();
+
+	// キー入力
+	if (ctrl_key[KEY_INPUT_UP] == 1 || ctrl_trig[XINPUT_BUTTON_DPAD_UP] == 1) {
+		selected--;
+		ease_flag = 1;
+		ease_time = 0.0;
+		PlaySoundMem(menu_sehnd[1], DX_PLAYTYPE_BACK, TRUE);
+	}
+	if (ctrl_key[KEY_INPUT_DOWN] == 1 || ctrl_trig[XINPUT_BUTTON_DPAD_DOWN] == 1) {
+		selected++;
+		ease_flag = -1;
+		ease_time = 0.0;
+		PlaySoundMem(menu_sehnd[1], DX_PLAYTYPE_BACK, TRUE);
+	}
+	// 決定時
+	if (ctrl_key[KEY_INPUT_Z] == 1 || ctrl_pad.Buttons[XINPUT_BUTTON_X] == 1) {
+		PlaySoundMem(menu_sehnd[0], DX_PLAYTYPE_BACK, TRUE);
+		return selected;
+	}
+
+	//範囲外防止
+	if (selected >= n) selected = --n;
+	if (selected <  0) selected = 0;
+
+	return -1;
+}
+
+// 長押し防止
+void ctrl_trigg(){
+
+	for (int i = 0; i < num; i++) {
+		if (ctrl_pad.Buttons[i]) {
+			if (ctrl_trig[i] == 0) ctrl_trig[i] = 1;
+			else if (ctrl_trig[i] == 1) ctrl_trig[i] = 2;
+		}
+		else ctrl_trig[i] = 0;
+	}
+}
+
+// イージング
+double OutQuint(double t, double totaltime, double max, double min){
+	max -= min;
+	t = t / totaltime - 1;
+	return max*(t*t*t*t*t + 1) + min;
+}
+
+/*
+void coolmenu::init(int select) {
+	selected = select;
+}
+*/
