@@ -37,6 +37,8 @@
 #define FONT_COMBOX  4
 #define FONT_TI_MENU 5
 
+#define ITEM_MAX 100
+
 typedef struct {
 	int		stats;
 	float	x;
@@ -74,7 +76,9 @@ typedef struct {
 	float y;
 	int type;
 	int stats;
-
+	int image_handle;
+	int size;
+		
 }ITEM;
 
 //“ü—ÍŠÖ˜A
@@ -116,15 +120,12 @@ GLOBAL double	fps;
 GLOBAL float	frame_Time, frame_Time_2;
 GLOBAL LONGLONG prev_Time;
 
-void	debug_Message();
-void	main_Editor();
-void	input_key();
-void	load_Img();
-void	load_Effect();
-void	make_FontData();
-
-float	variable_Fps();
-double	fps_Calc();
+void debug_Message();
+void main_Editor();
+void input_key();
+void load_Img();
+void load_Effect();
+void make_FontData();
 
 void	init_Title();
 void	draw_Menu();
@@ -132,6 +133,11 @@ void	draw_Menu();
 void	bullet_animation_14(int x, int y, int color, int type);
 void	bullet_animation_16(int x, int y, int color, int type);
 void	bullet_Animation_Update();
+
+int  item_search_FreeAddress();
+void item_init();
+void item_drop(int x, int y, int type);
+void item_draw();
 
 //-------------------------------
 //debug global area

@@ -316,6 +316,7 @@ void enemy_banana::shot() {
 			bullets[free].x = x;
 			bullets[free].y = y;
 			bullets[free].stats = 1;
+			bullets[free].collision_size = 8;
 		}
 	}
 }
@@ -362,8 +363,7 @@ void enemy_banana::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 0), TRUE);
-			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ƒo");
+			bullet_animation_16(bullets[i].x, bullets[i].y, 2, 1);
 		}
 	}
 	init_OutRangeBullets();
@@ -605,7 +605,7 @@ void enemy_brain::shot() {
 		}
 
 		if (mode != 3) {
-			bullets[i].collision_size = 4;
+			bullets[i].collision_size = 7;
 		}
 	}
 }
@@ -956,6 +956,7 @@ void enemy_worm::shot() {
 			bullets[free].x = ball[5].x;
 			bullets[free].y = ball[5].y;
 			bullets[free].stats = 1;
+			bullets[free].collision_size = 7;
 		}
 	}
 }
@@ -1027,8 +1028,7 @@ void enemy_worm::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "’Ž");
+			bullet_animation_14(bullets[i].x, bullets[i].y, 4, 1);
 		}
 	}
 	init_OutRangeBullets();
@@ -1191,6 +1191,7 @@ void enemy_stagbeetle::shot() {
 			bullets[free].x = x;
 			bullets[free].y = y;
 			bullets[free].stats = 1;
+			bullets[free].collision_size = 7;
 		}
 	}
 }
@@ -1254,8 +1255,7 @@ void enemy_stagbeetle::draw() {
 		DrawGraph((int)x - collision_size, (int)y - collision_size, enemy_img[11], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
-		DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-		DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ŒL");
+		bullet_animation_14(bullets[i].x, bullets[i].y, 3, 0);
 	}
 	init_OutRangeBullets();
 }
@@ -1392,6 +1392,7 @@ void enemy_shindarla::shot() {
 		bullets[free].x = x;
 		bullets[free].y = y;
 		bullets[free].stats = 1;
+		bullets[free].collision_size = 8;
 	}
 
 }
@@ -1457,8 +1458,7 @@ void enemy_shindarla::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "Ž€");
+			bullet_animation_16(bullets[i].x, bullets[i].y, 3, 5);
 		}
 	}
 	init_OutRangeBullets();

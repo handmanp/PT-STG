@@ -172,3 +172,64 @@ void my_Ship::move() {
 	}
 
 }
+
+
+// アイテム初期化
+//--------------------------------------------------------------------------------
+void item_init() {
+	for (int i = 0; i < ITEM_MAX; i++) {
+		item[i].stats = 0;
+		item[i].type = 0;
+		item[i].x = 0;
+		item[i].y = 0;
+		item[i].size = 0;
+	}
+}
+
+// アイテム構造体の空き番地を検索
+//--------------------------------------------------------------------------------
+int item_search_FreeAddress() {
+	for (int i = 0; i < ITEM_MAX; i++) {
+		if (item[i].stats == 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+// アイテムを生成
+//--------------------------------------------------------------------------------
+void item_drop(int x, int y, int type) {
+	int free = item_search_FreeAddress();
+
+	item[free].stats = 1;
+	item[free].type = type;
+	item[free].x = x;
+	item[free].y = y;
+}
+
+// アイテムを描画
+//--------------------------------------------------------------------------------
+void item_draw() {
+	for (int i = 0; i < ITEM_MAX; i++) {
+		if (item[i].stats == 1) {
+
+			// アイテムの種類により画像を選択
+			switch (item[i].type) {
+			case 1:
+				// 画像ハンドル
+				// item[i].image_handle = ???;
+				// item[i].size = ???;
+				break;
+			case 2:
+				// 画像ハンドル
+				break;
+			}
+
+			//描画
+			DrawCircle(item[i].x, item[i].y, item[i].size, GetColor(255, 255, 255), FALSE);
+			DrawFormatString(item[i].x, item[i].y, GetColor(0, 255, 255), "E");
+			//DrawGraph(item[i].x - item[i].size, item[i].y - item[i].size, item[i].image_handle, TRUE);
+		}
+	}
+}
