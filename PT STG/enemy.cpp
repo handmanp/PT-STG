@@ -23,6 +23,13 @@ int enemy::collision_Check() {
 	// ----------------------------------------------------------------------------
 	if (ship.x >= x - collision_size && ship.x <= x + collision_size &&
 		ship.y >= y - collision_size && ship.y <= y + collision_size) {
+		if (ship.stat == 0 && stats != 0) {
+			ship.stat = -1;
+			ship.x = -120.f;
+			ship.y = 340.f;
+			ship.left -= 1;
+			stats = 0;
+		}
 		return -2;
 	}
 	// 自機の弾と敵の当たり判定
@@ -41,6 +48,8 @@ int enemy::collision_Check() {
 					SetScalePlayingEffekseer2DEffect(effect_hnd, 25.0f, 25.0f, 25.0f);
 					// 敵の位置にエフェクトをあわせる
 					SetPosPlayingEffekseer2DEffect(effect_hnd, x, y, 0);
+					// 音再生
+					PlaySoundMem(game_sehnd[1], DX_PLAYTYPE_BACK, TRUE);
 					// 敵が死んでも弾が残ってたら存在させたままにする(stats = 2)
 					if (flag == false) {
 						stats = 0;
@@ -59,6 +68,13 @@ int enemy::collision_Check() {
 		if (stats == 1) {
 			if (ship.x + 25 >= bullets[i].x - bullets[i].collision_size && ship.x - 25 <= bullets[i].x + bullets[i].collision_size &&
 				ship.y + 10 >= bullets[i].y - bullets[i].collision_size && ship.y - 10 <= bullets[i].y + bullets[i].collision_size) {
+				if (ship.stat == 0 && bullets[i].stats != 0) {
+					ship.stat = -1;
+					ship.x = -120.f;
+					ship.y = 340.f;
+					ship.left -= 1;
+					bullets[i].stats = 0;
+				}
 				return i;
 			}
 		}
@@ -260,13 +276,12 @@ void enemy_nuts::move() {
 // 　ウニズ
 // ----------------------------------------------------------------------------------------
 // ========================================================================================
-void enemy_uni::init(int HP, float start_x, float start_y, float reverse_x, float reverse_y, float s, int stat) {
+void enemy_uni::init(int HP, float start_x, float start_y, float s, int stat) {
 	x = start_x;
 	y = start_y;
 	hp = HP;
-	rx = reverse_x;
-	ry = reverse_y;
 	speed = s;
+	r = -90;
 	collision_size = 24;
 	stats = stat;
 
@@ -274,10 +289,12 @@ void enemy_uni::init(int HP, float start_x, float start_y, float reverse_x, floa
 
 void enemy_uni::move() {
 	if (stats == 1) {
-		y -= speed * frame_Time;
-
-		// 2次関数的動き Quadratic functionally Moving
-		x = ((y - ry) * (y - ry)) / 100.0f + rx;
+		x += sin(a2r(r)) * speed * frame_Time;
+		y += cos(a2r(r)) * speed * frame_Time;
+		if (x < ship.x + 200) {
+			r += 5.0f * frame_Time;
+		}
+		DrawFormatString(300, 100, 0xFFFFFF, "%f %f", x, y);
 	}
 	draw();
 	collision_Check();
@@ -495,8 +512,7 @@ void enemy_shell::move_shot() {
 
 void enemy_shell::move() {
 	if (stats == 1) {
-		speed = test.speed * frame_Time;
-		x -= speed * frame_Time;
+		x -= test.speed * frame_Time;
 
 		// 1~180フレーム間(0~3秒)ランダムで弾を生成
 		if (frame % (GetRand(179) + 1) == 0) {

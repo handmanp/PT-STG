@@ -83,9 +83,11 @@ void draw_CharSelect() {
 	switch (chara.draw(550, 420, 3, charSelect_str)) {
 	case 0:
 		gamemode = 2;
+		PlaySoundMem(game_bgmhnd, DX_PLAYTYPE_BACK, TRUE);
 		break;
 	case 1:
 		gamemode = 2;
+		PlaySoundMem(game_bgmhnd, DX_PLAYTYPE_BACK, TRUE);
 		break;
 	case 2:
 		menu_mode = Title;

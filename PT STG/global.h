@@ -62,6 +62,7 @@ public:
 	int		collision_size;
 	int		anim;
 	int		type;
+	int		stat;
 	SHIP_SHOT s[100];
 
 	int powerup[6];
@@ -114,6 +115,8 @@ GLOBAL int		menu_bg_1, menu_bg_2;
 
 GLOBAL int		title_selected;
 GLOBAL int		menu_sehnd[3];
+GLOBAL int		game_sehnd[6];
+GLOBAL int		game_bgmhnd;
 
 GLOBAL unsigned int frame;
 

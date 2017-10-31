@@ -187,6 +187,15 @@ void load_Img() {
 	menu_sehnd[1] = LoadSoundMem("data/sound/se/menu/sele_d.wav");
 	menu_sehnd[2] = LoadSoundMem("data/sound/se/menu/sele_c.wav");
 
+	game_sehnd[0] = LoadSoundMem("data/sound/se/game/beam1.mp3");
+	game_sehnd[1] = LoadSoundMem("data/sound/se/game/bomb.mp3");
+	game_sehnd[2] = LoadSoundMem("data/sound/se/game/dest.mp3");
+	game_sehnd[3] = LoadSoundMem("data/sound/se/game/laser.mp3");
+	game_sehnd[4] = LoadSoundMem("data/sound/se/game/shot1.mp3");
+	game_sehnd[5] = LoadSoundMem("data/sound/se/game/shot2.mp3");
+
+	game_bgmhnd = LoadSoundMem("data/sound/bgm/awake.mp3");
+
 	// bg�ʉ摜
 	LoadDivGraph("data/img/tip/obj.png", 880, 88, 10, 24, 24, maptip_img);
 

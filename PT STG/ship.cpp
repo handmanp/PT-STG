@@ -17,7 +17,8 @@ void my_Ship::init() {
 	anim           = 2;
 	type           = 0;
 	powerup_select = -1;
-
+	left		   = 3;
+	stat		   = 0;
 	//自機弾初期化
 	for (int i = 0; i < 100; i++) {
 		s[i].stats  = 0;
@@ -66,6 +67,8 @@ void my_Ship::shot() {
 		s[free].rad = DX_PI_F / 2;
 		s[free].speed = 24;
 		s[free].length = 0;
+
+		PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
 	}
 }
 
@@ -148,13 +151,21 @@ void my_Ship::move() {
 	}
 
 	//移動
-	if (rad != -1.0f) {
+	if (stat == 0) {
+		if (rad != -1.0f) {
+			x += (sinf(rad) * speed) * frame_Time;
+			y += (cosf(rad) * speed) * frame_Time;
+		}
+	}
+	else {
+		rad = a2r(90);
 		x += (sinf(rad) * speed) * frame_Time;
 		y += (cosf(rad) * speed) * frame_Time;
+		if (x > 200.f) stat = 0;
 	}
 
 	//アニメーション管理
-	if (frame % ((int)fps + 1 / 60) == 0) {
+	if (frame % (int)(2000.f * frame_Time) == 0) {
 
 		//アニメーション
 		if (rad != -1.0f) {

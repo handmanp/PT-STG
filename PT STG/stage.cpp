@@ -140,7 +140,7 @@ void my_Stage::stage_Progression() {
 
 				// [2] ƒEƒjƒY
 			case EneUnis:
-				unis[enemy_count[EneUnis]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4, stage_data[i].var_5, stage_data[i].var_6, stage_data[i].var_7);
+				unis[enemy_count[EneUnis]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4, stage_data[i].var_5);
 				enemy_count[EneUnis]++;
 				break;
 
