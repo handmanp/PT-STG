@@ -1,6 +1,7 @@
 #define GLOBAL_VALIABLE_DEFINE
 #include "global.h"
 
+#define LOADING  0
 #define TOP_MENU 1
 #define GAME     2
 #define EDITOR   3
@@ -67,6 +68,31 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		input_key();
 
 		switch (gamemode) {
+		//------読み込み画面------------------------------------------------------------
+		case LOADING:
+
+			// 敵画像
+			for (int i = 0; i < 21; i++) {
+				if (CheckHandleASyncLoad(enemy_img[i]) == FALSE) load_check[i] = false;
+			}
+
+			// キャラ画像
+			if (CheckHandleASyncLoad(chara_img[0][0]) == FALSE) load_check[21] = false;
+			if (CheckHandleASyncLoad(chara_img[0][1]) == FALSE) load_check[22] = false;
+			if (CheckHandleASyncLoad(chara_img[0][2]) == FALSE) load_check[23] = false;
+			if (CheckHandleASyncLoad(chara_img[0][3]) == FALSE) load_check[24] = false;
+			if (CheckHandleASyncLoad(chara_img[1][0]) == FALSE) load_check[25] = false;
+			if (CheckHandleASyncLoad(chara_img[1][1]) == FALSE) load_check[26] = false;
+			if (CheckHandleASyncLoad(chara_img[1][2]) == FALSE) load_check[27] = false;
+			if (CheckHandleASyncLoad(chara_img[1][3]) == FALSE) load_check[28] = false;
+
+			// デザイン系
+			for (int i = 0; i < 4; i++) {
+				if (CheckHandleASyncLoad(design_img[i]) == FALSE) load_check[i + 29] = false; // 33
+			}
+
+
+			break;
 		//------トップ画面------------------------------------------------------------
 		case TOP_MENU:
 			draw_Menu();
@@ -114,6 +140,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 // 画像ヨミコP身
 void load_Img() {
 
+	//SetUseASyncLoadFlag(TRUE); // 非同期読み込み
+
 	// 背景
 	bg_handle = LoadGraph(_T("data/img/bg/bg000.png"));
 
@@ -142,8 +170,15 @@ void load_Img() {
 	enemy_img[20] = LoadGraph("data/img/enemy/st1/noumison.png");		// ノウミソン
 
 	// キャラ画像
-	chara_img[0] = LoadGraph("data/img/chara/sis_old.png");
-	chara_img[1] = LoadGraph("data/img/chara/sis_young.png");
+	chara_img[0][0] = LoadGraph("data/img/chara/c001_1.png");
+	chara_img[0][1] = LoadGraph("data/img/chara/c001_2.png");
+	chara_img[0][2] = LoadGraph("data/img/chara/c001_3.png");
+	chara_img[0][3] = LoadGraph("data/img/chara/c001_4.png");
+
+	chara_img[1][0] = LoadGraph("data/img/chara/c002_1.png");
+	chara_img[1][1] = LoadGraph("data/img/chara/c002_2.png");
+	chara_img[1][2] = LoadGraph("data/img/chara/c002_3.png");
+	chara_img[1][3] = LoadGraph("data/img/chara/c002_4.png");
 
 	// デザイン系
 	design_img[0] = LoadGraph("data/img/design/bar.png");
@@ -152,10 +187,29 @@ void load_Img() {
 	design_img[3] = LoadGraph("data/img/design/dialog.png");
 
 	for (int i = 0; i < 2; i++)
-		GraphFilter(chara_img[i], DX_GRAPH_FILTER_DOWN_SCALE, 2);
+		GraphFilter(chara_img[i][0], DX_GRAPH_FILTER_DOWN_SCALE, 2);
 
 	// タイトルの画像読み込み
-	init_Title();
+	title_img_1 = LoadGraph("data/img/title/title_1.png");
+	title_img_2 = LoadGraph("data/img/title/title_2.png");
+
+	menu_bg_1 = LoadGraph("data/img/title/bg_1.png");
+	menu_bg_2 = LoadGraph("data/img/title/bg_2.png");
+
+	title_selected = LoadGraph("data/img/title/selected.png");
+
+	LPCSTR font_path = "data/font/Veger(light).ttf";
+
+	menu_sehnd[0] = LoadSoundMem("data/sound/se/menu/sele_u.wav");
+	menu_sehnd[1] = LoadSoundMem("data/sound/se/menu/sele_d.wav");
+	menu_sehnd[2] = LoadSoundMem("data/sound/se/menu/sele_c.wav");
+
+	if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) > 0) {
+	}
+	else {
+		// フォント読込エラー処理
+		MessageBox(NULL, "フォントの読込に失敗しちゃった...", "ごめんね＞＜", MB_OK);
+	}
 
 	//自機画像
 	for (int i = 0; i < 2; i++) {
@@ -179,6 +233,9 @@ void load_Img() {
 	// 弾画像
 	LoadDivGraph("data/img/bullet/14x14.png", 84, 14, 6, 14, 14, bullet14_img);
 	LoadDivGraph("data/img/bullet/16x16.png", 48,  6, 7, 14, 14, bullet16_img);
+
+	// 同期読み込み設定に変更
+	//SetUseASyncLoadFlag(FALSE);
 }
 
 // エフェクトの読み込み
@@ -192,6 +249,7 @@ void make_FontData() {
 	font_handle[FONT_HEADING] = CreateFontToHandle("Meiryo", 40, 5, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 	font_handle[FONT_COMBOX]  = CreateFontToHandle("Meiryo", 10, 2, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 	font_handle[FONT_TI_MENU] = CreateFontToHandle("Voyager Grotesque Light", 40, 2, DX_FONTTYPE_ANTIALIASING_4X4);
+	font_handle[FONT_BIG]     = CreateFontToHandle("Voyager Grotesque Light", 60, 2, DX_FONTTYPE_ANTIALIASING_4X4);
 	font_handle[FONT_INGAME]  = CreateFontToHandle("Voyager Grotesque Light", 28, 2, DX_FONTTYPE_ANTIALIASING_4X4);
 }
 
