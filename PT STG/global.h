@@ -36,6 +36,8 @@
 #define FONT_YELLOW  3
 #define FONT_COMBOX  4
 
+#define ITEM_MAX 100
+
 typedef struct {
 	int stats;
 	float x;
@@ -73,7 +75,9 @@ typedef struct {
 	float y;
 	int type;
 	int stats;
-
+	int image_handle;
+	int size;
+		
 }ITEM;
 
 //入力関連
@@ -111,6 +115,9 @@ GLOBAL double fps;
 GLOBAL float frame_Time, frame_Time_2;
 GLOBAL LONGLONG prev_Time;
 
+// アイテム
+GLOBAL ITEM item[ITEM_MAX];
+
 void debug_Message();
 void main_Editor();
 void input_key();
@@ -124,6 +131,11 @@ double fps_Calc();
 void bullet_animation_14(int x, int y, int color, int type);
 void bullet_animation_16(int x, int y, int color, int type);
 void bullet_Animation_Update();
+
+int  item_search_FreeAddress();
+void item_init();
+void item_drop(int x, int y, int type);
+void item_draw();
 
 //-------------------------------
 //debug global area
