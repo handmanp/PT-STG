@@ -57,10 +57,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	debug_Init();
 
 	// ゲームモード : TOP_MENU / GAME / EDITOR
-	gamemode  = TOP_MENU;
+	gamemode  = LOADING;
 	mode_flag = 0;
 	frame     = 0;
 	quit      = true;
+
+	int logo = LoadGraph("data/img/title/Logo.png");
 
 	//----------メインループ------------------------------------------------------------
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() && quit) {
@@ -70,28 +72,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		switch (gamemode) {
 		//------読み込み画面------------------------------------------------------------
 		case LOADING:
+			// 描画
+			DrawBox(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y, 0xFFFFFF, TRUE);
+			DrawGraph((WINDOW_SIZE_X / 2) - (683 / 2), (WINDOW_SIZE_Y / 2) - (400 / 2), logo, TRUE);
 
-			// 敵画像
-			for (int i = 0; i < 21; i++) {
-				if (CheckHandleASyncLoad(enemy_img[i]) == FALSE) load_check[i] = false;
+			// 処理
+			if (frame >= 2500000 * frame_Time) {
+				
+				gamemode = TOP_MENU;
 			}
-
-			// キャラ画像
-			if (CheckHandleASyncLoad(chara_img[0][0]) == FALSE) load_check[21] = false;
-			if (CheckHandleASyncLoad(chara_img[0][1]) == FALSE) load_check[22] = false;
-			if (CheckHandleASyncLoad(chara_img[0][2]) == FALSE) load_check[23] = false;
-			if (CheckHandleASyncLoad(chara_img[0][3]) == FALSE) load_check[24] = false;
-			if (CheckHandleASyncLoad(chara_img[1][0]) == FALSE) load_check[25] = false;
-			if (CheckHandleASyncLoad(chara_img[1][1]) == FALSE) load_check[26] = false;
-			if (CheckHandleASyncLoad(chara_img[1][2]) == FALSE) load_check[27] = false;
-			if (CheckHandleASyncLoad(chara_img[1][3]) == FALSE) load_check[28] = false;
-
-			// デザイン系
-			for (int i = 0; i < 4; i++) {
-				if (CheckHandleASyncLoad(design_img[i]) == FALSE) load_check[i + 29] = false; // 33
-			}
-
-
 			break;
 		//------トップ画面------------------------------------------------------------
 		case TOP_MENU:
@@ -137,10 +126,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	return 0;
 }
 
+
 // 画像ヨミコP身
 void load_Img() {
-
-	//SetUseASyncLoadFlag(TRUE); // 非同期読み込み
 
 	// 背景
 	bg_handle = LoadGraph(_T("data/img/bg/bg000.png"));
@@ -186,9 +174,6 @@ void load_Img() {
 	design_img[2] = LoadGraph("data/img/design/circle.png");
 	design_img[3] = LoadGraph("data/img/design/dialog.png");
 
-	for (int i = 0; i < 2; i++)
-		GraphFilter(chara_img[i][0], DX_GRAPH_FILTER_DOWN_SCALE, 2);
-
 	// タイトルの画像読み込み
 	title_img_1 = LoadGraph("data/img/title/title_1.png");
 	title_img_2 = LoadGraph("data/img/title/title_2.png");
@@ -198,31 +183,9 @@ void load_Img() {
 
 	title_selected = LoadGraph("data/img/title/selected.png");
 
-	LPCSTR font_path = "data/font/Veger(light).ttf";
-
 	menu_sehnd[0] = LoadSoundMem("data/sound/se/menu/sele_u.wav");
 	menu_sehnd[1] = LoadSoundMem("data/sound/se/menu/sele_d.wav");
 	menu_sehnd[2] = LoadSoundMem("data/sound/se/menu/sele_c.wav");
-
-	if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) > 0) {
-	}
-	else {
-		// フォント読込エラー処理
-		MessageBox(NULL, "フォントの読込に失敗しちゃった...", "ごめんね＞＜", MB_OK);
-	}
-
-	//自機画像
-	for (int i = 0; i < 2; i++) {
-		int buf[5];
-		if (i == 0) {
-			LoadDivGraph("data/img/ship/ship_bro.png", 5, 1, 5, 100, 50, buf);
-		}else{
-			//LoadDivGraph("data/img/ship/ship_bro.png", 5, 1, 5, 100, 50, buf);
-		}
-		for (int j = 0; j < 5; j++) {
-			ship_img[j][i] = buf[j];
-		}
-	}
 
 	// bg面画像
 	LoadDivGraph("data/img/tip/obj.png", 880, 88, 10, 24, 24, maptip_img);
@@ -234,8 +197,32 @@ void load_Img() {
 	LoadDivGraph("data/img/bullet/14x14.png", 84, 14, 6, 14, 14, bullet14_img);
 	LoadDivGraph("data/img/bullet/16x16.png", 48,  6, 7, 14, 14, bullet16_img);
 
-	// 同期読み込み設定に変更
-	//SetUseASyncLoadFlag(FALSE);
+	// 最後に1/2
+	for (int i = 0; i < 2; i++)
+		GraphFilter(chara_img[i][0], DX_GRAPH_FILTER_DOWN_SCALE, 2);
+
+	// 軽いやつ読み込み
+	LPCSTR font_path = "data/font/Veger(light).ttf";
+	if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) > 0) {
+	}
+	else {
+		// フォント読込エラー処理
+		MessageBox(NULL, "フォントの読込に失敗しちゃった...", "ごめんね＞＜", MB_OK);
+	}
+
+	// 自機画像
+	for (int i = 0; i < 2; i++) {
+		int buf[5];
+		if (i == 0) {
+			LoadDivGraph("data/img/ship/ship_bro.png", 5, 1, 5, 100, 50, buf);
+		}
+		else {
+			//LoadDivGraph("data/img/ship/ship_bro.png", 5, 1, 5, 100, 50, buf);
+		}
+		for (int j = 0; j < 5; j++) {
+			ship_img[j][i] = buf[j];
+		}
+	}
 }
 
 // エフェクトの読み込み

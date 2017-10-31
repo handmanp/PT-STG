@@ -124,8 +124,6 @@ GLOBAL combo	com;
 GLOBAL int		gamemode;
 GLOBAL bool		quit;
 
-GLOBAL bool		load_check[200];
-
 GLOBAL int b_anim_3, b_anim_4, b_anim_6, b_dir_6, b_dir_3;
 
 //fpsä÷òAïœêî
@@ -149,7 +147,7 @@ void ingame_GUI();
 double fps_Calc();
 float variable_Fps();
 
-void	init_Title();
+int		load_check_loop();
 void	draw_Menu();
 
 void	bullet_animation_14(int x, int y, int color, int type);
