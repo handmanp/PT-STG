@@ -202,7 +202,7 @@ void enemy_nuts::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 3, bullets[i].y - 3, bullets[i].x + 3, bullets[i].y + 3, GetColor(255, 255, 255), TRUE);
+			bullet_animation_14(bullets[i].x, bullets[i].y, 2, 1);
 		}
 	}
 }
@@ -285,7 +285,7 @@ void enemy_uni::move() {
 
 void enemy_uni::draw() {
 	if (stats == 1) {
-		DrawGraph(x, y, enemy_img[0], TRUE);
+		DrawGraph(x - 24, y - 24, enemy_img[0], TRUE);
 	}
 }
 
@@ -358,7 +358,7 @@ void enemy_banana::move() {
 
 void enemy_banana::draw() {
 	if (stats == 1) {
-		DrawGraph(x , y, enemy_img[5], TRUE);
+		DrawGraph(x - 64, y - 64, enemy_img[5], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -443,7 +443,7 @@ void enemy_pine::move() {
 
 void enemy_pine::draw() {
 	if (stats == 1) {
-		DrawGraph(x, y, enemy_img[6], TRUE);
+		DrawGraph(x - 24, y - 24, enemy_img[6], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -510,12 +510,11 @@ void enemy_shell::move() {
 
 void enemy_shell::draw() {
 	if (stats == 1) {
-		DrawGraph(x, y, enemy_img[4], TRUE);
+		DrawGraph(x - 24, y - 24, enemy_img[4], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-			DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ŠL");
+			bullet_animation_16(bullets[i].x, bullets[i].y, 4, 0);
 		}
 	}
 	init_OutRangeBullets();
@@ -736,7 +735,7 @@ void enemy_brain::move() {
 
 void enemy_brain::draw() {
 	if (stats == 1) {
-		DrawGraph(x, y - 128, enemy_img[20], TRUE);
+		DrawGraph(x - 128, y - 128, enemy_img[20], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -1093,7 +1092,7 @@ void enemy_sporecore::move() {
 
 void enemy_sporecore::draw() {
 	if (stats == 1) {
-		DrawGraph((int)x - 10, (int)y - 30, enemy_img[10], TRUE);
+		DrawGraph((int)x - 48, (int)y - 48, enemy_img[10], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		DrawBox(bullets[i].x - bullets[i].collision_size, bullets[i].y - bullets[i].collision_size, bullets[i].x + bullets[i].collision_size, bullets[i].y + bullets[i].collision_size, GetColor(255, 255, 255), TRUE);
@@ -1251,7 +1250,7 @@ void enemy_stagbeetle::move() {
 
 void enemy_stagbeetle::draw() {
 	if (stats == 1) {
-		DrawGraph((int)x - collision_size, (int)y - collision_size, enemy_img[11], TRUE);
+		DrawGraph((int)x - 48, (int)y - 48, enemy_img[11], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		bullet_animation_14(bullets[i].x, bullets[i].y, 3, 0);
@@ -1338,8 +1337,7 @@ void enemy_genocide::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x, bullets[i].y, bullets[i].x + 20, bullets[i].y + 40, GetColor(255, 255, 255), TRUE);
-			DrawFormatString(bullets[i].x + 1, bullets[i].y + 15, GetColor(0, 0, 0), "±Ì");
+			bullet_animation_14(bullets[i].x, bullets[i].y, 5, 2);
 		}
 
 		
@@ -1452,8 +1450,7 @@ void enemy_shindarla::move() {
 
 void enemy_shindarla::draw() {
 	if (stats == 1) {
-		DrawGraph((int)x - collision_size, (int)y - collision_size, enemy_img[17], TRUE);
-		DrawBox(x - collision_size, y - collision_size, x + collision_size, y + collision_size, GetColor(255, 255, 255), FALSE);
+		DrawGraph((int)x - 32, (int)y - 32, enemy_img[17], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -1506,7 +1503,14 @@ void enemy_detecrew::move() {
 
 void enemy_detecrew::draw() {
 	if (stats == 1) {
-		DrawGraph(x - collision_size, y - collision_size, enemy_img[18], TRUE);
+		DrawGraph(x - 24, y - 24, enemy_img[18], TRUE);
+
+	}
+
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			bullet_animation_16(bullets[i].x, bullets[i].y, 4, 1);
+		}
 
 	}
 	init_OutRangeBullets();
