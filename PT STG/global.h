@@ -38,10 +38,17 @@
 #define FONT_TI_MENU 5
 #define FONT_INGAME  6
 #define FONT_BIG     7
+#define FONT_PWUP    8
 
 #define a2r(deg) (DX_PI_F / 180 * (deg))
 
 #define ITEM_MAX 100
+#define DEF_SPEED 4;
+
+enum pu {
+	SpeedUp,
+
+};
 
 typedef struct {
 	int		stats;
@@ -73,6 +80,7 @@ public:
 	void draw();
 	void shot();
 	void shot_Move();
+	bool ship_hit(int mx, int my, int col);
 };
 
 // アイテム構造体
@@ -161,6 +169,7 @@ int  item_search_FreeAddress();
 void item_init();
 void item_drop(int x, int y, int type);
 void item_draw();
+void item_move();
 
 //-------------------------------
 //debug global area

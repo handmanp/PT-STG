@@ -247,6 +247,7 @@ void make_FontData() {
 	font_handle[FONT_TI_MENU] = CreateFontToHandle("Voyager Grotesque Light", 40, 2, DX_FONTTYPE_ANTIALIASING_4X4);
 	font_handle[FONT_BIG]     = CreateFontToHandle("Voyager Grotesque Light", 60, 2, DX_FONTTYPE_ANTIALIASING_4X4);
 	font_handle[FONT_INGAME]  = CreateFontToHandle("Voyager Grotesque Light", 28, 2, DX_FONTTYPE_ANTIALIASING_4X4);
+	font_handle[FONT_PWUP]    = CreateFontToHandle("Voyager Grotesque Light", 22, 2, DX_FONTTYPE_ANTIALIASING_4X4);
 }
 
 void debug_Init() {
@@ -290,6 +291,8 @@ void debug_GameMain() {
 	// debug my ship move and draw
 	ship.move();
 	ship.draw();
+
+	item_move();
 
 	// draw debug message
 	debug_Message();

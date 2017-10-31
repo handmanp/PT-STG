@@ -42,14 +42,22 @@ int enemy::collision_Check() {
 				hp--;
 				// 敵死亡時
 				if (hp <= 0) {
+
 					// エフェクトの再生開始
 					effect_hnd = PlayEffekseer2DEffect(effects[0]);
 					// スケール変更
 					SetScalePlayingEffekseer2DEffect(effect_hnd, 25.0f, 25.0f, 25.0f);
 					// 敵の位置にエフェクトをあわせる
 					SetPosPlayingEffekseer2DEffect(effect_hnd, x, y, 0);
+
 					// 音再生
 					PlaySoundMem(game_sehnd[1], DX_PLAYTYPE_BACK, TRUE);
+
+					// ランダムでアイテム
+					if (GetRand(10) == 1) {
+						item_drop(x, y, 0);
+					}
+
 					// 敵が死んでも弾が残ってたら存在させたままにする(stats = 2)
 					if (flag == false) {
 						stats = 0;

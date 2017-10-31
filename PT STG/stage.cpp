@@ -51,11 +51,53 @@ void my_Stage::init(int sx, int sy) {
 	// 初期化
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
-			stage_size[i][j] = 0;
+			stage_size[i][j] = -1;
 		}
 	}
 	memset(enemy_count, 0, sizeof(enemy_count));
 }
+
+// メタ入力  true = 多分成功してる, false = 多分失敗してる
+// *------------------------------------------------------------------------------------*
+void  my_Stage::io_LoadMetaData(char *path) {
+
+	FILE *fp_meta;
+	fopen_s(&fp_meta, path, "r");
+
+	STAGE_METAS meta;
+
+	fread_s(&meta, sizeof(STAGE_METAS), sizeof(STAGE_METAS), 1, fp_meta);
+
+	stage_size_x = meta.x;
+	stage_size_y = meta.y;
+}
+
+// 入力  true = 多分成功してる, false = 多分失敗してる
+// *------------------------------------------------------------------------------------*
+
+bool my_Stage::io_MapdataFileLoad() {
+
+	char paths[128];
+	sprintf_s(paths, 128, "data/maps/stage_%d/mapmeta.txt", 1);
+	io_LoadMetaData(paths);
+
+	init(stage_size_x, stage_size_y);
+
+	char path[128];
+	//sprintf_s(path, 128, "data/editor/saves/0%d/mapdata.txt", map_slot);
+	sprintf_s(path, 128, "data/maps/stage_%d/mapdata.txt", 1);
+
+	ifstream ifs; ifs.open(path);
+	for (int i = 0; i < stage_size_x; ++i) {
+		for (int j = 0; j < stage_size_y; ++j) {
+			ifs >> stage_size[i][j];
+		}
+	}
+	ifs.close();
+
+	return true;
+}
+
 
 // ステージの破棄
 // ※コレ通さないと死ぬから注意
@@ -73,7 +115,7 @@ void my_Stage::move(int s, int r) {
 	// スピードをメンバに追加
 	speed = s;
 	//ラジアンにする
-	float move_rad = (DX_PI_F / 180.0f) * r;
+	move_rad = (DX_PI_F / 180.0f) * r;
 	// 移動処理
 	x += sinf(move_rad) * s * frame_Time;
 	y += cosf(move_rad) * s * frame_Time;
@@ -83,14 +125,15 @@ void my_Stage::move(int s, int r) {
 void my_Stage::draw() {
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
-			if (stage_size[i][j] == 0) {
+			if (stage_size[i][j] != -1) {
 				//ブロックの相対座標
 				int dpx = (i * STAGE_TIP_SIZE) - x;
 				int dpy = (j * STAGE_TIP_SIZE) - y;
 				//面内のみ描画
 				if (dpx >= -STAGE_TIP_SIZE && dpx <= WINDOW_SIZE_X + STAGE_TIP_SIZE &&
 					dpy >= -STAGE_TIP_SIZE && dpy <= WINDOW_SIZE_Y + STAGE_TIP_SIZE) {
-					DrawBox(dpx, dpy, dpx + STAGE_TIP_SIZE, dpy + STAGE_TIP_SIZE, GetColor(40, 40, 40), FALSE);
+					
+					DrawGraph(dpx, dpy, maptip_img[stage_size[i][j]], TRUE);
 				}
 			}
 		}

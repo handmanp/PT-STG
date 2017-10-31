@@ -12,7 +12,7 @@
 void my_Ship::init() {
 	x              = 200.0f;
 	y              = 360.0f;
-	speed          = 10.0f;
+	speed          = 4.0f;
 	collision_size = 3;
 	anim           = 2;
 	type           = 0;
@@ -41,9 +41,11 @@ void my_Ship::draw() {
 			DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
 		}
 	}
-
+	// POWER UP
 	for (int i = 0; i < 6; i++) {
 		DrawGraph((i * 128) + 256, 680, pwrup_img[1], TRUE);
+		int str_x = 64 - (GetDrawFormatStringWidthToHandle(font_handle[FONT_PWUP], "%s", pwer_str[i]) / 2);
+		DrawFormatStringToHandle((i * 128) + 256 + str_x, 683, GetColor(222, 222, 222), font_handle[FONT_PWUP], "%s", pwer_str[i]);
 	}
 }
 
@@ -94,8 +96,13 @@ void my_Ship::move() {
 	int input_stats = 0;
 	float rad = 0.0f;
 
+	speed = (float)DEF_SPEED + (powerup[powerup_select] * 2);
+
 	//ショットキー
 	if ((ctrl_key[KEY_INPUT_Z] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_X] == 1) && frame % ((((int)fps + 1) / 30) + 1) == 0) shot();
+	if ((ctrl_key[KEY_INPUT_C] == 1 || ctrl_pad.Buttons[XINPUT_BUTTON_Y] == 1)) {
+		powerup[powerup_select]++;
+	}
 
 	shot_Move();
 
@@ -181,7 +188,15 @@ void my_Ship::move() {
 		if (anim > 4) anim = 4;
 		if (anim < 0) anim = 0;
 	}
+}
 
+// 自機と衝突したかどうか
+//--------------------------------------------------------------------------------
+bool my_Ship::ship_hit(int mx, int my, int col) {
+	if (x > mx - col && x < mx + col && y > my - col && y < my + col) {
+		return true;
+	}
+	return false;
 }
 
 
@@ -217,6 +232,29 @@ void item_drop(int x, int y, int type) {
 	item[free].type = type;
 	item[free].x = x;
 	item[free].y = y;
+}
+
+// ステに合わせて移動
+//--------------------------------------------------------------------------------
+void item_move() {
+
+	for (int i = 0; i < ITEM_MAX; i++) {
+		if (item[i].stats == 1) {
+
+			// 移動
+			item[i].x += sinf(test.move_rad) * test.speed * frame_Time;
+			item[i].y += cosf(test.move_rad) * test.speed * frame_Time;
+
+			// 画面外にいったら消える
+			if (item[i].x < -100 || item[i].y < -100 || item[i].x > WINDOW_SIZE_X + 100 || item[i].y > WINDOW_SIZE_Y + 100) {
+				item[i].stats = 0;
+			}
+			if (ship.ship_hit(item[i].x, item[i].y, 10)) {
+				ship.powerup_select++;
+				if (ship.powerup_select > 6) ship.powerup_select = 0;
+			}
+		}
+	}
 }
 
 // アイテムを描画

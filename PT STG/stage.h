@@ -33,6 +33,7 @@ public:
 	int		enemy_count[22];
 
 	float	speed;
+	float   move_rad;
 
 	// 動的確保用ポインタ
 	int        **stage_size;
@@ -46,6 +47,15 @@ public:
 	void	io_StageDataLoad();
 	void	stage_Progression();
 	void    stage_EnemyMove();
+	bool    io_MapdataFileLoad();
+	void    io_LoadMetaData(char *path);
 
 };
+
+typedef struct {
+	bool stats;
+	int x;
+	int y;
+}STAGE_METAS;
+
 
