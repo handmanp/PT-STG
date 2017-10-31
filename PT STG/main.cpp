@@ -76,6 +76,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		case GAME:
 
 			debug_GameMain();
+			ingame_GUI();
 			break;
 
 		//------エディタモード------------------------------------------------------------
@@ -144,6 +145,12 @@ void load_Img() {
 	chara_img[0] = LoadGraph("data/img/chara/sis_old.png");
 	chara_img[1] = LoadGraph("data/img/chara/sis_young.png");
 
+	// デザイン系
+	design_img[0] = LoadGraph("data/img/design/bar.png");
+	design_img[1] = LoadGraph("data/img/design/bar2.png");
+	design_img[2] = LoadGraph("data/img/design/circle.png");
+	design_img[3] = LoadGraph("data/img/design/dialog.png");
+
 	for (int i = 0; i < 2; i++)
 		GraphFilter(chara_img[i], DX_GRAPH_FILTER_DOWN_SCALE, 2);
 
@@ -185,6 +192,7 @@ void make_FontData() {
 	font_handle[FONT_HEADING] = CreateFontToHandle("Meiryo", 40, 5, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 	font_handle[FONT_COMBOX]  = CreateFontToHandle("Meiryo", 10, 2, DX_FONTTYPE_ANTIALIASING_EDGE_4X4);
 	font_handle[FONT_TI_MENU] = CreateFontToHandle("Voyager Grotesque Light", 40, 2, DX_FONTTYPE_ANTIALIASING_4X4);
+	font_handle[FONT_INGAME]  = CreateFontToHandle("Voyager Grotesque Light", 28, 2, DX_FONTTYPE_ANTIALIASING_4X4);
 }
 
 void debug_Init() {
@@ -206,6 +214,10 @@ void debug_Init() {
 	frame_Time = 1.0f / 60.0f;
 	frame_Time_2 = 1.0f;
 	prev_Time = GetNowHiPerformanceCount();
+
+	// スコアと残基
+	score = 0;
+	left = 3;
 }
 
 void debug_GameMain() {
@@ -233,7 +245,7 @@ void debug_GameMain() {
 }
 
 void debug_Message() {
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "Scroll_X:%d / Scroll_Y:%d", (int)test.x, (int)test.y);
+	// DrawFormatString(0, 0, GetColor(255, 255, 255), "Scroll_X:%d / Scroll_Y:%d", (int)test.x, (int)test.y);
 }
 
 double fps_Calc() {

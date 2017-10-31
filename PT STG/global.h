@@ -36,6 +36,7 @@
 #define FONT_YELLOW  3
 #define FONT_COMBOX  4
 #define FONT_TI_MENU 5
+#define FONT_INGAME  6
 
 #define ITEM_MAX 100
 
@@ -81,6 +82,9 @@ typedef struct {
 		
 }ITEM;
 
+GLOBAL int			score;
+GLOBAL int			left;
+
 //“ü—ÍŠÖ˜A
 GLOBAL char			ctrl_key[256];
 GLOBAL int			mouse_x, mouse_y;
@@ -93,6 +97,7 @@ GLOBAL int		ship_img[5][2];
 GLOBAL int		maptip_img[880];
 GLOBAL int		pwrup_img[2];
 GLOBAL int		chara_img[2];
+GLOBAL int		design_img[4];
 
 GLOBAL int		bullet14_img[84];
 GLOBAL int		bullet16_img[48];
@@ -128,6 +133,7 @@ void input_key();
 void load_Img();
 void load_Effect();
 void make_FontData();
+void ingame_GUI();
 
 double fps_Calc();
 float variable_Fps();

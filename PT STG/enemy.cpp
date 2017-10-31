@@ -413,7 +413,7 @@ void enemy_pine::move_shot() {
 void enemy_pine::move() {
 	if (stats == 1) {
 		x -= test.speed * frame_Time;
-		DrawFormatString(300, 10, GetColor(0, 0, 0), "%d", x);
+		//DrawFormatString(300, 10, GetColor(0, 0, 0), "%d", x);
 		// mode=0:上昇
 		// ステージ座標が100になったら(仮) upper_y まで上昇
 		if (mode == 0 && y >= upper_y && x - ship.x <= 256 && x - ship.x >= -256) {

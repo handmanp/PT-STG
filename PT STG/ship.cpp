@@ -29,7 +29,7 @@ void my_Ship::init() {
 	}
 }
 
-//自機描画
+// 自機描画
 //--------------------------------------------------------------------------------
 void my_Ship::draw() {
 	//描画
@@ -46,7 +46,7 @@ void my_Ship::draw() {
 	}
 }
 
-//発射
+// 発射
 //--------------------------------------------------------------------------------
 void my_Ship::shot() {
 
@@ -92,7 +92,7 @@ void my_Ship::move() {
 	float rad = 0.0f;
 
 	//ショットキー
-	if ((ctrl_key[KEY_INPUT_Z] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_X] == 1) && frame % 2 == 0) shot();
+	if ((ctrl_key[KEY_INPUT_Z] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_X] == 1) && frame % ((((int)fps + 1) / 30) + 1) == 0) shot();
 
 	shot_Move();
 
@@ -154,7 +154,7 @@ void my_Ship::move() {
 	}
 
 	//アニメーション管理
-	if (frame % 5 == 0) {
+	if (frame % ((int)fps + 1 / 60) == 0) {
 
 		//アニメーション
 		if (rad != -1.0f) {
