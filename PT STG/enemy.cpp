@@ -363,7 +363,7 @@ void enemy_banana::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			bullet_animation_16(bullets[i].x, bullets[i].y, 2, 1);
+			bullet_animation_16(bullets[i].x, bullets[i].y, 0, 0);
 		}
 	}
 	init_OutRangeBullets();
@@ -840,7 +840,7 @@ void enemy_meatball::move() {
 
 		// 円運動
 		if (mode == 1) {
-			deg -= 5 * temp;
+			deg -= 5 * temp * frame_Time;
 			x = r * sinf(a2r(deg)) * temp + sh_x;
 			y = r * cosf(a2r(deg)) * temp + sh_y;
 
@@ -897,7 +897,7 @@ void enemy_statue::move() {
 
 		// 移動前の準備(とりあえず2秒後)
 		if (mode == 1) {
-			if (frame % 120 == 0) {
+			if (frame % (2 * (int)fps) == 0) {
 				rad = atan2f(ship.x - x, ship.y - y);
 				mode = 2;
 				collision_size = 48;
@@ -906,7 +906,7 @@ void enemy_statue::move() {
 
 		// 実際の移動
 		if (mode == 2) {
-			speed += 0.3f;
+			speed += 0.3f * frame_Time;
 			x += sinf(rad) * speed * frame_Time;
 			y += cosf(rad) * speed * frame_Time;
 		}
@@ -979,10 +979,10 @@ void enemy_worm::move() {
 		if (mode == 1) {
 			for (int i = 1; i < 6; i++) {
 				if (GetRand(1) == 0) {
-					deg += 1;
+					deg += 1 * frame_Time;
 				}
 				else {
-					deg -= 1;
+					deg -= 1 * frame_Time;
 				}
 				
 				ball[i].x = 48 * sinf(a2r(deg * i)) + ball[i-1].x;
@@ -996,7 +996,7 @@ void enemy_worm::move() {
 				}
 			}
 
-			if (frame % 30 == 0) {
+			if (frame % (1/2 * (int)fps) == 0) {
 				shot();
 			}
 		}
@@ -1076,7 +1076,7 @@ void enemy_sporecore::move() {
 
 	if (stats == 1) {
 
-		if (mode == 0 && frame % 180 == 0) {
+		if (mode == 0 && frame % (3 * (int)fps) == 0) {
 			mode = 1;
 		}
 
@@ -1144,7 +1144,7 @@ void enemy_ivy::move() {
 
 	// 死 = 復活
 	if (stats == 0) {
-		if (frame % 180 == 0) {
+		if (frame % (3 * (int)fps) == 0) {
 			stats = 1;
 			hp = 5;
 			mode = 0;
@@ -1210,7 +1210,7 @@ void enemy_stagbeetle::move_shot() {
 
 void enemy_stagbeetle::move() {
 	if (stats == 1) {
-		if (mode == 0 && frame % 60 == 0) {
+		if (mode == 0 && frame % (int)fps == 0) {
 			if (y >= temp_y) {
 				speed = test.speed;
 				mode = 1;	// to up
@@ -1309,11 +1309,11 @@ void enemy_genocide::move() {
 		}
 
 		// 2-4秒の間で噴射
-		if (frame % (120 + random) == 0) {
+		if (frame % ((2 + random) * (int)fps) == 0) {
 			if (mode == 1) {
 				shot();
 				mode = 0;
-				random = GetRand(120);
+				random = GetRand(2);
 			}
 
 			// 消滅
@@ -1435,12 +1435,12 @@ void enemy_shindarla::move() {
 		}
 
 		// すぐホーミングを始める
-		if (frame % 30 == 0 && mode == 2) {
+		if (frame % (1/2 * (int)fps) == 0 && mode == 2) {
 			mode = 3;
 		}
 
 		// 時間が経ったら最終角度で直進
-		if (frame % 300 == 0 && mode == 3) {
+		if (frame % (5 * (int)fps) == 0 && mode == 3) {
 			mode = 4;
 		}
 	}
