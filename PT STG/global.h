@@ -129,6 +129,9 @@ void load_Img();
 void load_Effect();
 void make_FontData();
 
+double fps_Calc();
+float variable_Fps();
+
 void	init_Title();
 void	draw_Menu();
 
