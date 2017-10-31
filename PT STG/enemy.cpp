@@ -362,7 +362,7 @@ void enemy_banana::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			bullet_animation_16(bullets[i].x, bullets[i].y, 2, 1);
+			bullet_animation_16(bullets[i].x, bullets[i].y, 0, 0);
 		}
 	}
 	init_OutRangeBullets();

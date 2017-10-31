@@ -118,7 +118,9 @@ void my_Stage::stage_Progression() {
 	for (int i = 0; i < enemy_max; i++) {
 
 		// “oêXÀ•W‚ğŒ}‚¦‚½‚ç
-		if (stage_data[i].start_x == (int)x) {
+		if ((int)x >= stage_data[i].start_x && stage_data[i].stat != -1) {
+
+			stage_data[i].stat = -1;
 
 			// “G‚ÌƒCƒ“ƒXƒ^ƒ“ƒXì¬
 			switch (stage_data[i].enemy_type) {
