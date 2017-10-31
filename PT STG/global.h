@@ -37,6 +37,9 @@
 #define FONT_COMBOX  4
 #define FONT_TI_MENU 5
 #define FONT_INGAME  6
+#define FONT_BIG     7
+
+#define a2r(deg) (DX_PI_F / 180 * (deg))
 
 #define ITEM_MAX 100
 
@@ -96,7 +99,7 @@ GLOBAL int		enemy_img[32];
 GLOBAL int		ship_img[5][2];
 GLOBAL int		maptip_img[880];
 GLOBAL int		pwrup_img[2];
-GLOBAL int		chara_img[2];
+GLOBAL int		chara_img[2][4];
 GLOBAL int		design_img[4];
 
 GLOBAL int		bullet14_img[84];
@@ -106,6 +109,12 @@ GLOBAL int		font_handle[16];
 GLOBAL int		effects[16];
 GLOBAL int		bg_handle;
 
+GLOBAL int		title_img_1, title_img_2;
+GLOBAL int		menu_bg_1, menu_bg_2;
+
+GLOBAL int		title_selected;
+GLOBAL int		menu_sehnd[3];
+
 GLOBAL unsigned int frame;
 
 GLOBAL int		mode_flag;
@@ -114,6 +123,8 @@ GLOBAL combo	com;
 
 GLOBAL int		gamemode;
 GLOBAL bool		quit;
+
+GLOBAL bool		load_check[200];
 
 GLOBAL int b_anim_3, b_anim_4, b_anim_6, b_dir_6, b_dir_3;
 

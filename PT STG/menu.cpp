@@ -2,29 +2,7 @@
 #include "global.h"
 #include "menu.h"
 
-void init_Title() {
 
-	title_img_1 = LoadGraph("data/img/title/title_1.png");
-	title_img_2 = LoadGraph("data/img/title/title_2.png");
-
-	menu_bg_1 = LoadGraph("data/img/title/bg_1.png");
-	menu_bg_2 = LoadGraph("data/img/title/bg_2.png");
-
-	title_selected = LoadGraph("data/img/title/selected.png");
-
-	LPCSTR font_path = "data/font/Veger(light).ttf";
-
-	menu_sehnd[0] = LoadSoundMem("data/sound/se/menu/sele_u.wav");
-	menu_sehnd[1] = LoadSoundMem("data/sound/se/menu/sele_d.wav");
-	menu_sehnd[2] = LoadSoundMem("data/sound/se/menu/sele_c.wav");
-
-	if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) > 0) {
-	}
-	else {
-		// フォント読込エラー処理
-		MessageBox(NULL, "フォントの読込に失敗しちゃった...", "ごめんね＞＜", MB_OK);
-	}
-}
 
 void draw_Menu() {
 	switch (menu_mode) {
@@ -57,7 +35,7 @@ void draw_Title() {
 	}
 
 	// 各メニューへ移動
-	switch (title.draw(5, title_str)) {
+	switch (title.draw(550, 280, 5, title_str)) {
 	// GAME START
 	case 0:
 		menu_mode = CharaSelect;
@@ -88,15 +66,21 @@ void draw_CharSelect() {
 	// 元に戻す
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	if (chara.selected < 2) 
-		DrawGraph(100, 100, chara_img[chara.selected], TRUE);
+	if (chara.selected < 2) {
+		DrawGraph(-200, (chara.selected * -120) + sin(a2r(rad)) * 10, chara_img[chara.selected][0], TRUE);
+		DrawFormatStringToHandle(600, 200, GetColor(122, 122, 122), font_handle[FONT_BIG], "%s", charSelect_fstr[chara.selected]);
+		DrawFormatStringToHandle(600, 300, GetColor(122, 122, 122), font_handle[FONT_INGAME], "%s", charSelect_mes[chara.selected]);
+	}
 
 	if (frame % ((((int)fps + 1) / 60) + 1) == 0) {
 		title_alpha += title_dir;
 		if (title_alpha > 255 || title_alpha < 0) title_dir *= -1;
+
+		rad++;
+		if (rad > 360) rad = 0;
 	}
 	// 各メニューへ移動
-	switch (chara.draw(3, charSelect_str)) {
+	switch (chara.draw(550, 420, 3, charSelect_str)) {
 	case 0:
 		gamemode = 2;
 		break;
@@ -113,7 +97,9 @@ void draw_CharSelect() {
 
 // かっこいいメニュー
 // =========================================================================================
-int coolmenu::draw(int n, char **str) {
+int coolmenu::draw(int mx, int my, int n, char **str) {
+
+	x = mx, y = my;
 
 	// イージング
 	if (ease_flag != 0) {

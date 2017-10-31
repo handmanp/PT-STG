@@ -13,6 +13,8 @@ typedef struct {
 	int		var_5;
 	int		var_6;
 	int		var_7;
+
+	int		stat;
 }STAGE_DATA;
 
 // ステージ親クラス
