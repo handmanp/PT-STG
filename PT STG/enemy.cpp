@@ -331,7 +331,7 @@ void enemy_banana::move() {
 	if (stats == 1) {
 		x -= test.speed * frame_Time;
 		// mode=1:静止状態
-		if (mode == 0 && frame % (GetRand(299) + 1) == 0) {
+		if (mode == 0 && frame % ((GetRand(2) + 1) * (int) fps) == 0) {
 			mode = 1;
 		}
 
@@ -397,6 +397,7 @@ void enemy_pine::shot() {
 			bullets[free].x = x;
 			bullets[free].y = y;
 			bullets[free].stats = 1;
+			bullets[free].collision_size = 8;
 		}
 		attack_flag = 1;
 	}
@@ -422,10 +423,10 @@ void enemy_pine::move() {
 
 		// mode=1:静止
 		if (mode == 1) {
-			if (attack_flag == 0 && frame % (GetRand(119) + 1) == 0) {
+			if (attack_flag == 0 && frame % (int)fps == 0) {
 				shot();
 			}
-			if (attack_flag == 1 && frame % 60 == 0) {
+			if (attack_flag == 1 && frame % (int)fps == 0) {
 				mode = 2;
 			}
 		}
@@ -449,7 +450,7 @@ void enemy_pine::draw() {
 		if (bullets[i].stats == 1) {
 			// DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
 			// DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ピ");
-			bullet_animation_14(bullets[i].x, bullets[i].y, 0, 0);
+			bullet_animation_14(bullets[i].x, bullets[i].y, 1, 0);
 
 		}
 	}
@@ -995,7 +996,7 @@ void enemy_worm::move() {
 				}
 			}
 
-			if (frame % (1/2 * (int)fps) == 0) {
+			if (frame % (1/2 * (int)fps + 1) == 0) {
 				shot();
 			}
 		}
@@ -1434,7 +1435,7 @@ void enemy_shindarla::move() {
 		}
 
 		// すぐホーミングを始める
-		if (frame % (1/2 * (int)fps) == 0 && mode == 2) {
+		if (frame % (1 * (int)fps) == 0 && mode == 2) {
 			mode = 3;
 		}
 

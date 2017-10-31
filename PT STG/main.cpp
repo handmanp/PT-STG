@@ -303,7 +303,7 @@ void debug_GameMain() {
 }
 
 void debug_Message() {
-	// DrawFormatString(0, 0, GetColor(255, 255, 255), "Scroll_X:%d / Scroll_Y:%d", (int)test.x, (int)test.y);
+	//DrawFormatString(600, 0, GetColor(255, 255, 255), "Scroll_X:%d / Scroll_Y:%d", (int)pine[1].attack_flag, (int)pine[1].mode);
 }
 
 double fps_Calc() {
