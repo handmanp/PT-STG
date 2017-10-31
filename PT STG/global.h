@@ -120,6 +120,8 @@ GLOBAL double	fps;
 GLOBAL float	frame_Time, frame_Time_2;
 GLOBAL LONGLONG prev_Time;
 
+GLOBAL ITEM item[ITEM_MAX];
+
 void debug_Message();
 void main_Editor();
 void input_key();
