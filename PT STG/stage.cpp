@@ -127,7 +127,7 @@ void my_Stage::stage_Progression() {
 
 				// *------------------------ Stage 1 ------------------------*
 
-				// [0] ナッツ
+				// [0] ナッツ OK
 			case EneNuts:
 				nuts[enemy_count[EneNuts]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4, stage_data[i].var_5);
 				enemy_count[EneNuts]++;
@@ -144,7 +144,7 @@ void my_Stage::stage_Progression() {
 				enemy_count[EneUnis]++;
 				break;
 
-				// [3] ジェノサイドバナナ
+				// [3] ジェノサイドバナナ OK
 			case EneBanana:
 				banana[enemy_count[EneBanana]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneBanana]++;
@@ -156,7 +156,7 @@ void my_Stage::stage_Progression() {
 				enemy_count[EnePine]++;
 				break;
 
-				// [5] カイ
+				// [5] カイ OK
 			case EneKai:
 				shell[enemy_count[EneKai]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneKai]++;

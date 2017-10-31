@@ -251,18 +251,17 @@ void enemy_nuts::move_shot() {
 // 移動
 // ----------------------------------------------------------------------------
 void enemy_nuts::move() {
-
 	if (stats != 0) {
 		// 横移動
 		x -= speed * frame_Time;
 		// 正弦波移動
-		r += 10;
+		r += 10 * frame_Time;
 		if (r >= 360) r = 0;
 		y = py + cosf((DX_PI_F / 180) * r) * width;
 		// 画面外に行ったら消す
 		// if (x < collision_size * -2) stats = 0;
 
-		if (frame % 120 == 0 && stats == 1) {
+		if (frame % (2 * (int)fps) == 0 && stats == 1) {
 			shot();
 		}
 		move_shot();
@@ -432,18 +431,19 @@ void enemy_pine::move() {
 		x -= test.speed * frame_Time;
 		//DrawFormatString(300, 10, GetColor(0, 0, 0), "%d", x);
 		// mode=0:上昇
-		// ステージ座標が100になったら(仮) upper_y まで上昇
+		// upper_y まで上昇
 		if (mode == 0 && y >= upper_y && x - ship.x <= 256 && x - ship.x >= -256) {
 			y -= 10.0f * frame_Time;
-			if (y == upper_y) { mode = 1; }  //  upper_y に達したら静止状態に移行
+
+			if (y <= upper_y)  mode = 1;  //  upper_y に達したら静止状態に移行
 		}
 
 		// mode=1:静止
 		if (mode == 1) {
-			if (attack_flag == 0 && frame % (int)fps == 0) {
+			if (attack_flag == 0 && frame % (int)(1555.f * frame_Time) == 0) {
 				shot();
 			}
-			if (attack_flag == 1 && frame % (int)fps == 0) {
+			if (attack_flag == 1 && (frame % (int)(1933.f * frame_Time)) == 0) {
 				mode = 2;
 			}
 		}
@@ -467,7 +467,7 @@ void enemy_pine::draw() {
 		if (bullets[i].stats == 1) {
 			// DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
 			// DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ピ");
-			bullet_animation_14(bullets[i].x, bullets[i].y, 1, 0);
+			bullet_animation_14(bullets[i].x, bullets[i].y, 1, 1);
 
 		}
 	}
@@ -515,7 +515,7 @@ void enemy_shell::move() {
 		x -= test.speed * frame_Time;
 
 		// 1~180フレーム間(0~3秒)ランダムで弾を生成
-		if (frame % (GetRand(179) + 1) == 0) {
+		if (frame % ((GetRand(2) + 1) * (int)fps)== 0) {
 			shot();
 		}
 
@@ -681,7 +681,6 @@ void enemy_brain::move_shot() {
 
 void enemy_brain::move() {
 	if (stats == 1) {
-
 		if (mode == 0 && frame % (5 * (int)fps) == 0) {
 			// 円形弾
 			if (counter == 0) {
@@ -945,6 +944,7 @@ void enemy_statue::draw() {
 // warm
 void enemy_worm::init(int HP, float start_x, float start_y, int stat) {
 	mode = 0;
+	minus = 1;
 	hp = HP;
 	x = start_x;
 	y = start_y;
@@ -984,35 +984,37 @@ void enemy_worm::move_shot() {
 }
 
 void enemy_worm::move() {
+	for (int i = 0; i < 6; i++) {
+		ball[i].x -= test.speed * frame_Time;
+	}
 	if (stats == 1) {
-		if (mode == 0 && frame % 120 == 0) {
-			mode = 1;
-		}
 
 		/*
 		クネル動き
 		*/
-		if (mode == 1) {
+		if (mode == 0) {
 			for (int i = 1; i < 6; i++) {
-				if (GetRand(1) == 0) {
-					deg += 1 * frame_Time;
+				if (bullets[i].rad <= -90 || bullets[i].rad >= 90) {
+					minus *= -1;;
 				}
 				else {
-					deg -= 1 * frame_Time;
+					deg -= 1 * minus * frame_Time;
 				}
 				
-				ball[i].x = 48 * sinf(a2r(deg * i)) + ball[i-1].x;
+				ball[i].x = 48 * sinf(a2r(deg * i)) + ball[i-1].x; //48
 				ball[i].y = 48 * cosf(a2r(deg * i)) + ball[i-1].y;
 
+				/*
 				if (deg > 360) {
 					deg = 0;
 				}
 				if (deg < 0) {
 					deg = 360;
 				}
+				*/
 			}
 
-			if (frame % (1/2 * (int)fps + 1) == 0) {
+			if (frame % ((int)fps / 2) == 0) {
 				shot();
 			}
 		}
@@ -1031,11 +1033,13 @@ void enemy_worm::draw() {
 				// DrawGraph(ball[0].x + ball[0].collision_size, ball[0].y + ball[0].collision_size, enemy_img[13], TRUE);
 				// break;
 			case 5:		// 頭
-				DrawGraph(ball[5].x - ball[5].collision_size, ball[5].y - ball[5].collision_size, enemy_img[12], TRUE);
+				//DrawGraph(ball[5].x - ball[5].collision_size, ball[5].y - ball[5].collision_size, enemy_img[12], TRUE);
+				DrawRotaGraph(ball[5].x - 24, ball[5].y - 24, 1.0, a2r(deg), enemy_img[12], TRUE, 1);
 				break;
 			default:	// 胴体
-				DrawGraph(ball[i].x - 24, ball[i].y - 24, enemy_img[14], TRUE);
-				DrawCircle(ball[i].x, ball[i].y, ball[i].collision_size, GetColor(255, 255, 255), TRUE, 1);
+				//DrawGraph(ball[i].x - 24, ball[i].y - 24, enemy_img[14], TRUE);
+				DrawRotaGraph(ball[i].x - 24, ball[5].y - 24, 1.0, a2r(deg), enemy_img[14], TRUE, 1);
+				//DrawCircle(ball[i].x, ball[i].y, ball[i].collision_size, GetColor(255, 255, 255), TRUE, 1);
 				break;
 			}
 
@@ -1225,6 +1229,7 @@ void enemy_stagbeetle::move_shot() {
 }
 
 void enemy_stagbeetle::move() {
+	x -= test.speed * frame_Time;
 	if (stats == 1) {
 		if (mode == 0 && frame % (int)fps == 0) {
 			if (y >= temp_y) {
@@ -1456,7 +1461,7 @@ void enemy_shindarla::move() {
 		}
 
 		// 時間が経ったら最終角度で直進
-		if (frame % (5 * (int)fps) == 0 && mode == 3) {
+		if (frame % (3 * (int)fps) == 0 && mode == 3) {
 			mode = 4;
 		}
 	}
@@ -1471,7 +1476,7 @@ void enemy_shindarla::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			bullet_animation_16(bullets[i].x, bullets[i].y, 3, 5);
+			bullet_animation_16(bullets[i].x, bullets[i].y, 3, 0);
 		}
 	}
 	init_OutRangeBullets();
