@@ -173,7 +173,7 @@ public:
 class enemy_worm : public enemy {
 public:
 	int mode;
-	int deg;
+	float deg;
 	int minus;
 	BULLET ball[6];
 	void init(int HP, float start_x, float start_y, int stat);

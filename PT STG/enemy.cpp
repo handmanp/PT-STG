@@ -1053,27 +1053,26 @@ void enemy_worm::move_shot() {
 
 void enemy_worm::move() {
 	for (int i = 0; i < 6; i++) {
-
 		ball[i].x -= sinf(test.move_rad) * test.speed * frame_Time;
 		ball[i].y -= cosf(test.move_rad) * test.speed * frame_Time;
-
 	}
 	if (stats == 1) {
 
 		/*
 		ƒNƒlƒ‹“®‚«
 		*/
+
 		if (mode == 0) {
+			deg -= 0.5 * minus * frame_Time;
+
+			if (deg <= -40.f || deg >= 40.f) {
+				minus *= -1;
+			}
+
 			for (int i = 1; i < 6; i++) {
-				if (bullets[i].rad <= -90 || bullets[i].rad >= 90) {
-					minus *= -1;;
-				}
-				else {
-					deg -= 1 * minus * frame_Time;
-				}
 				
-				ball[i].x = 48 * sinf(a2r(deg * i)) + ball[i-1].x; //48
-				ball[i].y = 48 * cosf(a2r(deg * i)) + ball[i-1].y;
+				ball[i].x = 32 * sinf(a2r(deg * i)) + ball[i-1].x; //48
+				ball[i].y = 32 * cosf(a2r(deg * i)) + ball[i-1].y;
 
 				/*
 				if (deg > 360) {
@@ -1088,6 +1087,7 @@ void enemy_worm::move() {
 			if (frame % ((int)fps / 2) == 0) {
 				shot();
 			}
+
 		}
 
 	}
@@ -1097,19 +1097,26 @@ void enemy_worm::move() {
 }
 
 void enemy_worm::draw() {
+	DrawFormatString(10, 200, 0xFFFFFF, "%f , %f:%f", deg, x, y);
 	if (stats == 1) {
 		for (int i = 0; i < 6; i++) {
 			switch (i) {
-			// case 0:	// K”ö
+			 case 0:	// K”ö:13
 				// DrawGraph(ball[0].x + ball[0].collision_size, ball[0].y + ball[0].collision_size, enemy_img[13], TRUE);
+				 DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg + 90), enemy_img[14], TRUE, 1);
 				// break;
-			case 5:		// “ª
+			case 5:		// “ª:12
 				//DrawGraph(ball[5].x - ball[5].collision_size, ball[5].y - ball[5].collision_size, enemy_img[12], TRUE);
-				DrawRotaGraph(ball[5].x - 24, ball[5].y - 24, 1.0, a2r(deg), enemy_img[12], TRUE, 1);
+				//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[12], TRUE, 1); //success
+				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[12], TRUE, 1);
+				x = ball[i].x;
+				y = ball[i].y;
+
 				break;
-			default:	// “·‘Ì
+			default:	// “·‘Ì:14
 				//DrawGraph(ball[i].x - 24, ball[i].y - 24, enemy_img[14], TRUE);
-				DrawRotaGraph(ball[i].x - 24, ball[5].y - 24, 1.0, a2r(deg), enemy_img[14], TRUE, 1);
+				//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[14], TRUE, 1); // success
+				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[14], TRUE, 1);
 				//DrawCircle(ball[i].x, ball[i].y, ball[i].collision_size, GetColor(255, 255, 255), TRUE, 1);
 				break;
 			}
