@@ -6,7 +6,39 @@
 #define GAME     2
 #define EDITOR   3
 
-
+class bg_star {
+public:
+	float x[50];
+	float y[50];
+	int   layer[50];
+	void init() {
+		for (int i = 0; i < 50; i++) {
+			x[i] = (float)GetRand(WINDOW_SIZE_X);
+			y[i] = (float)GetRand(WINDOW_SIZE_Y);
+			layer[i] = GetRand(3);
+		}
+	}
+	void move() {
+		for (int i = 0; i < 50; i++) {
+			float speed = 0.5f + (stage_scroll_speed * (float)layer[i]);
+			x[i] -= speed * frame_Time;
+			if (x[i] < -30) {
+				x[i] = WINDOW_SIZE_X + 30;
+				y[i] = (float)GetRand(WINDOW_SIZE_Y);
+				layer[i] = GetRand(3);
+			}
+		}
+	}
+	void draw() {
+		for (int i = 0; i < 50; i++) {
+			DrawRotaGraph2(x[i], y[i],
+				10, 10,
+				0.6 / (3.0 - (double)layer[i]), a2r(GetRand(360)),
+				bgstar[GetRand(3)], TRUE, FALSE);
+		}
+	}
+};
+bg_star star;
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
@@ -62,6 +94,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	frame     = 0;
 	quit      = true;
 
+	
+
 	int logo = LoadGraph("data/img/title/Logo.png");
 
 	//----------メインループ------------------------------------------------------------
@@ -111,7 +145,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//DrawFormatString(0, 30, GetColor(255, 255, 255), "%d / %d / %d / %d", detecrew[0].mode, (int)genocide[0].mode, nuts[2].stats, nuts[3].stats);
 
 		// Effekseerにより再生中のエフェクトを更新する。
-		UpdateEffekseer2D();
+		if (frame % (int)((200.f * frame_Time) + 1) == 0) UpdateEffekseer2D();
 		DrawEffekseer2D();
 
 		fps_Calc();
@@ -173,6 +207,7 @@ void load_Img() {
 	design_img[1] = LoadGraph("data/img/design/bar2.png");
 	design_img[2] = LoadGraph("data/img/design/circle.png");
 	design_img[3] = LoadGraph("data/img/design/dialog.png");
+	design_img[4] = LoadGraph("data/img/design/menu.png");
 
 	// タイトルの画像読み込み
 	title_img_1 = LoadGraph("data/img/title/title_1.png");
@@ -194,7 +229,10 @@ void load_Img() {
 	game_sehnd[4] = LoadSoundMem("data/sound/se/game/shot1.mp3");
 	game_sehnd[5] = LoadSoundMem("data/sound/se/game/shot2.mp3");
 
-	game_bgmhnd = LoadSoundMem("data/sound/bgm/awake.mp3");
+	game_bgmhnd[0] = LoadSoundMem("data/sound/bgm/awake.mp3");
+	game_bgmhnd[1] = LoadSoundMem("data/sound/bgm/ang.mp3");
+	game_bgmhnd[2] = LoadSoundMem("data/sound/bgm/fly.mp3");
+	game_bgmhnd[3] = LoadSoundMem("data/sound/bgm/pump.mp3");
 
 	// bg面画像
 	LoadDivGraph("data/img/tip/obj.png", 880, 88, 10, 24, 24, maptip_img);
@@ -205,6 +243,8 @@ void load_Img() {
 	// 弾画像
 	LoadDivGraph("data/img/bullet/14x14.png", 84, 14, 6, 14, 14, bullet14_img);
 	LoadDivGraph("data/img/bullet/16x16.png", 48,  6, 7, 14, 14, bullet16_img);
+
+	LoadDivGraph("data/img/bullet/star.png", 8, 8, 1, 20, 14, bgstar);
 
 	// 最後に1/2
 	for (int i = 0; i < 2; i++)
@@ -254,6 +294,7 @@ void debug_Init() {
 	
 	// debug ship
 	ship.init();
+	star.init();
 
 	// debug stage
 	test.init(500, 40);
@@ -270,39 +311,57 @@ void debug_Init() {
 	frame_Time_2 = 1.0f;
 	prev_Time = GetNowHiPerformanceCount();
 
+	stage_scroll_speed = to_stage_scroll_speed = 1.8f;
+	stage_scroll_rad   = to_stage_scroll_rad   = 90.f;
+
 	// スコアと残基
 	score = 0;
-	left = 3;
+	pause_flag = 0;
 }
 
 void debug_GameMain() {
 
 	// エフェクト用背景ヌリ
 	//DrawGraph(0, 0, bg_handle, TRUE);
+	if (pause_flag == 0) {
+		// debug stage move and draw.
+		if (stage_scroll_speed != to_stage_scroll_speed) {
+			if (stage_scroll_speed > to_stage_scroll_speed) stage_scroll_speed--;
+			if (stage_scroll_speed < to_stage_scroll_speed) stage_scroll_speed++;
+		}
+		if (stage_scroll_rad != to_stage_scroll_rad) {
+			if (stage_scroll_rad > to_stage_scroll_rad) stage_scroll_rad--;
+			if (stage_scroll_rad < to_stage_scroll_rad) stage_scroll_rad++;
+		}
+		test.move(stage_scroll_speed, stage_scroll_rad);
 
-	// debug stage move and draw.
-	test.move(2, 90);
+		// ステージ進行
+		test.stage_Progression(); // CSV解析
+		test.stage_EnemyMove();   // 敵動作
+
+		// debug my ship move and draw
+		item_move();
+		star.move();
+		ship.move();
+
+		// draw debug message
+		debug_Message();
+
+		// bullet update
+		bullet_Animation_Update();
+	}
+
+	// 描画関連
+	star.draw();
 	test.draw();
-
-	// ステージ進行
-	test.stage_Progression(); // CSV解析
-	test.stage_EnemyMove();   // 敵動作
-
-	// debug my ship move and draw
-	ship.move();
 	ship.draw();
 
-	item_move();
-
-	// draw debug message
-	debug_Message();
-
-	// bullet update
-	bullet_Animation_Update();
+	if (pause_flag == 1) draw_Pause();
+	if (pause_flag == 2) draw_Over();
 }
 
 void debug_Message() {
-	DrawFormatString(600, 0, GetColor(255, 255, 255), "Scroll_X:%d / Scroll_Y:%d", (int)brain[0].x, (int)brain[0].y);
+	 // DrawFormatString(600, 0, GetColor(255, 255, 255), "Scroll_X:%d / Scroll_Y:%d", ship.powerup[0], (int)ship.speed);
 }
 
 double fps_Calc() {

@@ -85,15 +85,93 @@ void draw_CharSelect() {
 	case 0:
 		gamemode = 2;
 		test.io_MapdataFileLoad();
-		PlaySoundMem(game_bgmhnd, DX_PLAYTYPE_BACK, TRUE);
+		test.set_StagePos(0, 224);
 		break;
 	case 1:
 		gamemode = 2;
 		test.io_MapdataFileLoad();
-		PlaySoundMem(game_bgmhnd, DX_PLAYTYPE_BACK, TRUE);
 		break;
 	case 2:
 		menu_mode = Title;
+		break;
+	default:
+		break;
+	}
+}
+
+// ポーズメニュー
+// ----------------------------------------------------------
+void draw_Pause() {
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, title_alpha);
+
+	// 元タイトル
+	DrawGraph(0, 100, design_img[4], TRUE);
+
+	// 元に戻す
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	if (frame % ((((int)fps + 1) / 60) + 1) == 0) {
+		title_alpha += title_dir;
+		if (title_alpha > 155 || title_alpha < 100) title_dir *= -1;
+	}
+
+	// 各メニューへ移動
+	switch (pause.draw(550, 280, 3, pause_str)) {
+		// GAME START
+	case 0:
+		pause_flag = 0;
+		break;
+		// STAGE EDITOR
+	case 1:
+		break;
+		// QUIT GAME
+	case 2:
+		gamemode = 1;
+		menu_mode = Title;
+		pause_flag = 0;
+		StopSoundFile();
+		break;
+	default:
+		break;
+	}
+}
+
+// CONTINUEメニュー
+// ----------------------------------------------------------
+void draw_Over() {
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, title_alpha);
+
+	// 元タイトル
+	DrawGraph(0, 100, design_img[4], TRUE);
+
+	// 元に戻す
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	if (frame % ((((int)fps + 1) / 60) + 1) == 0) {
+		title_alpha += title_dir;
+		if (title_alpha > 155 || title_alpha < 100) title_dir *= -1;
+	}
+
+	DrawFormatStringToHandle(800, 190, GetColor(222, 222, 222), font_handle[FONT_BIG], "GAME OVER");
+
+	// 各メニューへ移動
+	switch (pause.draw(550, 280, 3, over_str)) {
+		// GAME START
+	case 0:
+		pause_flag = 0;
+		ship.left = 5;
+		break;
+		// STAGE EDITOR
+	case 1:
+		break;
+		// QUIT GAME
+	case 2:
+		gamemode   = 1;
+		menu_mode  = Title;
+		pause_flag = 0;
+		StopSoundFile();
 		break;
 	default:
 		break;

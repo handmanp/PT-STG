@@ -19,6 +19,7 @@ public:
 	float x;
 	float y;
 	float speed;
+	float tospeed;
 	int   stats;
 	float r;
 	int   width;

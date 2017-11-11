@@ -50,6 +50,7 @@ enum pu {
 
 };
 
+
 typedef struct {
 	int		stats;
 	float	x;
@@ -65,7 +66,7 @@ public:
 	float	y;
 	float	speed;
 	int		left;
-	int		option;
+	float	time;
 	int		collision_size;
 	int		anim;
 	int		type;
@@ -95,7 +96,6 @@ typedef struct {
 }ITEM;
 
 GLOBAL int			score;
-GLOBAL int			left;
 
 //“ü—ÍŠÖ˜A
 GLOBAL char			ctrl_key[256];
@@ -109,7 +109,7 @@ GLOBAL int		ship_img[5][2];
 GLOBAL int		maptip_img[880];
 GLOBAL int		pwrup_img[2];
 GLOBAL int		chara_img[2][4];
-GLOBAL int		design_img[4];
+GLOBAL int		design_img[5];
 
 GLOBAL int		bullet14_img[84];
 GLOBAL int		bullet16_img[48];
@@ -124,16 +124,25 @@ GLOBAL int		menu_bg_1, menu_bg_2;
 GLOBAL int		title_selected;
 GLOBAL int		menu_sehnd[3];
 GLOBAL int		game_sehnd[6];
-GLOBAL int		game_bgmhnd;
+GLOBAL int		game_bgmhnd[4];
+GLOBAL int		bgstar[8];
 
 GLOBAL unsigned int frame;
 
 GLOBAL int		mode_flag;
 GLOBAL gui		button;
 GLOBAL combo	com;
+GLOBAL combo	com2;
 
 GLOBAL int		gamemode;
 GLOBAL bool		quit;
+GLOBAL int		pause_flag;
+
+GLOBAL float	stage_scroll_speed;
+GLOBAL float	stage_scroll_rad;
+
+GLOBAL float	to_stage_scroll_speed;
+GLOBAL float	to_stage_scroll_rad;
 
 GLOBAL int b_anim_3, b_anim_4, b_anim_6, b_dir_6, b_dir_3;
 
@@ -154,6 +163,8 @@ void load_Img();
 void load_Effect();
 void make_FontData();
 void ingame_GUI();
+void draw_Pause();
+void draw_Over();
 
 double fps_Calc();
 float variable_Fps();

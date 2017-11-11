@@ -21,11 +21,13 @@ void delete_EditorStage();
 int  draw_StageEditor();
 void draw_StageEditorMenu();
 void draw_StageEditorMenuStage();
+void draw_StageEditorMenuEnemy();
 void draw_StageEditorRuler();
 void move_StageEditor();
 bool io_MapdataFileOutput();
 bool io_MapdataFileLoad();
 void io_LoadMetaData(char *path);
+void fill(int vx, int vy);
 
 // Editor Global
 int ss_x[4], ss_y[4];
@@ -38,5 +40,9 @@ int **stage_editor;
 
 int editor_mode = 0;
 int selected_item = -1;
+int select_mode = 1;
+int select_erase = 1;
+int select_stac = -1;
 
 int map_slot = 1;
+int fill_loop = 0;

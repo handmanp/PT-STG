@@ -121,7 +121,7 @@ void my_Stage::move(int s, int r) {
 	y += cosf(move_rad) * s * frame_Time;
 }
 
-// ステージを描画(仮)
+// ステージを描画
 void my_Stage::draw() {
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
@@ -134,18 +134,32 @@ void my_Stage::draw() {
 					dpy >= -STAGE_TIP_SIZE && dpy <= WINDOW_SIZE_Y + STAGE_TIP_SIZE) {
 					
 					DrawGraph(dpx, dpy, maptip_img[stage_size[i][j]], TRUE);
+
+					// ステージと自機との当たり判定
+					if (abs((dpx + (STAGE_TIP_SIZE / 2)) - ship.x) < (STAGE_TIP_SIZE + 80) / 2 &&
+						abs((dpy + (STAGE_TIP_SIZE / 2)) - ship.y) < (STAGE_TIP_SIZE + 15) / 2) {
+						if (ship.stat == 0) {
+							ship.stat = -1;
+							ship.x = -120.f;
+							ship.y = 340.f;
+							ship.left -= 1;
+						}
+					}
 				}
 			}
 		}
 	}
-	for (int i = 0; i < enemy_max; i++) {
+	/*for (int i = 0; i < enemy_max; i++) {
 		DrawFormatString(10, 100 + (i * 20), GetColor(200, 200, 200), "%d, %d, %d, %d, %d, %d, %d",
 			stage_data[i].start_x, stage_data[i].enemy_type,
 			stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3,
 			stage_data[i].var_4, stage_data[i].var_5, stage_data[i].var_6,
 			stage_data[i].var_7);
-	}
+	}*/
 }
+
+
+
 
 // ステージの位置を移動する
 void my_Stage::set_StagePos(float sx, float sy) {
@@ -289,6 +303,16 @@ void my_Stage::stage_Progression() {
 
 				// [21] ワーミン wip
 			case BossWarmin:
+				break;
+
+				// 100 マップの移動速度・角度変更
+			case 100:
+				to_stage_scroll_speed = stage_data[i].var_1;
+				to_stage_scroll_rad   = stage_data[i].var_2;
+				break;
+				// 110 楽曲の再生
+			case 110:
+				PlaySoundMem(game_bgmhnd[stage_data[i].var_1], DX_PLAYTYPE_BACK, TRUE);
 				break;
 			}
 		}

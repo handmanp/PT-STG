@@ -23,12 +23,21 @@ int enemy::collision_Check() {
 	// ----------------------------------------------------------------------------
 	if (ship.x >= x - collision_size && ship.x <= x + collision_size &&
 		ship.y >= y - collision_size && ship.y <= y + collision_size) {
-		if (ship.stat == 0 && stats != 0) {
+
+		if (ship.stat == 0 && stats == 1) {
+
 			ship.stat = -1;
 			ship.x = -120.f;
 			ship.y = 340.f;
 			ship.left -= 1;
-			stats = 0;
+
+			if (flag == false) {
+				stats = 0;
+				init_Bullets();
+			}
+			else {
+				stats = 2;
+			}
 		}
 		return -2;
 	}
@@ -57,6 +66,7 @@ int enemy::collision_Check() {
 					if (GetRand(10) == 1) {
 						item_drop(x, y, 0);
 					}
+					score += GetRand(10);
 
 					// “G‚ªŽ€‚ñ‚Å‚à’e‚ªŽc‚Á‚Ä‚½‚ç‘¶Ý‚³‚¹‚½‚Ü‚Ü‚É‚·‚é(stats = 2)
 					if (flag == false) {
@@ -298,10 +308,10 @@ void enemy_uni::move() {
 	if (stats == 1) {
 		x += sin(a2r(r)) * speed * frame_Time;
 		y += cos(a2r(r)) * speed * frame_Time;
-		if (x < ship.x + 200) {
+		if (x < ship.x + 200 && r < 90) {
 			r += 5.0f * frame_Time;
 		}
-		DrawFormatString(300, 100, 0xFFFFFF, "%f %f", x, y);
+		// DrawFormatString(300, 100, 0xFFFFFF, "%f %f", x, y);
 	}
 	draw();
 	collision_Check();
@@ -876,7 +886,7 @@ void enemy_meatball::move() {
 
 		// Ž©‹@‚Æ x ‚ªhobo“¯‚¶‚É‚È‚é‚Ü‚Å’¼i
 		if (mode == 0 && x >= ship.x) {
-			x -= 2 * test.speed * frame_Time;
+			x -= 4 * test.speed * frame_Time;
 
 			if (x <= ship.x + 10.0f && x > ship.x) {
 				mode = 1;
@@ -979,7 +989,7 @@ void enemy_statue::draw() {
 			DrawGraph(x, y, enemy_img[7], TRUE);
 		}
 		else {
-			DrawBox(x - 24, y - 24, x + 24, y + 24, GetColor(255, 255, 255), TRUE);
+			// DrawBox(x - 24, y - 24, x + 24, y + 24, GetColor(255, 255, 255), TRUE);
 		}
 	}
 }

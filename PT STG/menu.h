@@ -31,11 +31,14 @@ int ctrl_trig[num];
 
 coolmenu title;
 coolmenu chara;
+coolmenu pause;
 
-char *title_str[5] = { "GAME START", "STAGE SELECT", "STAGE CREATE", "OPTION", "QUIT GAME"};
-char *charSelect_str[3] = { "FLORENCE", "CHARLOTTE", "BACK TO TITLE" };
+char *title_str[5]       = { "GAME START", "STAGE SELECT", "STAGE CREATE", "OPTION", "QUIT GAME"};
+char *charSelect_str[3]  = { "FLORENCE", "CHARLOTTE", "BACK TO TITLE" };
+char *pause_str[3]       = { "RETURN TO GAME", "RETRY", "RETURN TO TITLE" };
+char *over_str[3]        = { "CONTINUE", "RETRY", "RETURN TO TITLE" };
 char *charSelect_fstr[3] = { "FLORA FLORENCE", "AMERIA CHARLOTTE", "" };
-char *charSelect_mes[3] = { "SHE ENJOYS SOAKING HERSELF IN A HOT BATH.\nUNIQUE SHOT = DOUBLE LASER, UPPER SHOT\nBOMB = STRAIGHT", "FLORENCE'S STEPSISTER. SO CUTE.\nUNIQUE SHOT = RING LASER, UNDER SHOT\n BOMB = WIDE", "" };
+char *charSelect_mes[3]  = { "SHE ENJOYS SOAKING HERSELF IN A HOT BATH.\nUNIQUE SHOT = DOUBLE LASER, UPPER SHOT\nBOMB = STRAIGHT", "FLORENCE'S STEPSISTER. SO CUTE.\nUNIQUE SHOT = RING LASER, UNDER SHOT\n BOMB = WIDE", "" };
 
 void draw_Title();
 void draw_CharSelect();

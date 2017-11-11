@@ -111,15 +111,15 @@ int draw_StageEditor() {
 	draw_StageEditorRuler();
 	draw_StageEditorMenu();
 
-	unsigned int nc = GetColor(100, 100, 100);
-	unsigned int oc = GetColor(150, 150, 150);
+	unsigned int nc = GetColor(150, 150, 150);
+	unsigned int oc = GetColor(180, 180, 180);
 
 	// 保存ボタン
-	if (button.draw_Button(1010, 40, 200, 28, nc, oc, "ステージを上書き保存")) {
+	if (button.draw_Button(1010, 40, 260, 28, nc, oc, "ステージを上書き保存")) {
 		io_MapdataFileOutput();
 	}
 	// タイトルに戻るボタン
-	if (button.draw_Button(1010, 75, 200, 28, nc, oc, "保存してタイトルへ")) {
+	if (button.draw_Button(1010, 75, 260, 28, nc, oc, "保存してタイトルへ")) {
 		io_MapdataFileOutput();
 		gamemode  = 1; // タイトルに戻るフラグ
 		mode_flag = 0; // エディタのメニュー初期化
@@ -133,14 +133,12 @@ int draw_StageEditor() {
 // *------------------------------------------------------------------------------------*
 void draw_StageEditorMenu() {
 
-	DrawBox(1000, 0, 1280, 720, GetColor(100, 100, 100), TRUE);
+	DrawBox(1000, 0, 1280, 720, GetColor(200, 200, 200), TRUE);
 
 	if (button.draw_Button(1000, 200, 70, 30, GetColor(100,   0,   0), GetColor(55,  0,  0), "ｽﾃｰｼﾞ")    == true) editor_mode = 0;
 	if (button.draw_Button(1070, 200, 70, 30, GetColor(  0, 100,   0), GetColor( 0, 55,  0), "ｴﾈﾐｰ")     == true) editor_mode = 1;
 	if (button.draw_Button(1140, 200, 70, 30, GetColor(  0,   0, 100), GetColor( 0,  0, 55), "フラグ")   == true) editor_mode = 2;
 	if (button.draw_Button(1210, 200, 70, 30, GetColor(100, 100,   0), GetColor(55, 55,  0), "工事中")   == true) editor_mode = 3;
-
-	char *list_str2[4] = {"ステージ１の敵", "ステージ２の敵", "ステージ３の敵", "ボス", };
 
 	switch (editor_mode) {
 	case 0:
@@ -149,7 +147,7 @@ void draw_StageEditorMenu() {
 		break;
 	case 1:
 		DrawBox(1000, 230, 1280, 720, GetColor(0, 100, 0), TRUE);
-		com.draw_Combo(1010, 300, 250, 4, list_str2);
+		draw_StageEditorMenuEnemy();
 		break;
 	case 2:
 		DrawBox(1000, 230, 1280, 720, GetColor(0, 0, 100), TRUE);
@@ -157,6 +155,23 @@ void draw_StageEditorMenu() {
 	case 3:
 		DrawBox(1000, 230, 1280, 720, GetColor(100, 100, 0), TRUE);
 		break;
+	}
+}
+
+// エネミタブ ??tst
+// *------------------------------------------------------------------------------------*
+void draw_StageEditorMenuEnemy() {
+
+	unsigned int nc = GetColor(100, 100, 100);
+	unsigned int oc = GetColor(150, 150, 150);
+
+	DrawFormatStringToHandle(1010, 250, GetColor(255, 255, 255), font_handle[FONT_BUTTON], "エネミー");
+
+	char *list_str2[22] = { "ナッツ", "エダマメン", "ウニズ", "ジェノサイドバナナ", "ピネ", "カイ", "タケノコん", "キノコン", "クワガタん", "ミートボールスパム", "胞子", "ワーム", "ツタン", "ムービングスタチュ", "キモ箱", "出て来るーの", "出て来るーの", "ｼﾝﾀﾞｰﾗﾀﾏｳﾂ", "戦艦ジェノサイド", "タコス", "能美村", "ワーミン" };
+	com2.draw_Combo(1010, 280, 250, 22, list_str2);
+
+	if (button.draw_Button(1010, 610, 260, 28, nc, oc, "消しゴム")) {
+		select_erase *= -1;
 	}
 }
 
@@ -169,13 +184,36 @@ void draw_StageEditorMenuStage() {
 	unsigned int nc = GetColor(100, 100, 100);
 	unsigned int oc = GetColor(150, 150, 150);
 
-	if (button.draw_Button(1010, 600, 100, 28, nc, oc, "消しゴム")) {
+	// 消しゴムツール-----------------------------------------------------------------
+	if (button.draw_Button(1010, 550, 100, 28, nc, oc, "消しゴム")) {
 		selected_item = -1;
 	}
 
+	// 2x2ペンツール-----------------------------------------------------------------
+	if (button.draw_Button(1010, 580, 100, 28, nc, oc, "2x2 Mode")) {
+		select_mode *= -1;
+		selected_item = -1; // バグ防止で一旦消しゴムに
+	}
+
+	// バケツツール-----------------------------------------------------------------
+	/*if (button.draw_Button(1010, 610, 100, 28, nc, oc, "塗り潰し")) {
+		select_stac   = -1;
+		select_fill  *= -1;
+		selected_item = -1; // バグ防止で一旦消しゴムに
+	}*/
+
+	// 選択されているブロックの表示
 	if (selected_item != -1) {
 		DrawFormatStringToHandle(1110, 300, GetColor(255, 255, 255), font_handle[FONT_BUTTON], "選択ﾌﾞﾛｯｸ:");
-		DrawGraph(1220, 295, maptip_img[selected_item], TRUE);
+		if (select_mode == 1) {
+			DrawGraph(1220, 295, maptip_img[selected_item], TRUE);
+		}
+		else {
+			DrawGraph(1220, 295, maptip_img[selected_item], TRUE);
+			DrawGraph(1220 + STAGE_TIP_SIZE, 295, maptip_img[selected_item + 1], TRUE);
+			DrawGraph(1220, 295 + STAGE_TIP_SIZE, maptip_img[selected_item + 88], TRUE);
+			DrawGraph(1220 + STAGE_TIP_SIZE, 295 + STAGE_TIP_SIZE, maptip_img[selected_item + 89], TRUE);
+		}
 	}
 
 	// チップ定数
@@ -201,11 +239,20 @@ void draw_StageEditorMenuStage() {
 	}
 
 	// マップチップクリック判定
+	// ==== クリックされている時 ===============================================================
 	if (mouse_l == 1) {
 
+		int palette_x = 4;
+		int palette_y = 10;
+
 		// マップチップパレットの操作
-		if (mouse_x > tip_x && mouse_x < tip_x + (STAGE_TIP_SIZE * 4) &&
-			mouse_y > tip_y && mouse_y < tip_y + (STAGE_TIP_SIZE * 10)) {
+		if (select_mode != 1) {
+			palette_x = 3;
+			palette_y = 9;
+		}
+
+		if (mouse_x > tip_x && mouse_x < tip_x + (STAGE_TIP_SIZE * palette_x) &&
+			mouse_y > tip_y && mouse_y < tip_y + (STAGE_TIP_SIZE * palette_y)) {
 
 			// 相対座標
 			int mpx = mouse_x - tip_x;
@@ -227,9 +274,81 @@ void draw_StageEditorMenuStage() {
 			// エディタの範囲内か調べる
 			if (mpx >= 0 && mpx < stage_size_x &&
 				mpy >= 0 && mpy < stage_size_y) {
-				stage_editor[mpx][mpy] = selected_item;
+			
+				if (select_mode == 1) {
+					stage_editor[mpx][mpy] = selected_item;
+				}
+				else {
+					if (selected_item != -1) {
+						stage_editor[mpx][mpy] = selected_item;
+						stage_editor[mpx + 1][mpy] = selected_item + 1;
+						stage_editor[mpx][mpy + 1] = selected_item + 88;
+						stage_editor[mpx + 1][mpy + 1] = selected_item + 89;
+					}
+					else {
+						stage_editor[mpx][mpy] = selected_item;
+						stage_editor[mpx + 1][mpy] = selected_item;
+						stage_editor[mpx][mpy + 1] = selected_item;
+						stage_editor[mpx + 1][mpy + 1] = selected_item;
+					}
+				}
 			}
 		}
+	}
+	else {
+		// ==== クリックされていない時 ===============================================================
+		
+		int palette_x = 4;
+		int palette_y = 10;
+
+		// マップチップパレットの操作
+		if (select_mode != 1) {
+			palette_x = 3;
+			palette_y = 9;
+		}
+		if (mouse_x > tip_x && mouse_x < tip_x + (STAGE_TIP_SIZE * palette_x) &&
+			mouse_y > tip_y && mouse_y < tip_y + (STAGE_TIP_SIZE * palette_y)) {
+
+			// 相対座標
+			int mpx = tip_x + (((mouse_x - tip_x) / STAGE_TIP_SIZE) * STAGE_TIP_SIZE);
+			int mpy = tip_y + (((mouse_y - tip_y) / STAGE_TIP_SIZE) * STAGE_TIP_SIZE);
+
+			// 画像ハンドルの添字
+			if (select_mode == 1) {
+				DrawBox(mpx, mpy, mpx + STAGE_TIP_SIZE, mpy + STAGE_TIP_SIZE, 0x00FF00, FALSE);
+			}
+			else {
+				DrawBox(mpx, mpy, mpx + (STAGE_TIP_SIZE * 2), mpy + (STAGE_TIP_SIZE * 2), 0x00FF00, FALSE);
+			}
+		}
+	}
+}
+
+// 塗り潰し
+// *------------------------------------------------------------------------------------*
+void fill(int vx, int vy) {
+	
+	int fx = vx;
+	int fy = vy;
+	int fdigx = 0;
+	int fdigy = 0;
+
+	for (int i = 0; i < 100; i++) {
+
+		int x = fx + fdigx;
+		int y = fy + fdigy;
+
+		stage_editor[x][y] = selected_item;
+
+		if (y - 1 >= 0)          
+			if (stage_editor[x][y - 1] == select_stac) fdigy -= 1;
+		if (y + 1 < stage_size_y)
+			if (stage_editor[x][y + 1] == select_stac) fdigy += 1;
+		if (x - 1 >= 0)          
+			if (stage_editor[x - 1][y] == select_stac) fdigx -= 1;
+		if (x + 1 < stage_size_x)
+			if (stage_editor[x + 1][y] == select_stac) fdigx += 1;
+
 	}
 }
 
@@ -458,6 +577,18 @@ void init_EditorStage() {
 			stage_editor[i][j] = -1;
 		}
 	}
+
+	/*/ Editor Global
+	stage_size_x = 0,  stage_size_y = 0;
+	stage_left_x = 20, stage_left_y = 20;
+
+	mouse_diff_x = 0,  mouse_diff_y = 0;
+
+	editor_mode   = 0;
+	selected_item = -1;
+	select_mode   = 1;
+	select_fill   = 1;
+	select_stac   = -1;*/
 }
 
 // ステージの破棄

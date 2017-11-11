@@ -17,7 +17,7 @@ void my_Ship::init() {
 	anim           = 2;
 	type           = 0;
 	powerup_select = -1;
-	left		   = 3;
+	left		   = 5;
 	stat		   = 0;
 	//自機弾初期化
 	for (int i = 0; i < 100; i++) {
@@ -28,22 +28,40 @@ void my_Ship::init() {
 		s[i].speed  = 0.0f;
 		s[i].length = 0.0f;
 	}
+
+	for (int i = 0; i < 6; i++)
+		powerup[i] = 0;
 }
 
 // 自機描画
 //--------------------------------------------------------------------------------
 void my_Ship::draw() {
-	//描画
-	DrawGraph(x - 50, y - 25, ship_img[anim][type], TRUE);
+	if (stat == 0) {
+		//描画
+		DrawGraph(x - 50, y - 25, ship_img[anim][type], TRUE);
 
-	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-		if (s[i].stats == 1) {
-			DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
+		for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+			if (s[i].stats == 1) {
+				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
+			}
+		}
+	}
+	else if (frame % (int)(200.f * frame_Time) == 0){
+		DrawGraph(x - 50, y - 25, ship_img[anim][type], TRUE);
+
+		for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+			if (s[i].stats == 1) {
+				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
+			}
 		}
 	}
 	// POWER UP
 	for (int i = 0; i < 6; i++) {
-		DrawGraph((i * 128) + 256, 680, pwrup_img[1], TRUE);
+		if (i != powerup_select)
+			DrawGraph((i * 128) + 256, 680, pwrup_img[1], TRUE);
+		else
+			DrawGraph((i * 128) + 256, 680, pwrup_img[0], TRUE);
+
 		int str_x = 64 - (GetDrawFormatStringWidthToHandle(font_handle[FONT_PWUP], "%s", pwer_str[i]) / 2);
 		DrawFormatStringToHandle((i * 128) + 256 + str_x, 683, GetColor(222, 222, 222), font_handle[FONT_PWUP], "%s", pwer_str[i]);
 	}
@@ -96,14 +114,26 @@ void my_Ship::move() {
 	int input_stats = 0;
 	float rad = 0.0f;
 
-	speed = (float)DEF_SPEED + (powerup[powerup_select] * 2);
+	speed = 4.f + (powerup[0] * 2.f);
 
-	//ショットキー
+	// ショットキー
 	if ((ctrl_key[KEY_INPUT_Z] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_X] == 1) && frame % ((((int)fps + 1) / 30) + 1) == 0) shot();
 	if ((ctrl_key[KEY_INPUT_C] == 1 || ctrl_pad.Buttons[XINPUT_BUTTON_Y] == 1)) {
 		powerup[powerup_select]++;
+		powerup_select = -1;
 	}
 
+	if ((ctrl_key[KEY_INPUT_ESCAPE] == 1 || ctrl_key[KEY_INPUT_P] == 1 || ctrl_pad.Buttons[XINPUT_BUTTON_START] == 1)) {
+		pause_flag = 1;
+	}
+
+	// デバッグ
+	if (ctrl_key[KEY_INPUT_V] == 1) {
+		powerup_select++;
+		if (powerup_select > 6) powerup_select = 0;
+	}
+	
+	// 直談移動関数
 	shot_Move();
 
 	//移動キー
@@ -164,13 +194,23 @@ void my_Ship::move() {
 			y += (cosf(rad) * speed) * frame_Time;
 		}
 	}
-	else {
+	else if (stat == -1) {
 		rad = a2r(90);
 		x += (sinf(rad) * speed) * frame_Time;
 		y += (cosf(rad) * speed) * frame_Time;
-		if (x > 200.f) stat = 0;
+		if (x > 200.f) stat = -2;
 	}
-
+	else if (stat == -2) {
+		if (rad != -1.0f) {
+			x += (sinf(rad) * speed) * frame_Time;
+			y += (cosf(rad) * speed) * frame_Time;
+			time += 30.f * frame_Time;
+			if (time > 400.f) {
+				stat = 0;
+				time = 0.f;
+			}
+		}
+	}
 	//アニメーション管理
 	if (frame % (int)(2000.f * frame_Time) == 0) {
 
@@ -187,6 +227,12 @@ void my_Ship::move() {
 		//範囲外
 		if (anim > 4) anim = 4;
 		if (anim < 0) anim = 0;
+	}
+
+	// シンダーラ
+	if (ship.left < 0) {
+		ship.left = 0;
+		pause_flag = 2;
 	}
 }
 
