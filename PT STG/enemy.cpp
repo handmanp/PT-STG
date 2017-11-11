@@ -363,7 +363,10 @@ void enemy_banana::move_shot() {
 
 void enemy_banana::move() {
 	if (stats == 1) {
-		x -= test.speed * frame_Time;
+
+		x -= sinf(test.move_rad) * test.speed * frame_Time;
+		y -= cosf(test.move_rad) * test.speed * frame_Time;
+
 		// mode=1:静止状態
 		if (mode == 0 && frame % ((GetRand(2) + 1) * (int) fps) == 0) {
 			mode = 1;
@@ -446,7 +449,10 @@ void enemy_pine::move_shot() {
 
 void enemy_pine::move() {
 	if (stats == 1) {
-		x -= test.speed * frame_Time;
+
+		x -= sinf(test.move_rad) * test.speed * frame_Time;
+		y -= cosf(test.move_rad) * test.speed * frame_Time;
+
 		//DrawFormatString(300, 10, GetColor(0, 0, 0), "%d", x);
 		// mode=0:上昇
 		// upper_y まで上昇
@@ -530,7 +536,8 @@ void enemy_shell::move_shot() {
 
 void enemy_shell::move() {
 	if (stats == 1) {
-		x -= test.speed * frame_Time;
+		x -= sinf(test.move_rad) * test.speed * frame_Time;
+		y -= cosf(test.move_rad) * test.speed * frame_Time;
 
 		// 1~180フレーム間(0~3秒)ランダムで弾を生成
 		if (frame % ((GetRand(2) + 1) * (int)fps)== 0) {
@@ -567,7 +574,12 @@ void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 	temp_y = start_y;
 	for (int i = 0; i < MAX_BULLET; i++) {
 		t[i] = 0;
+		circle[i] = 0;
+		circle2[i] = 0;
+		super[i] = 0;
+		lazer[i] = 0;
 	}
+
 	hp = HP;
 	x = start_x;
 	y = start_y;
@@ -592,19 +604,18 @@ void enemy_brain::shot() {
 
 		// データの入っている添字を代入する(動きを分けるため)
 		if (mode == 1 || mode == 2) {
-			bullets[free].rad = ((2.0f * DX_PI_F) / (float)max) * i;
-
-
 			// 円形弾
 			if (mode == 1) {
+				bullets[free].rad = ((2.0f * DX_PI_F) / (float)max) * i;
 				circle[free] = free;
 				bullets[free].speed = 10;
-				bullets[free].x = x;
+				bullets[free].x = x - 128;
 				bullets[free].y = y;
 				bullets[free].stats = 1;
 			}
 			// 直線弾
 			else if (mode == 2) {
+				bullets[free].rad = test.move_rad;
 				circle2[free] = free;
 				bullets[free].speed = 5;
 				bullets[free].x = x;
@@ -613,19 +624,9 @@ void enemy_brain::shot() {
 				bullets[free].collision_size = 3;
 			}
 		}
-		// レーザー
-		else if (mode == 5) {
-			lazer[free] = free;
-			bullets[free].speed = 0;
-			count += 1;
-			bullets[free].x = x - (count * 24);
-			bullets[free].y = y;
-			bullets[free].stats = 1;
-			bullets[free].collision_size = 24;
-		}
 		// すごい弾
 		else if (mode == 3) {
-			bullets[free].rad = 0;
+			bullets[free].rad = atan2f(ship.x - x, ship.y - y);
 			super[free] = free;
 			t[free] = 0.0f;
 
@@ -639,6 +640,16 @@ void enemy_brain::shot() {
 			bullets[free].x = x;
 			bullets[free].y = y;
 			bullets[free].stats = 1;
+		}
+		// レーザー
+		else if (mode == 5) {
+			lazer[free] = free;
+			bullets[free].speed = 0;
+			count += 1;
+			bullets[free].x = x - (count * 24);
+			bullets[free].y = y;
+			bullets[free].stats = 1;
+			bullets[free].collision_size = 24;
 		}
 
 		if (mode != 2 || mode != 3) {
@@ -664,14 +675,15 @@ void enemy_brain::move_shot() {
 			// 直線弾
 			if (circle2[i] == i) {
 				if (circle2[i] != 0) {
-					bullets[i].x -= bullets[i].speed * frame_Time;
+					bullets[i].x -= sinf(bullets[i].rad) * bullets[i].speed * frame_Time;
+					bullets[i].y -= cosf(bullets[i].rad) * bullets[i].speed * frame_Time;
 				}
 
 			}
 
 			// レーザー ~ Black Widow ~
 			if (lazer[i] == i) {
-				speed += 1;
+				speed += 1 * frame_Time;
 				if (speed >= 3 * (int)fps) {
 					bullets[i].stats = 0;
 					lazer[i] = 0;
@@ -681,16 +693,8 @@ void enemy_brain::move_shot() {
 
 			// すごい弾の移動
 			if (super[i] == i) {
-				if (t[i] <= 1.0f) {
-					bullets[i].x += sinf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed * frame_Time;
-					bullets[i].y += cosf(atan2f(p2_x[i] - p1_x[i], p2_y[i] - p1_y[i])) * bullets[i].speed * frame_Time;
-
-				}
-				else {
-					t[i] += 0.005f * frame_Time;
-					bullets[i].x = (1 - t[i]) * bullets[i].x + 2 * (1 - t[i]) * t[i] * p1_x[i] + t[i] * t[i] * p2_x[i];
-					bullets[i].y = (1 - t[i]) * bullets[i].y + 2 * (1 - t[i]) * t[i] * p1_y[i] + t[i] * t[i] * p2_y[i];
-				}
+				bullets[i].x += sin(bullets[i].rad) * bullets[i].speed * frame_Time;
+				bullets[i].y += cos(bullets[i].rad) * bullets[i].speed * frame_Time;
 			}
 		}
 
@@ -701,7 +705,11 @@ void enemy_brain::move() {
 	if (stats == 1) {
 		//x -= test.speed * frame_Time;
 
-		if (mode == 0 && frame % (2 * (int)fps) == 0) {
+		//これでステージと同じ方向に移動する
+		//x -= sinf(test.move_rad) * test.speed * frame_Time;
+		//y -= cosf(test.move_rad) * test.speed * frame_Time;
+
+		if (mode == 0 && frame % (3 * (int)fps) == 0) {
 			// 円形弾
 			if (counter == 0) {
 				mode = 1;
@@ -721,6 +729,9 @@ void enemy_brain::move() {
 		}
 
 		if (mode == 1) {
+			for (int i = 0; i < MAX_BULLET; i++) {
+				bullets[lazer[i]].stats = 0;
+			}
 			shot();
 			mode = 0;
 			counter++;
@@ -741,7 +752,7 @@ void enemy_brain::move() {
 			// スケール変更
 			SetScalePlayingEffekseer2DEffect(effect_hnd, -50.0f, 50.0f, 50.0f);
 			// 敵の位置にエフェクトをあわせる
-			SetPosPlayingEffekseer2DEffect(effect_hnd, x, y, 0);
+			SetPosPlayingEffekseer2DEffect(effect_hnd, x - 128, y, 0);
 			if (frame % (1 * (int)fps) == 0) {
 				mode = 5;
 			}
@@ -754,7 +765,7 @@ void enemy_brain::move() {
 	}
 
 	// 上下に移動系
-	if (mode_move == 0 && frame % (2 * (int)fps) == 0 && (mode != 4 || mode != 5)) {
+	if (mode_move == 0 && frame % (3 * (int)fps) == 0 && (mode != 4 || mode != 5)) {
 		if (y >= temp_y) {
 			mode_move = 1;	// to up
 		}
@@ -790,7 +801,6 @@ void enemy_brain::move() {
 	int remove = collision_Check();
 
 	if (remove >= 0 ) {
-
 		bullets[remove].stats = 0;
 	}
 }
@@ -808,13 +818,8 @@ void enemy_brain::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			if (lazer[i] == i) {
-				//DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
-				//DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "脳");
-				//bullet_animation_16(bullets[i].x, bullets[i].y, 0, 0);
-
-			}
-			else {
+			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, 0xFFFFFF, TRUE);
+			if (lazer[i] != i) {
 				bullet_animation_14(bullets[i].x, bullets[i].y, 0, 2);
 			}
 		}
@@ -824,11 +829,16 @@ void enemy_brain::draw() {
 			}
 			if (circle2[i] == i && circle2[i] != 0) {
 				circle2[i] = 0;
+				t[i] = 0;
+			}
+			if (super[i] == i && super[i] != 0) {
+				super[i] = 0;
 			}
 			if (lazer[i] == i && lazer[i] != 0) {
 				lazer[i] = 0;
 			}
 		}
+		DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, 0xFFFFFF, FALSE);
 	}
 	init_OutRangeBullets();
 
@@ -886,7 +896,8 @@ void enemy_meatball::move() {
 
 		// 自機と x がhobo同じになるまで直進
 		if (mode == 0 && x >= ship.x) {
-			x -= 4 * test.speed * frame_Time;
+			x -= sinf(test.move_rad) * 1.5 * test.speed * frame_Time;
+			y -= cosf(test.move_rad) * 1.5 * test.speed * frame_Time;
 
 			if (x <= ship.x + 10.0f && x > ship.x) {
 				mode = 1;
@@ -923,7 +934,8 @@ void enemy_meatball::move() {
 
 		// 円運動終了後直進
 		if (mode == 3) {
-			x -= 2 * test.speed * frame_Time;
+			x -= sinf(test.move_rad) * 1.5 * test.speed * frame_Time;
+			y -= cosf(test.move_rad) * 1.5 * test.speed * frame_Time;
 		}
 	}
 	draw();
@@ -951,7 +963,9 @@ void enemy_statue::init(int HP, float start_x, float start_y, int stat) {
 
 void enemy_statue::move() {
 	if (stats == 1) {
-		x -= test.speed * frame_Time;
+
+		x -= sinf(test.move_rad) * test.speed * frame_Time;
+		y -= cosf(test.move_rad) * test.speed * frame_Time;
 		// 静止状態(hidden = 1)
 		if (mode == 0) {
 			collision_size = 0;
@@ -1038,7 +1052,10 @@ void enemy_worm::move_shot() {
 
 void enemy_worm::move() {
 	for (int i = 0; i < 6; i++) {
-		ball[i].x -= test.speed * frame_Time;
+
+		ball[i].x -= sinf(test.move_rad) * test.speed * frame_Time;
+		ball[i].y -= cosf(test.move_rad) * test.speed * frame_Time;
+
 	}
 	if (stats == 1) {
 
@@ -1145,7 +1162,8 @@ void enemy_sporecore::move_shot() {
 }
 
 void enemy_sporecore::move() {
-	x -= test.speed * frame_Time;
+	x -= sinf(test.move_rad) * test.speed * frame_Time;
+	y -= cosf(test.move_rad) * test.speed * frame_Time;
 
 	if (stats == 1) {
 
@@ -1201,7 +1219,8 @@ void enemy_ivy::init(int HP, float start_x, float start_y, int stat) {
 }
 
 void enemy_ivy::move() {
-	x -= test.speed * frame_Time;
+	x -= sinf(test.move_rad) * test.speed * frame_Time;
+	y -= cosf(test.move_rad) * test.speed * frame_Time;
 
 	// 生存
 	if (stats == 1) {
@@ -1263,16 +1282,22 @@ void enemy_stagbeetle::init(int HP, float start_x, float start_y, int stat) {
 }
 
 void enemy_stagbeetle::shot() {
-	int max = 8;
+	int max = 10;
 	if (stats == 1) {
-		for (int i = 0; i < max; i++) {
+		for (int i = 1; i <= max; i++) {
 			int free = search_FreeAddress();
-			bullets[free].rad = 5 * DX_PI_F / 3 * 0.4f * i;
+			bullets[free].rad = test.move_rad;
 			bullets[free].speed = 10;
-			bullets[free].x = x;
-			bullets[free].y = y;
 			bullets[free].stats = 1;
 			bullets[free].collision_size = 7;
+			if (i % 2 == 0) {
+				bullets[free].x = x - 10 * ((i + 1) % max / 2);
+				bullets[free].y = (y + 128) - i * (256 / max);
+			}
+			else {
+				bullets[free].x = x - 10 * ((i + 1) % max / 2);
+				bullets[free].y = (y + 128) - i * (256 / max);
+			}
 		}
 	}
 }
@@ -1280,18 +1305,16 @@ void enemy_stagbeetle::shot() {
 void enemy_stagbeetle::move_shot() {
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			bullets[i].x += -sin(bullets[i].rad) * bullets[i].speed * frame_Time;
-			bullets[i].y += -cos(bullets[i].rad) * bullets[i].speed * frame_Time;
-			if (bullets[i].x <= 0 || bullets[i].y <= 0 || bullets[i].x >= 1270 || bullets[i].y >= 710) {
-				bullets[i].rad *= DX_PI_F;
-			}
+			bullets[i].x -= sin(bullets[i].rad) * bullets[i].speed * frame_Time;
+			bullets[i].y -= cos(bullets[i].rad) * bullets[i].speed * frame_Time;
 		}
 	}
 
 }
 
 void enemy_stagbeetle::move() {
-	x -= test.speed * frame_Time;
+	x -= sinf(test.move_rad) * test.speed * frame_Time;
+	y -= cosf(test.move_rad) * test.speed * frame_Time;
 	if (stats == 1) {
 		if (mode == 0 && frame % (int)fps == 0) {
 			if (y >= temp_y) {
@@ -1502,7 +1525,8 @@ void enemy_shindarla::move() {
 
 	// alive
 	if (stats == 1) {
-		x -= test.speed * frame_Time;
+		x -= sinf(test.move_rad) * test.speed * frame_Time;
+		y -= cosf(test.move_rad) * test.speed * frame_Time;
 	}
 	
 	// dead
@@ -1568,7 +1592,8 @@ void enemy_detecrew::move_shot() {
 
 void enemy_detecrew::move() {
 	if (stats == 1) {
-		x -= test.speed * frame_Time;
+		x -= sinf(test.move_rad) * test.speed * frame_Time;
+		y -= cosf(test.move_rad) * test.speed * frame_Time;
 
 		if (mode == 1) {
 
