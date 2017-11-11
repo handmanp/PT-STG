@@ -540,7 +540,7 @@ void enemy_shell::move() {
 		y -= cosf(test.move_rad) * test.speed * frame_Time;
 
 		// 1~180ƒtƒŒ[ƒ€ŠÔ(0~3•b)ƒ‰ƒ“ƒ_ƒ€‚Å’e‚ğ¶¬
-		if (frame % ((GetRand(2) + 1) * (int)fps)== 0) {
+		if (frame % (((GetRand(2) + 1) * (int)fps)) == 0) {
 			shot();
 		}
 
@@ -552,7 +552,8 @@ void enemy_shell::move() {
 
 void enemy_shell::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 24, y - 24, enemy_img[4], TRUE);
+		//DrawGraph(x - 24, y - 24, enemy_img[4], TRUE);
+		DrawRotaGraph(x, y, 1.0, -atan2(ship.x - x, ship.y - y) + a2r(180), enemy_img[4], TRUE, TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
