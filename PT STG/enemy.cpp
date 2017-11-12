@@ -476,7 +476,6 @@ void enemy_pine::move() {
 		if (mode == 2 && y != start_y) {
 			y += 10 * frame_Time;
 		}
-
 	}
 	move_shot();
 	draw();
@@ -492,7 +491,6 @@ void enemy_pine::draw() {
 			// DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
 			// DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "ピ");
 			bullet_animation_14(bullets[i].x, bullets[i].y, 1, 1);
-
 		}
 	}
 	init_OutRangeBullets();
@@ -698,7 +696,6 @@ void enemy_brain::move_shot() {
 				bullets[i].y += cos(bullets[i].rad) * bullets[i].speed * frame_Time;
 			}
 		}
-
 	}
 }
 
@@ -793,9 +790,7 @@ void enemy_brain::move() {
 		else {
 			mode_move = 0;
 		}
-
 	}
-
 
 	move_shot();
 	draw();
@@ -1034,7 +1029,7 @@ void enemy_worm::shot() {
 	if (stats == 1) {
 		for (int i = 0; i < max; i++) {
 			int free = search_FreeAddress();
-			bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
+			bullets[free].rad = ((2.0f * DX_PI_F * a2r(deg)) / max) * i;
 			bullets[free].speed = 10;
 			bullets[free].x = ball[5].x;
 			bullets[free].y = ball[5].y;
@@ -1073,23 +1068,12 @@ void enemy_worm::move() {
 				
 				ball[i].x = 32 * sinf(a2r(deg * i)) + ball[i-1].x; //48
 				ball[i].y = 32 * cosf(a2r(deg * i)) + ball[i-1].y;
-
-				/*
-				if (deg > 360) {
-					deg = 0;
-				}
-				if (deg < 0) {
-					deg = 360;
-				}
-				*/
 			}
 
 			if (frame % ((int)fps / 2) == 0) {
 				shot();
 			}
-
 		}
-
 	}
 	move_shot();
 	draw();
@@ -1120,7 +1104,6 @@ void enemy_worm::draw() {
 				//DrawCircle(ball[i].x, ball[i].y, ball[i].collision_size, GetColor(255, 255, 255), TRUE, 1);
 				break;
 			}
-
 		}
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
@@ -1190,7 +1173,6 @@ void enemy_sporecore::move() {
 			}
 			mode = 0;
 		}
-
 	}
 	move_shot();
 	draw();
@@ -1354,9 +1336,7 @@ void enemy_stagbeetle::move() {
 				mode = 0;
 				shot();
 			}
-
 		}
-
 	}
 	move_shot();
 	draw();
@@ -1373,7 +1353,7 @@ void enemy_stagbeetle::draw() {
 	init_OutRangeBullets();
 }
 
-// genocide : WORK IN PROGRESS
+// genocide
 void enemy_genocide::init(int HP, float start_x, float start_y, int stat) {
 	mode = 1;
 	collision_size = 128;
@@ -1439,7 +1419,6 @@ void enemy_genocide::move() {
 			}
 		}
 
-
 	}
 	move_shot();
 	draw();
@@ -1453,9 +1432,7 @@ void enemy_genocide::draw() {
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
 			bullet_animation_14(bullets[i].x, bullets[i].y, 5, 2);
-		}
-
-		
+		}		
 	}
 
 	init_OutRangeBullets();
@@ -1581,6 +1558,8 @@ void enemy_shindarla::draw() {
 void enemy_detecrew::init(int HP, float start_x, float start_y, int stat) {
 	mode = 0;
 	speed = 16;
+	count = 0;
+	dir = 0;
 	hp = HP;
 	x = start_x;
 	y = start_y;
@@ -1591,10 +1570,59 @@ void enemy_detecrew::init(int HP, float start_x, float start_y, int stat) {
 }
 
 void enemy_detecrew::shot() {
+	int max = 20;
+	for (int i = 0; i < max; i++) {
+		int free = search_FreeAddress();
+		bullets[free].rad = ((2.0f * DX_PI_F) / max) * dir;
+		bullets[free].speed = 6;
+		bullets[free].stats = 1;
+		bullets[free].collision_size = 16;
 
+		int var_x;
+		int var_y;
+
+		switch (dir) {
+		// 下 
+		case 0:
+			var_x = x;
+			var_y = y + (bullets[free].collision_size * 2 * i);
+			break;
+		// 右
+		case 1:
+			var_x = x + (bullets[free].collision_size * 2 * i);
+			var_y = y;
+			break;
+		// 上
+		case 2:
+			var_x = x;
+			var_y = y - (bullets[free].collision_size * 2 * i);
+			break;
+		// 左
+		case 3:
+			var_x = x - (bullets[free].collision_size * 2 * i);
+			var_y = y;
+			break;
+		}
+
+		bullets[free].x = var_x;
+		bullets[free].y = var_y;
+		
+	}
 }
 
 void enemy_detecrew::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			bullets[i].x -= sinf(test.move_rad);
+			bullets[i].y += cosf(test.move_rad);
+
+			// 茎と弾の判定部
+			if (mode == 2 /* && 点と矩形の当たり判*/ || stats != 1) {
+				bullets[i].stats = 0;
+			}
+		}
+	}
+
 
 }
 
@@ -1603,14 +1631,19 @@ void enemy_detecrew::move() {
 		x -= sinf(test.move_rad) * test.speed * frame_Time;
 		y -= cosf(test.move_rad) * test.speed * frame_Time;
 
+		// 自機との距離
+		if (sqrtf(powf(x - ship.x, 2) + powf(y - ship.y, 2)) <= 100) {
+			dir = GetRand(3);	// 4方向からランダム
+			mode = 1;
+		}
+
+		// 射出部
 		if (mode == 1) {
-
-
+			shot();
+			mode = 2;
 		}
 
-		if (mode == 2) {
 
-		}
 
 	}
 	move_shot();
@@ -1621,14 +1654,17 @@ void enemy_detecrew::move() {
 void enemy_detecrew::draw() {
 	if (stats == 1) {
 		DrawGraph(x - 24, y - 24, enemy_img[18], TRUE);
-
+	}
+	if (count <= 2000) {
+		count += 1 * frame_Time;
 	}
 
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			bullet_animation_16(bullets[i].x, bullets[i].y, 4, 1);
+			if (count == 100 * i) {
+				DrawGraph(bullets[i].x, bullets[i].y, enemy_img[19], TRUE);
+			}
 		}
-
 	}
 	init_OutRangeBullets();
 }

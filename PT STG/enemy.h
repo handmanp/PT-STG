@@ -266,8 +266,11 @@ public:
 
 class enemy_detecrew : public enemy {
 public:
+	BULLET kuki[MAX_BULLET];
 	int mode;
 	int random;
+	int dir;
+	float count;
 	float rad;
 	float prev_x;
 	float prev_y;

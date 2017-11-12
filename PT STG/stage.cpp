@@ -201,7 +201,7 @@ void my_Stage::stage_Progression() {
 				enemy_count[EneUnis]++;
 				break;
 
-				// [3] ジェノサイドバナナ OK
+				// [3] ジェノサイドバナナ
 			case EneBanana:
 				banana[enemy_count[EneBanana]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[EneBanana]++;
@@ -273,6 +273,8 @@ void my_Stage::stage_Progression() {
 
 				// [15] デテクルーノ（花） wip
 			case EneDetekuruno:
+				detecrew[enemy_count[EneDetekuruno]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
+				enemy_count[EneDetekuruno]++;
 				break;
 
 				// [16] デテクルーノ（茎） wip
@@ -285,8 +287,10 @@ void my_Stage::stage_Progression() {
 				enemy_count[EneTamautsu]++;
 				break;
 
-				// [18] 戦艦ジェノサイド wip
+				// [18] 戦艦ジェノサイド
 			case EneGenocide:
+				genocide[enemy_count[EneGenocide]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
+				enemy_count[EneGenocide]++;
 				break;
 
 				// *------------------------ Stage 3 ------------------------*
