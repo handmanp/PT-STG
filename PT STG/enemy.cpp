@@ -301,6 +301,7 @@ void enemy_uni::init(int HP, float start_x, float start_y, float s, int stat) {
 	r = -90;
 	collision_size = 24;
 	stats = stat;
+	init_Bullets();
 
 }
 
@@ -337,6 +338,8 @@ void enemy_banana::init(int HP, float start_x, float start_y, int stat) {
 	collision_size = 64;
 	stats = stat;
 	mode = 0;
+	init_Bullets();
+
 }
 
 void enemy_banana::shot() {
@@ -422,6 +425,8 @@ void enemy_pine::init(int HP, float s_x, float s_y, float up_y,int stat) {
 	stats = stat;
 	mode = 0;
 	attack_flag = 0;
+	init_Bullets();
+
 }
 
 void enemy_pine::shot() {
@@ -509,6 +514,8 @@ void enemy_shell::init(int HP, float start_x, float start_y, int stat) {
 	collision_size = 24;
 	stats = stat;
 	mode = 0;
+	init_Bullets();
+
 }
 
 void enemy_shell::shot() {
@@ -583,6 +590,8 @@ void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 	x = start_x;
 	y = start_y;
 	stats = stat;
+	init_Bullets();
+
 }
 
 void enemy_brain::shot() {
@@ -882,6 +891,8 @@ void enemy_meatball::init(int HP, float start_x, float start_y, int stat) {
 	sh_x = 0.0f;
 	sh_y = 0.0f;
 	temp = 0;
+	init_Bullets();
+
 }
 
 void enemy_meatball::move() {
@@ -1022,6 +1033,8 @@ void enemy_worm::init(int HP, float start_x, float start_y, int stat) {
 		ball[i].collision_size = 24;
 		ball[i].stats = 1;
 	}
+	init_Bullets();
+
 }
 
 void enemy_worm::shot() {
@@ -1123,6 +1136,8 @@ void enemy_sporecore::init(int HP, float start_x, float start_y, int stat) {
 	collision_size = 48;
 	stats = stat;
 	mode = 0;
+	init_Bullets();
+
 }
 
 void enemy_sporecore::shot() {
@@ -1206,6 +1221,8 @@ void enemy_ivy::init(int HP, float start_x, float start_y, int stat) {
 	height = 128;
 	stats = stat;
 	mode = 0; // 0:’n’† 1:L‚Ñ‚Ä‚éÅ’† 2:”j‰ó
+	init_Bullets();
+
 }
 
 void enemy_ivy::move() {
@@ -1269,6 +1286,8 @@ void enemy_stagbeetle::init(int HP, float start_x, float start_y, int stat) {
 	temp_x = start_x;
 	temp_y = start_y;
 	mode = 0;
+	init_Bullets();
+
 }
 
 void enemy_stagbeetle::shot() {
@@ -1362,6 +1381,8 @@ void enemy_genocide::init(int HP, float start_x, float start_y, int stat) {
 	y = start_y;
 	prev_y = start_y;
 	stats = stat;
+	init_Bullets();
+
 }
 
 void enemy_genocide::shot() {
@@ -1469,6 +1490,7 @@ void enemy_shindarla::init(int HP, float start_x, float start_y, int stat) {
 	x = start_x;
 	y = start_y;
 	stats = stat;
+	init_Bullets();
 
 }
 
@@ -1567,6 +1589,7 @@ void enemy_detecrew::init(int HP, float start_x, float start_y, int stat) {
 	prev_y = start_y;
 	stats = stat;
 	collision_size = 24;
+	init_Bullets();
 }
 
 void enemy_detecrew::shot() {
