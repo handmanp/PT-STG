@@ -208,11 +208,11 @@ void boss_stage1::init() {
 */
 // ========================================================================================
 // ----------------------------------------------------------------------------------------
-//  ナッツ
+//  エダマメン
 // ----------------------------------------------------------------------------------------
 // ========================================================================================
 
-void enemy_edamamen::init(int HP, float start_x, float start_y, float rad, int stat) {
+void enemy_edamamen::init(float start_x, float start_y, int HP, float rad, int stat) {
 	stats = stat;
 	hp = HP;
 	x = start_x;
@@ -312,7 +312,7 @@ void enemy_nuts::init(float start_x, float start_y, float s, int rad, int stat) 
 // ----------------------------------------------------------------------------
 void enemy_nuts::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 24, y - 24, enemy_img[2], TRUE);
+		DrawGraph(x - 24, y - 24, enemy_img[EneNuts], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -373,7 +373,7 @@ void enemy_nuts::move() {
 // 　ウニズ
 // ----------------------------------------------------------------------------------------
 // ========================================================================================
-void enemy_uni::init(int HP, float start_x, float start_y, float s, int stat) {
+void enemy_uni::init(float start_x, float start_y, int HP, float s, int stat) {
 	x = start_x;
 	y = start_y - test.y;
 	hp = HP;
@@ -400,7 +400,7 @@ void enemy_uni::move() {
 
 void enemy_uni::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 24, y - 24, enemy_img[0], TRUE);
+		DrawGraph(x - 24, y - 24, enemy_img[EneUnis], TRUE);
 	}
 }
 
@@ -410,7 +410,7 @@ void enemy_uni::draw() {
 //  ジェノサイドバナナ
 // ----------------------------------------------------------------------------------------
 // ========================================================================================
-void enemy_banana::init(int HP, float start_x, float start_y, int stat) {
+void enemy_banana::init(float start_x, float start_y, int HP, int stat) {
 	x = start_x;
 	y = start_y - test.y;
 	hp = HP;
@@ -478,7 +478,7 @@ void enemy_banana::move() {
 
 void enemy_banana::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 64, y - 64, enemy_img[5], TRUE);
+		DrawGraph(x - 64, y - 64, enemy_img[EneBanana], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -494,7 +494,7 @@ void enemy_banana::draw() {
 //  ピネ
 // ----------------------------------------------------------------------------------------
 // ========================================================================================
-void enemy_pine::init(int HP, float s_x, float s_y, float up_y,int stat) {
+void enemy_pine::init(float s_x, float s_y, int HP, float up_y,int stat) {
 	x = s_x;
 	y = s_y - test.y;
 	hp = HP;
@@ -569,7 +569,7 @@ void enemy_pine::move() {
 
 void enemy_pine::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 24, y - 24, enemy_img[6], TRUE);
+		DrawGraph(x - 24, y - 24, enemy_img[EnePine], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -587,7 +587,7 @@ void enemy_pine::draw() {
 //  カイ
 // ----------------------------------------------------------------------------------------
 // ========================================================================================
-void enemy_shell::init(int HP, float start_x, float start_y, int stat) {
+void enemy_shell::init(float start_x, float start_y, int HP, int stat) {
 	x = start_x;
 	y = start_y - test.y;
 	hp = HP;
@@ -638,7 +638,7 @@ void enemy_shell::move() {
 void enemy_shell::draw() {
 	if (stats == 1) {
 		//DrawGraph(x - 24, y - 24, enemy_img[4], TRUE);
-		DrawRotaGraph(x, y, 1.0, -atan2(ship.x - x, ship.y - y) + a2r(180), enemy_img[4], TRUE, TRUE);
+		DrawRotaGraph(x, y, 1.0, -atan2(ship.x - x, ship.y - y) + a2r(180), enemy_img[EneKai], TRUE, TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -649,7 +649,7 @@ void enemy_shell::draw() {
 }
 
 
-void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
+void enemy_brain::init(float start_x, float start_y, int HP, int stat) {
 	mode = 0;
 	mode_move = 0;
 	counter = 0;
@@ -899,7 +899,7 @@ void enemy_brain::move() {
 
 void enemy_brain::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 128, y - 128, enemy_img[20], TRUE);
+		DrawGraph(x - 128, y - 128, enemy_img[BossNoumison], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -958,7 +958,7 @@ O
 
 
 // meatball
-void enemy_meatball::init(int HP, float start_x, float start_y, int stat) {
+void enemy_meatball::init(float start_x, float start_y, int HP, int stat) {
 	mode = 0;
 	hp = HP;
 	x = start_x;
@@ -1031,12 +1031,12 @@ void enemy_meatball::move() {
 
 void enemy_meatball::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 24, y - 24, enemy_img[8], TRUE);
+		DrawGraph(x - 24, y - 24, enemy_img[EneMeatball], TRUE);
 	}
 }
 
 // statue
-void enemy_statue::init(int HP, float start_x, float start_y, int stat) {
+void enemy_statue::init(float start_x, float start_y, int HP, int stat) {
 	hidden = 1;
 	mode = 0;
 	rad = 0;
@@ -1087,7 +1087,7 @@ void enemy_statue::move() {
 void enemy_statue::draw() {
 	if (stats == 1) {
 		if (hidden == 0) {
-			DrawGraph(x, y, enemy_img[7], TRUE);
+			DrawGraph(x, y, enemy_img[EneStatue], TRUE);
 		}
 		else {
 			// DrawBox(x - 24, y - 24, x + 24, y + 24, GetColor(255, 255, 255), TRUE);
@@ -1096,7 +1096,7 @@ void enemy_statue::draw() {
 }
 
 // warm
-void enemy_worm::init(int HP, float start_x, float start_y, int stat) {
+void enemy_worm::init(float start_x, float start_y, int HP, int stat) {
 	mode = 0;
 	minus = 1;
 	hp = HP;
@@ -1180,12 +1180,12 @@ void enemy_worm::draw() {
 			switch (i) {
 			 case 0:	// 尻尾:13
 				// DrawGraph(ball[0].x + ball[0].collision_size, ball[0].y + ball[0].collision_size, enemy_img[13], TRUE);
-				 DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg + 90), enemy_img[14], TRUE, 1);
+				 DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg + 90), enemy_img[EneWarmBody], TRUE, 1);
 				// break;
 			case 5:		// 頭:12
 				//DrawGraph(ball[5].x - ball[5].collision_size, ball[5].y - ball[5].collision_size, enemy_img[12], TRUE);
 				//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[12], TRUE, 1); //success
-				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[12], TRUE, 1);
+				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[EneWarm], TRUE, 1);
 				x = ball[i].x;
 				y = ball[i].y;
 
@@ -1193,7 +1193,7 @@ void enemy_worm::draw() {
 			default:	// 胴体:14
 				//DrawGraph(ball[i].x - 24, ball[i].y - 24, enemy_img[14], TRUE);
 				//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[14], TRUE, 1); // success
-				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[14], TRUE, 1);
+				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[EneWarmBody], TRUE, 1);
 				//DrawCircle(ball[i].x, ball[i].y, ball[i].collision_size, GetColor(255, 255, 255), TRUE, 1);
 				break;
 			}
@@ -1208,7 +1208,7 @@ void enemy_worm::draw() {
 }
 
 // sporecore
-void enemy_sporecore::init(int HP, float start_x, float start_y, int stat) {
+void enemy_sporecore::init(float start_x, float start_y, int HP, int stat) {
 	hp = HP;
 	x = start_x;
 	y = start_y - test.y;
@@ -1276,7 +1276,7 @@ void enemy_sporecore::move() {
 
 void enemy_sporecore::draw() {
 	if (stats == 1) {
-		DrawGraph((int)x - 48, (int)y - 48, enemy_img[10], TRUE);
+		DrawGraph((int)x - 48, (int)y - 48, enemy_img[EneHoushi], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -1290,7 +1290,7 @@ void enemy_sporecore::draw() {
 
 // ivy
 // y は最大時のツタの最下部
-void enemy_ivy::init(int HP, float start_x, float start_y, int stat) {
+void enemy_ivy::init(float start_x, float start_y, int HP, int stat) {
 	hp = HP;
 	x = start_x;
 	y = start_y;
@@ -1347,16 +1347,16 @@ void enemy_ivy::move() {
 void enemy_ivy::draw() {
 	if (stats == 1) {
 		if (prev_y >= WINDOW_SIZE_Y / 2) {
-			DrawGraph((int)x - 24, (int)y, enemy_img[9],TRUE);
+			DrawGraph((int)x - 24, (int)y, enemy_img[EneTutan],TRUE);
 		}
 		else {
-			DrawGraph((int)x - 24, (int)y, enemy_img[9], TRUE);
+			DrawGraph((int)x - 24, (int)y, enemy_img[EneTutan], TRUE);
 		}
 	}
 }
 
 // stagbeetle
-void enemy_stagbeetle::init(int HP, float start_x, float start_y, int stat) {
+void enemy_stagbeetle::init(float start_x, float start_y, int HP, int stat) {
 	hp = HP;
 	x = start_x;
 	y = start_y;
@@ -1444,7 +1444,7 @@ void enemy_stagbeetle::move() {
 
 void enemy_stagbeetle::draw() {
 	if (stats == 1) {
-		DrawGraph((int)x - 48, (int)y - 48, enemy_img[11], TRUE);
+		DrawGraph((int)x - 48, (int)y - 48, enemy_img[EneKuwagatan], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		bullet_animation_14(bullets[i].x, bullets[i].y, 3, 0);
@@ -1453,7 +1453,7 @@ void enemy_stagbeetle::draw() {
 }
 
 // genocide
-void enemy_genocide::init(int HP, float start_x, float start_y, int stat) {
+void enemy_genocide::init(float start_x, float start_y, int HP, int stat) {
 	mode = 1;
 	collision_size = 128;
 	speed = 0;
@@ -1528,7 +1528,7 @@ void enemy_genocide::move() {
 
 void enemy_genocide::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 370, y - 140, enemy_img[15], TRUE);
+		DrawGraph(x - 370, y - 140, enemy_img[EneGenocide], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -1540,7 +1540,7 @@ void enemy_genocide::draw() {
 }
 
 // kimobako : WORK IN PROGRESS
-void enemy_kimobako::init(int HP, float start_x, float start_y, int stat) {
+void enemy_kimobako::init(float start_x, float start_y, int HP, int stat) {
 
 }
 
@@ -1558,12 +1558,12 @@ void enemy_kimobako::move() {
 
 void enemy_kimobako::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 128, y - 128, enemy_img[16], TRUE);
+		DrawGraph(x - 128, y - 128, enemy_img[EneKimobako], TRUE);
 	}
 }
 
 // shindarla
-void enemy_shindarla::init(int HP, float start_x, float start_y, int stat) {
+void enemy_shindarla::init(float start_x, float start_y, int HP, int stat) {
 	mode = 0;
 	collision_size = 32;
 	hp = HP;
@@ -1645,7 +1645,7 @@ void enemy_shindarla::move() {
 
 void enemy_shindarla::draw() {
 	if (stats == 1) {
-		DrawGraph((int)x - 32, (int)y - 32, enemy_img[17], TRUE);
+		DrawGraph((int)x - 32, (int)y - 32, enemy_img[EneTamautsu], TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -1657,7 +1657,7 @@ void enemy_shindarla::draw() {
 }
 
 // detecrew : WORK IN PROGRESS
-void enemy_detecrew::init(int HP, float start_x, float start_y, int stat) {
+void enemy_detecrew::init(float start_x, float start_y, int HP, int stat) {
 	mode = 0;
 	speed = 16;
 	count = 0;
@@ -1756,7 +1756,7 @@ void enemy_detecrew::move() {
 
 void enemy_detecrew::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 24, y - 24, enemy_img[18], TRUE);
+		DrawGraph(x - 24, y - 24, enemy_img[EneDetekuruno], TRUE);
 	}
 	if (count <= 2000) {
 		count += 1 * frame_Time;

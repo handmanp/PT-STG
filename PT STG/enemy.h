@@ -66,7 +66,7 @@ public:
 //エダマメン
 class enemy_edamamen : public enemy {
 public:
-	void init(int HP, float start_x, float start_y, float s, int stat);
+	void init(float start_x, float start_y, int HP, float s, int stat);
 	void move();
 	void draw();
 	void shot();
@@ -78,7 +78,7 @@ class enemy_uni : public enemy {
 public:
 	float rx;
 	float ry;
-	void init(int HP, float start_x, float start_y, float s, int stat);
+	void init(float start_x, float start_y, int HP, float s, int stat);
 	void move();
 	void draw();
 };
@@ -87,7 +87,7 @@ public:
 class enemy_banana : public enemy {
 public:
 	int mode;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void move();
 	void move_shot();
 	void shot();
@@ -101,7 +101,7 @@ public:
 	int attack_flag;
 	float start_y;
 	float upper_y;
-	void init(int HP, float s_x, float s_y, float up_y, int stat);
+	void init(float s_x, float s_y, int HP, float up_y, int stat);
 	void shot();
 	void move();
 	void move_shot();
@@ -112,7 +112,7 @@ public:
 class enemy_shell : public enemy {
 public:
 	int mode;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();
 	void move();
@@ -138,7 +138,7 @@ public:
 	int p2_y[MAX_BULLET];
 	float t[MAX_BULLET];
 	float s_x, s_y;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();
 	void move();
@@ -156,7 +156,7 @@ public:
 	float deg;
 	float sh_x;	//自機の座標を保存 
 	float sh_y;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void move();
 	void draw();
 
@@ -168,7 +168,7 @@ public:
 	int hidden;
 	int mode;
 	float rad;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void move();
 	void draw();
 };
@@ -180,7 +180,7 @@ public:
 	float deg;
 	int minus;
 	BULLET ball[6];
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();
 	void move();
@@ -194,7 +194,7 @@ public:
 class enemy_sporecore : public enemy {
 public:
 	int mode;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();
 	void move();
@@ -209,7 +209,7 @@ public:
 	int height;
 	int prev_x;
 	int prev_y;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void move();
 	void draw();
 };
@@ -220,7 +220,7 @@ public:
 	int mode;
 	int temp_x;
 	int temp_y;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();
 	void move();
@@ -234,7 +234,7 @@ public:
 	int deg;
 	int random;
 	float prev_y;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();
 	void move();
@@ -246,7 +246,7 @@ class enemy_kimobako : public enemy {
 public:
 	int mode;
 	float prev_y;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();
 	void move();
@@ -259,7 +259,7 @@ public:
 	int mode;
 	float rad;
 	float prev_y;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();
 	void move();
@@ -279,7 +279,7 @@ public:
 	float prev_x;
 	float prev_y;
 	float temp_x;
-	void init(int HP, float start_x, float start_y, int stat);
+	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();
 	void move();
