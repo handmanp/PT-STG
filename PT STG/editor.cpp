@@ -309,7 +309,7 @@ void draw_StageEditorMenuEnemy(void) {
 	// İ’u‚³‚ê‚Ä‚¢‚é“G‚ğ•\¦‚³‚¹‚é
 	for (int i = 0; i < 300; i++) {
 		if (editor[i].enemy_type != -1) {
-			DrawGraph
+			//DrawGraph
 		}
 	}
 
