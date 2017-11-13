@@ -211,13 +211,91 @@ void boss_stage1::init() {
 //  ƒiƒbƒc
 // ----------------------------------------------------------------------------------------
 // ========================================================================================
+
+void enemy_edamamen::init(int HP, float start_x, float start_y, float rad, int stat) {
+	stats = stat;
+	hp = HP;
+	x = start_x;
+	y = start_y - test.y;
+	r = rad;
+
+	init_Bullets();
+}
+
+// ----------------------------------------------------------------------------
+// •`‰æ
+// ----------------------------------------------------------------------------
+void enemy_edamamen::draw() {
+	if (stats == 1) {
+		DrawGraph(x - 24, y - 24, enemy_img[1], TRUE);
+	}
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			bullet_animation_14(bullets[i].x, bullets[i].y, 2, 1);
+		}
+	}
+}
+// ----------------------------------------------------------------------------
+// ’e”­ŽË
+// ----------------------------------------------------------------------------
+void enemy_edamamen::shot() {
+	int max = 6;
+	for (int i = 0; i < max; i++) {
+		int free = search_FreeAddress();
+		bullets[free].stats = 1;
+		bullets[free].x = x;
+		bullets[free].y = y;
+		bullets[free].rad = ((2 * DX_PI_F) / max) * i;
+		bullets[free].speed = 4;
+	}
+}
+// ----------------------------------------------------------------------------
+// ’e‚ÌˆÚ“®
+// ----------------------------------------------------------------------------
+void enemy_edamamen::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats != 0) {
+			bullets[i].x += sin(bullets[i].rad) * bullets[i].speed * frame_Time;
+			bullets[i].y += cos(bullets[i].rad) * bullets[i].speed * frame_Time;
+		}
+	}
+}
+// ----------------------------------------------------------------------------
+// ˆÚ“®
+// ----------------------------------------------------------------------------
+void enemy_edamamen::move() {
+	if (stats != 0) {
+		// ˆÚ“®
+		x -= sinf(test.move_rad) * test.speed * frame_Time;
+		y -= cosf(test.move_rad) * test.speed * frame_Time;
+
+		// ‰æ–ÊŠO‚És‚Á‚½‚çÁ‚·
+		// if (x < collision_size * -2) stats = 0;
+
+		if (frame % (2 * (int)fps) == 0 && stats == 1) {
+			shot();
+		}
+		move_shot();
+	}
+	collision_Check();
+	draw();
+}
+
+
+
+// ========================================================================================
+// ----------------------------------------------------------------------------------------
+//  ƒiƒbƒc
+// ----------------------------------------------------------------------------------------
+// ========================================================================================
+
 void enemy_nuts::init(float start_x, float start_y, float s, int rad, int stat) {
 
 	x     = start_x;
 	y     = 0.0f;
 	r     = rad;
 	hp    = 10;
-	py    = start_y;
+	py    = start_y - test.y;
 	speed = s;
 	stats = stat;
 	width = 60;
@@ -226,6 +304,8 @@ void enemy_nuts::init(float start_x, float start_y, float s, int rad, int stat) 
 
 	init_Bullets();
 }
+
+
 
 // ----------------------------------------------------------------------------
 // •`‰æ
@@ -295,7 +375,7 @@ void enemy_nuts::move() {
 // ========================================================================================
 void enemy_uni::init(int HP, float start_x, float start_y, float s, int stat) {
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	hp = HP;
 	speed = s;
 	r = -90;
@@ -331,7 +411,7 @@ void enemy_uni::draw() {
 // ========================================================================================
 void enemy_banana::init(int HP, float start_x, float start_y, int stat) {
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	hp = HP;
 	speed = 0;
 	collision_size = 64;
@@ -413,10 +493,10 @@ void enemy_banana::draw() {
 // ========================================================================================
 void enemy_pine::init(int HP, float s_x, float s_y, float up_y,int stat) {
 	x = s_x;
-	y = s_y;
+	y = s_y - test.y;
 	hp = HP;
-	start_y = s_y;
-	upper_y = up_y;
+	start_y = s_y - test.y;
+	upper_y = up_y - test.y;
 	speed = 0;
 	collision_size = 24;
 	stats = stat;
@@ -506,7 +586,7 @@ void enemy_pine::draw() {
 // ========================================================================================
 void enemy_shell::init(int HP, float start_x, float start_y, int stat) {
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	hp = HP;
 	collision_size = 24;
 	stats = stat;
@@ -582,7 +662,7 @@ void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 
 	hp = HP;
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	stats = stat;
 }
 
@@ -877,7 +957,7 @@ void enemy_meatball::init(int HP, float start_x, float start_y, int stat) {
 	mode = 0;
 	hp = HP;
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	speed = 0;
 	collision_size = 48;
 	stats = stat;
@@ -955,7 +1035,7 @@ void enemy_statue::init(int HP, float start_x, float start_y, int stat) {
 	rad = 0;
 	hp = HP;
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	speed = 0;
 	collision_size = 48;
 	stats = stat;
@@ -1014,7 +1094,7 @@ void enemy_worm::init(int HP, float start_x, float start_y, int stat) {
 	minus = 1;
 	hp = HP;
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	speed = 0;
 	stats = stat;
 
@@ -1127,7 +1207,7 @@ void enemy_worm::draw() {
 void enemy_sporecore::init(int HP, float start_x, float start_y, int stat) {
 	hp = HP;
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	speed = 0;
 	collision_size = 48;
 	stats = stat;
@@ -1371,7 +1451,7 @@ void enemy_genocide::init(int HP, float start_x, float start_y, int stat) {
 	collision_size = 128;
 	speed = 0;
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	prev_y = start_y;
 	stats = stat;
 }
@@ -1482,7 +1562,7 @@ void enemy_shindarla::init(int HP, float start_x, float start_y, int stat) {
 	collision_size = 32;
 	hp = HP;
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	stats = stat;
 
 }
@@ -1575,7 +1655,7 @@ void enemy_detecrew::init(int HP, float start_x, float start_y, int stat) {
 	speed = 16;
 	hp = HP;
 	x = start_x;
-	y = start_y;
+	y = start_y - test.y;
 	prev_x = start_x;
 	prev_y = start_y;
 	stats = stat;

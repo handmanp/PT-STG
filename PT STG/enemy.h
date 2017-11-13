@@ -66,7 +66,11 @@ public:
 //エダマメン
 class enemy_edamamen : public enemy {
 public:
-	void init();
+	void init(int HP, float start_x, float start_y, float s, int stat);
+	void move();
+	void draw();
+	void shot();
+	void move_shot();
 };
 
 //ウニズ
