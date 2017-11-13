@@ -71,111 +71,17 @@ void my_Ship::draw() {
 //--------------------------------------------------------------------------------
 void my_Ship::shot() {
 
-	int check_bullet = 0;
-	int free = -1;
+	// 初期弾はレーザー/ミサイルと共存できない
+	if (powerup_select == -1 && (powerup_select != 1 || powerup_select != 2)) {
+		shot_normal();
 
-	// 通常弾(共通)
-	if (powerup_select == -1) {
-		for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-			if (s[i].stats == 1) check_bullet++;
-			if (free == -1) {
-				if (s[i].stats == 0) free = i;
-			}
-		}
-		if (free != -1 && check_bullet <= 5) {
-			s[free].stats = 1;
-			s[free].x = x;
-			s[free].y = y;
-			s[free].rad = DX_PI_F / 2;
-			s[free].speed = 24;
-			s[free].length = 0;
-
-			PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
-		}
+		
 	}
 
-
-	// フローラ
-	if (type == 0) {
-		// パワーアップ1 (ダブルレーザー)
-		if (powerup_select == 0) {
-			for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-				if (s[i].stats == 1) check_bullet++;
-				if (free == -1) {
-					if (s[i].stats == 0) free = i;
-				}
-			}
-			if (free != -1 && check_bullet <= 5) {
-				s[free].stats = 1;
-				s[free].x = x;
-				s[free].y = y;
-				s[free].rad = DX_PI_F / 2;
-				s[free].speed = 24;
-				s[free].length = 0;
-
-				PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
-			}
-		}
-		// パワーアップ2 (アッパーショット)
-		else if (powerup_select == 1) {
-			for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-				if (s[i].stats == 1) check_bullet++;
-				if (free == -1) {
-					if (s[i].stats == 0) free = i;
-				}
-			}
-			if (free != -1 && check_bullet <= 5) {
-				s[free].stats = 1;
-				s[free].x = x;
-				s[free].y = y;
-				s[free].rad = DX_PI_F / 2;
-				s[free].speed = 24;
-				s[free].length = 0;
-
-				PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
-			}
-		}
-	}
-
-	// アメリア
-	else {
-		// パワーアップ1 (リングレーザー)
-		if (powerup_select == 0) {
-			for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-				if (s[i].stats == 1) check_bullet++;
-				if (free == -1) {
-					if (s[i].stats == 0) free = i;
-				}
-			}
-			if (free != -1 && check_bullet <= 5) {
-				s[free].stats = 1;
-				s[free].x = x;
-				s[free].y = y;
-				s[free].rad = DX_PI_F / 2;
-				s[free].speed = 24;
-				s[free].length = 0;
-
-				PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
-			}
-		}
-		// パワーアップ2 (アンダーショット)
-		else if (powerup_select == 1) {
-			for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-				if (s[i].stats == 1) check_bullet++;
-				if (free == -1) {
-					if (s[i].stats == 0) free = i;
-				}
-			}
-			if (free != -1 && check_bullet <= 5) {
-				s[free].stats = 1;
-				s[free].x = x;
-				s[free].y = y;
-				s[free].rad = DX_PI_F / 2;
-				s[free].speed = 24;
-				s[free].length = 0;
-
-				PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
-			}
+	// ミサイルはレーザーと共存できる
+	if (powerup_select == 1 || powerup_select == 2) {
+		if (powerup_select == 1 && /*ミサイルのカウント*/0 < 2) {
+			shot_missile();
 		}
 	}
 
@@ -185,6 +91,7 @@ void my_Ship::shot() {
 //--------------------------------------------------------------------------------
 void my_Ship::shot_Move() {
 	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+		// 通常弾
 		if (s[i].stats == 1) {
 			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
 			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
@@ -193,6 +100,36 @@ void my_Ship::shot_Move() {
 				s[i].stats = 0;
 			}
 		}
+		
+		// レーザー
+		if (s[i].stats == 2) {
+			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
+			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
+			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
+				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
+				s[i].stats = 0;
+			}
+		}
+
+		// ミサイル
+		if (s[i].stats == 3) {
+			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
+			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
+			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
+				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
+				s[i].stats = 0;
+			}
+		}
+
+		if (s[i].stats == 4) {
+			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
+			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
+			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
+				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
+				s[i].stats = 0;
+			}
+		}
+
 	}
 }
 
@@ -416,4 +353,81 @@ void item_draw() {
 			//DrawGraph(item[i].x - item[i].size, item[i].y - item[i].size, item[i].image_handle, TRUE);
 		}
 	}
+}
+
+// ノーマル弾 stats = 1
+//--------------------------------------------------------------------------------
+void my_Ship::shot_normal() {
+	int check_bullet = 0;
+	int free = -1;
+	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+		if (s[i].stats == 1) check_bullet++;
+		if (free == -1) {
+			if (s[i].stats == 0) free = i;
+		}
+	}
+	if (free != -1 && check_bullet <= 5) {
+		s[free].stats = 1;
+		s[free].x = x;
+		s[free].y = y;
+		s[free].rad = DX_PI_F / 2;
+		s[free].speed = 24;
+		s[free].length = 0;
+
+		PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+	}
+}
+
+// レーザー (共通) stats = 2
+//--------------------------------------------------------------------------------
+void my_Ship::shot_raser() {
+
+}
+
+
+// ミサイル (共通) stats = 3
+//--------------------------------------------------------------------------------
+void my_Ship::shot_missile() {
+	int check_bullet = 0;
+	int free = -1;
+	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+		if (s[i].stats == 1) check_bullet++;
+		if (free == -1) {
+			if (s[i].stats == 0) free = i;
+		}
+	}
+	if (free != -1 && check_bullet <= 5) {
+		s[free].stats = 3;
+		s[free].x = x;
+		s[free].y = y;
+		s[free].rad = a2r(45);
+		s[free].speed = 24;
+		s[free].length = 0;
+
+		PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+	}
+}
+
+// ダブルレーザー (フロレンス)
+//--------------------------------------------------------------------------------
+void my_Ship::shot_double_raser() {
+
+}
+
+// アッパーショット (フロレンス)
+//--------------------------------------------------------------------------------
+void my_Ship::shot_upper() {
+
+}
+
+// リングレーザー (アメリア)
+//--------------------------------------------------------------------------------
+void my_Ship::shot_ring_raser() {
+
+}
+
+// アンダーショット (アメリア)
+//--------------------------------------------------------------------------------
+void my_Ship::shot_under() {
+
 }

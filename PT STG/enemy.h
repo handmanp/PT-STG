@@ -78,6 +78,7 @@ class enemy_uni : public enemy {
 public:
 	float rx;
 	float ry;
+	float deg;
 	void init(float start_x, float start_y, int HP, float s, int stat);
 	void move();
 	void draw();
@@ -220,6 +221,7 @@ public:
 	int mode;
 	int temp_x;
 	int temp_y;
+	int count[MAX_BULLET];
 	void init(float start_x, float start_y, int HP, int stat);
 	void shot();
 	void move_shot();

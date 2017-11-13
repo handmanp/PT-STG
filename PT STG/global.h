@@ -116,6 +116,15 @@ public:
 	void shot();
 	void shot_Move();
 	bool ship_hit(int mx, int my, int col);
+
+	// ショット
+	void shot_normal();
+	void shot_raser();
+	void shot_missile();
+	void shot_double_raser();
+	void shot_upper();
+	void shot_ring_raser();
+	void shot_under();
 };
 
 // アイテム構造体
