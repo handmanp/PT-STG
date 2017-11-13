@@ -92,12 +92,17 @@ void io_SaveStageData(void) {
 	char path[128];
 	sprintf_s(path, 128, "data/maps/stage_1/stagedata.csv");
 
-	ofstream ofs(path);
+	//remove(path);
+	//Sleep(1000);
 
-	for (int i = 0; i < enemy_max; i++) {
-		char buf[128];
-		sprintf_s(buf, 128, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d", editor[i].start_x, editor[i].enemy_type, editor[i].var_1, editor[i].var_2, editor[i].var_3, editor[i].var_4, editor[i].var_5, editor[i].var_6, editor[i].var_7);
-		ofs << buf << endl;
+	ofstream ofs; ofs.open(path, ios::trunc);
+
+	for (int i = 0; i < 300; i++) {
+		if (editor[i].enemy_type != -1) {
+			char buf[128];
+			sprintf_s(buf, 128, "%d,%d,%d,%d,%d,%d,%d,%d,%d", editor[i].start_x, editor[i].enemy_type, editor[i].var_1, editor[i].var_2, editor[i].var_3, editor[i].var_4, editor[i].var_5, editor[i].var_6, editor[i].var_7);
+			ofs << buf << endl;
+		}
 	}
 	ofs.close();
 }
@@ -127,6 +132,7 @@ void io_LoadStageData(void) {
 	}
 	// 今後のループ用に
 	enemy_max = line_count;
+	fclose(fp);
 
 	fp = NULL;
 	// CSVを開く(読み込まないとFPのポインタが初期化されなくてなんかうまくいかないけど汚いよね)
@@ -229,6 +235,16 @@ int draw_StageEditor(void) {
 		}
 	}
 
+	// 設置されている敵を表示させる
+	for (int i = 0; i < 300; i++) {
+		if (editor[i].enemy_type != -1) {
+			int gsx, gsy;
+			GetGraphSize(enemy_img[editor[i].enemy_type], &gsx, &gsy);
+			DrawGraph((editor[i].var_1 - (gsx / 2)) + stage_left_x, (editor[i].var_2 - (gsy / 2)) + stage_left_y, enemy_img[editor[i].enemy_type], TRUE);
+			DrawBox(editor[i].var_1 - (gsx / 2) + stage_left_x, editor[i].var_2 - (gsy / 2) + stage_left_y, editor[i].var_1 + (gsx / 2) + stage_left_x, editor[i].var_2 + (gsy / 2) + stage_left_y, 0x00FF00, FALSE);
+		}
+	}
+
 	move_StageEditor();
 	draw_StageEditorRuler();
 	draw_StageEditorMenu();
@@ -239,10 +255,12 @@ int draw_StageEditor(void) {
 	// 保存ボタン
 	if (button.draw_Button(1010, 40, 260, 28, nc, oc, "ステージを上書き保存")) {
 		io_MapdataFileOutput();
+		io_SaveStageData();
 	}
 	// タイトルに戻るボタン
 	if (button.draw_Button(1010, 75, 260, 28, nc, oc, "保存してタイトルへ")) {
 		io_MapdataFileOutput();
+		io_SaveStageData();
 		gamemode  = 1; // タイトルに戻るフラグ
 		mode_flag = 0; // エディタのメニュー初期化
 	}
@@ -306,27 +324,259 @@ void draw_StageEditorMenuEnemy(void) {
 		select_erase *= -1;
 	}
 
-	// 設置されている敵を表示させる
-	for (int i = 0; i < 300; i++) {
-		if (editor[i].enemy_type != -1) {
-			int gsx, gsy;
-			GetGraphSize(enemy_img[editor[i].enemy_type], &gsx, &gsy);
-			DrawGraph(editor[i].var_1 - (gsx / 2), editor[i].var_2 - (gsy / 2), enemy_img[editor[i].enemy_type], TRUE);
-			DrawBox(editor[i].var_1 - (gsx / 2), editor[i].var_2 - (gsy / 2), editor[i].var_1 + (gsx / 2), editor[i].var_2 + (gsy / 2), 0x00FF00, TRUE);
+	if (mm_enemy != -1) {
+		if (mouse_l == 2) {
+			editor[mm_enemy].var_1 = mouse_x - stage_left_x;
+			editor[mm_enemy].var_2 = mouse_y - stage_left_y;
+		}
+		else {
+			mm_enemy = -1;
 		}
 	}
 
 	// クリック時
-	if (mouse_l == 1 && mouse_x < 1000) {
-		for (int i = 0; i < 300; i++) {
-			if (editor[i].enemy_type == -1) {
-				//editor[i].
+	if (mouse_l == 1 && mouse_x < 1000 && mm_enemy == -1) {
+		if (select_erase == 1) {
+			if (ctrl_key[KEY_INPUT_LSHIFT] == 2) {
+				for (int i = 0; i < 300; i++) {
+					if (editor[i].enemy_type != -1) {
+						int gsx, gsy;
+						GetGraphSize(enemy_img[select_enemy], &gsx, &gsy);
+						if (IsDetection_PointAndSquare(editor[i].var_1, editor[i].var_2, gsx, gsy, mouse_x - stage_left_x, mouse_y - stage_left_y)) {
+							mm_enemy = i;
+						}
+					}
+				}
+			}
+			else {
+				for (int i = 0; i < 300; i++) {
+					if (editor[i].enemy_type == -1) {
+
+						bool ef = true;
+
+						int mx = mouse_x - stage_left_x;
+						int my = mouse_y - stage_left_y;
+
+						for (int j = 0; j < 300; j++) {
+							if (i != j) {
+								// 大きさ調べる
+								int gsxi, gsyi, gsxj, gsyj;
+								GetGraphSize(enemy_img[select_enemy], &gsxi, &gsyi);
+								GetGraphSize(enemy_img[editor[j].enemy_type], &gsxj, &gsyj);
+
+								// かぶらなかったら配置
+								if (IsDetection_Square(mx, my, editor[j].var_1 - stage_left_x, editor[j].var_2 - stage_left_y, gsxi, gsyi, gsxj, gsyj)) {
+									ef = false;
+									break;
+								}
+							}
+						}
+						if (ef) {
+							set_Enemy(select_enemy, i);
+							break;
+						}
+					}
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < 300; i++) {
+				if (editor[i].enemy_type != -1) {
+					int gsx, gsy;
+					GetGraphSize(enemy_img[select_enemy], &gsx, &gsy);
+					if (IsDetection_PointAndSquare(editor[i].var_1, editor[i].var_2, gsx, gsy, mouse_x - stage_left_x, mouse_y - stage_left_y)) {
+						editor[i].enemy_type = -1;
+						break;
+					}
+				}
 			}
 		}
 	}
 }
 
+void set_Enemy(int e, int i) {
 
+	int mx = mouse_x - stage_left_x;
+	int my = mouse_y - stage_left_y;
+
+	editor[i].start_x = 0;
+	editor[i].enemy_type = e;
+	editor[i].var_1 = mx;
+	editor[i].var_2 = my;
+
+	switch (e) {
+	case EneNuts:
+		editor[i].var_3 = 2;
+		editor[i].var_4 = 0;
+		editor[i].var_5 = 1;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [1] エダマメン wip
+	case EneEdamamen:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 2;
+		editor[i].var_5 = 1;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [2] ウニズ
+	case EneUnis:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 2;
+		editor[i].var_5 = 1;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [3] ジェノサイドバナナ
+	case EneBanana:
+		editor[i].var_3 = 40;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [4] ピネ
+	case EnePine:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 100;
+		editor[i].var_5 = 1;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [5] カイ OK
+	case EneKai:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [6] タケノコン wip
+	case EneTakenokon:
+		break;
+
+		// [7] キノコン wip
+	case EneKinokon:
+		break;
+
+		// *------------------------ Stage 2 ------------------------*
+
+		// [8] クワガタン
+	case EneKuwagatan:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [9] ミートボールスパム
+	case EneMeatball:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [10] 胞子
+	case EneHoushi:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [11] ワーム
+	case EneWarm:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [12] ツタン
+	case EneTutan:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [13] ムービングスタチュー
+	case EneStatue:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// *------------------------ Stage 3 ------------------------*
+
+		// [14] キモ箱 wip
+	case EneKimobako:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [15] デテクルーノ（花） wip
+	case EneDetekuruno:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [16] デテクルーノ（茎） wip
+	case EneDetekuki:
+		break;
+
+		// [17] シンダーラタマウツ
+	case EneTamautsu:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// [18] 戦艦ジェノサイド
+	case EneGenocide:
+		editor[i].var_3 = 20;
+		editor[i].var_4 = 1;
+		editor[i].var_5 = 0;
+		editor[i].var_6 = 0;
+		editor[i].var_7 = 0;
+		break;
+
+		// *------------------------ Stage 3 ------------------------*
+
+		// [19] タコス wip
+	case BossTacos:
+		break;
+
+		// [20] ノウミソン wip
+	case BossNoumison:
+		
+		break;
+	}
+	//MessageBox(NULL, "おいたよ", "でばっぐ", MB_OK);
+}
 
 
 
@@ -686,6 +936,9 @@ int draw_NewProjectMenu(void) {
 	// 作成ボタン
 	if (button.draw_Button(860, 550, 300, 100, nc, oc, "作成") == true) {
 		init_EditorStage();
+		for (int i = 0; i < 300; i++) {
+			editor[i].enemy_type = -1;
+		}
 		mode_flag++;
 	}
 
