@@ -216,6 +216,9 @@ void item_drop(int x, int y, int type);
 void item_draw();
 void item_move();
 
+bool IsDetection_Square(int x1, int y1, int x2, int y2, int xr1, int yr1, int xr2, int yr2);
+bool IsDetection_PointAndSquare(int sx, int sy, int w, int h, int x, int y);
+
 //-------------------------------
 //debug global area
 //-------------------------------
