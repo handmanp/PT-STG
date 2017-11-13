@@ -50,6 +50,38 @@ enum pu {
 
 };
 
+enum ene_type {
+	// *---Stage 1---*
+	EneNuts,		// 0 ナッツ
+	EneEdamamen,	// 1 エダマメン
+	EneUnis,		// 2 ウニズ
+	EneBanana,		// 3 ジェノサイドバナナ
+	EnePine,		// 4 ピネ
+	EneKai,			// 5 カイ
+	EneTakenokon,	// 6 タケノコン
+	EneKinokon,		// 7 キノコン
+
+	// *---Stage 2---*
+	EneKuwagatan,	// 8  クワガタン
+	EneMeatball,	// 9  ミートボールスパム
+	EneHoushi,		// 10 胞子
+	EneWarm,		// 11 ワーム
+	EneTutan,		// 12 ツタン
+	EneStatue,		// 13 ムービングスタチュー
+
+	// *---Stage 3---*
+	EneKimobako,	// 14 キモ箱
+	EneDetekuruno,	// 15 デテクルーノ（葉）
+	EneDetekuki,	// 16 デテクルーノ（茎）
+	EneTamautsu,	// 17 シンダーラタマウツ
+	EneGenocide,	// 18 戦艦ジェノサイド
+
+	// *--- Boss ---*
+	BossTacos,		// 19 タコス
+	BossNoumison,	// 20 ノウミソン
+	BossWarmin		// 21 ワーミン
+};
+
 
 typedef struct {
 	int		stats;

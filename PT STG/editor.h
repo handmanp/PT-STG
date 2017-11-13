@@ -27,6 +27,7 @@ void move_StageEditor();
 bool io_MapdataFileOutput();
 bool io_MapdataFileLoad();
 void io_LoadMetaData(char *path);
+void io_LoadStageData();
 void fill(int vx, int vy);
 
 // Editor Global
@@ -44,5 +45,9 @@ int select_mode = 1;
 int select_erase = 1;
 int select_stac = -1;
 
+int enemy_max = 0;
+
 int map_slot = 1;
 int fill_loop = 0;
+
+STAGE_DATA editor[300];

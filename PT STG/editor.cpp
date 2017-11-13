@@ -32,7 +32,7 @@ using namespace std;
 //
 //-------------------------------------------------------------------------------
 
-void main_Editor() {
+void main_Editor(void) {
 
 	int menu_b = -1;
 	char path[128];
@@ -54,6 +54,7 @@ void main_Editor() {
 				sprintf_s(a, 128, "%d,%d", stage_size_x, stage_size_y);
 
 				io_MapdataFileLoad();
+				io_LoadStageData();
 				mode_flag = 2;
 			}
 			else {
@@ -86,13 +87,134 @@ void io_LoadMetaData(char *path) {
 	stage_size_y = meta.y;
 }
 
+void io_SaveStageData(void) {
+
+	char path[128];
+	sprintf_s(path, 128, "data/maps/stage_1/stagedata.csv");
+
+	ofstream ofs(path);
+
+	for (int i = 0; i < enemy_max; i++) {
+		char buf[128];
+		sprintf_s(buf, 128, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d", editor[i].start_x, editor[i].enemy_type, editor[i].var_1, editor[i].var_2, editor[i].var_3, editor[i].var_4, editor[i].var_5, editor[i].var_6, editor[i].var_7);
+		ofs << buf << endl;
+	}
+	ofs.close();
+}
+
+void io_LoadStageData(void) {
+
+	for (int i = 0; i < 300; i++) {
+		editor[i].enemy_type = -1;
+	}
+
+	// たりなさそうなら適時増やす
+	const int BufMax = 128;
+	char buf[BufMax];
+
+	FILE *fp = NULL;
+
+	int  line_count = 0;
+	char(*data)[BufMax];
+
+	// CSVを開く
+	errno_t err;
+	err = fopen_s(&fp, _T("data/maps/stage_1/stagedata.csv"), "r");
+	if (err == 0) {
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			line_count++;
+		}
+	}
+	// 今後のループ用に
+	enemy_max = line_count;
+
+	fp = NULL;
+	// CSVを開く(読み込まないとFPのポインタが初期化されなくてなんかうまくいかないけど汚いよね)
+	err = fopen_s(&fp, _T("data/maps/stage_1/stagedata.csv"), "r");
+
+	// 格納時に使う変数初期化
+	int c;
+	int col = 1;
+	int row = 0;
+
+	memset(buf, 0, sizeof(buf));
+
+	// ここから先は結構マジック
+	// ヘッダ読み飛ばし
+	//while (fgetc(fp) != '\n');
+	while (1) {
+		while (1) {
+
+			c = fgetc(fp);
+
+			// 末尾ならループを抜ける。
+			if (c == EOF) goto LOOP_OUT;
+
+			// カンマか改行でなければ、文字としてつなげる
+			if (c != ',' && c != '\n') {
+				strcat_s(buf, (const char*)&c);
+			}
+			// カンマか改行ならループ抜ける。
+			else { break; }
+		}
+		// ここに来たということは、1セル分の文字列が出来上がったということ
+		switch (col) {
+			// インスタンス生成X座標
+		case 1:
+			editor[row].start_x = atoi(buf);
+			break;
+			// 敵の種類
+		case 2:
+			editor[row].enemy_type = atoi(buf);
+			break;
+			// 各インスタンスの引数
+		case 3:
+			editor[row].var_1 = atoi(buf);
+			break;
+		case 4:
+			editor[row].var_2 = atoi(buf);
+			break;
+		case 5:
+			editor[row].var_3 = atoi(buf);
+			break;
+		case 6:
+			editor[row].var_4 = atoi(buf);
+			break;
+		case 7:
+			editor[row].var_5 = atoi(buf);
+			break;
+		case 8:
+			editor[row].var_6 = atoi(buf);
+			break;
+		case 9:
+			editor[row].var_7 = atoi(buf);
+			break;
+		}
+		// バッファを初期化
+		memset(buf, 0, sizeof(buf));
+		// 列数を足す
+		col++;
+
+		// もし読み込んだ文字が改行だったら列数を初期化して行数を増やす
+		if (c == '\n') {
+			col = 1;
+			row++;
+		}
+	}
+LOOP_OUT: // ループパス用のラベル
+	fclose(fp);
+
+}
+
+
+
 //-------------------------------------------------------------------------------
 //
 //   エディタ  ??tsmain
 //
 //-------------------------------------------------------------------------------
 // エディタ本体のメイン
-int draw_StageEditor() {
+int draw_StageEditor(void) {
 
 	for (int i = 0; i < stage_size_x; i++) {
 		for (int j = 0; j < stage_size_y; j++) {
@@ -129,9 +251,14 @@ int draw_StageEditor() {
 }
 
 
+
+
+
+
+
 // メニュー類の描画 ??tsm
 // *------------------------------------------------------------------------------------*
-void draw_StageEditorMenu() {
+void draw_StageEditorMenu(void) {
 
 	DrawBox(1000, 0, 1280, 720, GetColor(200, 200, 200), TRUE);
 
@@ -158,9 +285,14 @@ void draw_StageEditorMenu() {
 	}
 }
 
+
+
+
+
+
 // エネミタブ ??tst
 // *------------------------------------------------------------------------------------*
-void draw_StageEditorMenuEnemy() {
+void draw_StageEditorMenuEnemy(void) {
 
 	unsigned int nc = GetColor(100, 100, 100);
 	unsigned int oc = GetColor(150, 150, 150);
@@ -173,11 +305,27 @@ void draw_StageEditorMenuEnemy() {
 	if (button.draw_Button(1010, 610, 260, 28, nc, oc, "消しゴム")) {
 		select_erase *= -1;
 	}
+
+	// 設置されている敵を表示させる
+	for (int i = 0; i < 300; i++) {
+		if (editor[i].enemy_type != -1) {
+			DrawGraph
+		}
+	}
+
+	// クリック時
+	if (mouse_l == 1 && mouse_x < 1000) {
+
+	}
 }
+
+
+
+
 
 // ステージタブ ??tst
 // *------------------------------------------------------------------------------------*
-void draw_StageEditorMenuStage() {
+void draw_StageEditorMenuStage(void) {
 
 	DrawFormatStringToHandle(1010, 250, GetColor(255, 255, 255), font_handle[FONT_BUTTON], "マップチップ");
 
@@ -354,7 +502,7 @@ void fill(int vx, int vy) {
 
 // ルーラの描画 ??tsru
 // *------------------------------------------------------------------------------------*
-void draw_StageEditorRuler() {
+void draw_StageEditorRuler(void) {
 
 	// X軸ルーラ
 	for (int i = 0; i < stage_size_x; i++) {
@@ -387,7 +535,7 @@ void draw_StageEditorRuler() {
 
 // エディタの移動
 // *------------------------------------------------------------------------------------*
-void move_StageEditor() {
+void move_StageEditor(void) {
 	if (mouse_r == 1) {
 		mouse_diff_x = mouse_x - stage_left_x;
 		mouse_diff_y = mouse_y - stage_left_y;
@@ -401,7 +549,7 @@ void move_StageEditor() {
 // 出力  true = 多分成功してる, false = 多分失敗してる
 // *------------------------------------------------------------------------------------*
 
-bool io_MapdataFileOutput() {
+bool io_MapdataFileOutput(void) {
 
 	char path[128];
 	//sprintf_s(path, 128, "data/editor/saves/0%d/mapdata.txt", map_slot);
@@ -439,7 +587,7 @@ bool io_MapdataFileOutput() {
 // 入力  true = 多分成功してる, false = 多分失敗してる
 // *------------------------------------------------------------------------------------*
 
-bool io_MapdataFileLoad() {
+bool io_MapdataFileLoad(void) {
 
 	init_EditorStage();
 
@@ -468,7 +616,7 @@ bool io_MapdataFileLoad() {
 
 // 新規作成画面の描画
 // *------------------------------------------------------------------------------------*
-int draw_NewProjectMenu() {
+int draw_NewProjectMenu(void) {
 
 	DrawBox(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y, GetColor(10, 10, 10), TRUE);
 
@@ -539,7 +687,7 @@ int draw_NewProjectMenu() {
 
 // エディターのメインメニュー描画
 // *------------------------------------------------------------------------------------*
-int draw_EditorMainMenu() {
+int draw_EditorMainMenu(void) {
 
 	DrawBox(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y, GetColor(10, 10, 10), TRUE);
 
@@ -563,7 +711,7 @@ int draw_EditorMainMenu() {
 
 // エディター用BG面配列の初期化
 // *------------------------------------------------------------------------------------*
-void init_EditorStage() {
+void init_EditorStage(void) {
 
 	// 3次元配列の動的確保（カッコイイ）
 	stage_editor = new int*[stage_size_x];
@@ -595,7 +743,7 @@ void init_EditorStage() {
 // *------------------------------------------------------------------------------------*
 
 // ※コレ通さないと死ぬから注意
-void delete_EditorStage() {
+void delete_EditorStage(void) {
 	for (int i = 0; i < stage_size_x; i++) {
 		delete[] stage_editor[i];
 	}
