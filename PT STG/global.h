@@ -200,7 +200,7 @@ GLOBAL enemy_sporecore	houshi[EACH_ENEMY_MAX];
 GLOBAL enemy_worm		worm[EACH_ENEMY_MAX];
 GLOBAL enemy_genocide	genocide[EACH_ENEMY_MAX];
 GLOBAL enemy_shindarla	sindarla[EACH_ENEMY_MAX];
-//GLOBAL enemy_detecrew	detecrew[EACH_ENEMY_MAX];
+GLOBAL enemy_detecrew	detecrew[EACH_ENEMY_MAX];
 GLOBAL enemy_meatball	meat[EACH_ENEMY_MAX];
 
 //debug my ship

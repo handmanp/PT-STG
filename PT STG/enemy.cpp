@@ -381,6 +381,7 @@ void enemy_uni::init(int HP, float start_x, float start_y, float s, int stat) {
 	r = -90;
 	collision_size = 24;
 	stats = stat;
+	init_Bullets();
 
 }
 
@@ -417,6 +418,8 @@ void enemy_banana::init(int HP, float start_x, float start_y, int stat) {
 	collision_size = 64;
 	stats = stat;
 	mode = 0;
+	init_Bullets();
+
 }
 
 void enemy_banana::shot() {
@@ -502,6 +505,8 @@ void enemy_pine::init(int HP, float s_x, float s_y, float up_y,int stat) {
 	stats = stat;
 	mode = 0;
 	attack_flag = 0;
+	init_Bullets();
+
 }
 
 void enemy_pine::shot() {
@@ -556,7 +561,6 @@ void enemy_pine::move() {
 		if (mode == 2 && y != start_y) {
 			y += 10 * frame_Time;
 		}
-
 	}
 	move_shot();
 	draw();
@@ -572,7 +576,6 @@ void enemy_pine::draw() {
 			// DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, GetColor(255, 255, 255), TRUE);
 			// DrawFormatString(bullets[i].x - 8, bullets[i].y - 8, GetColor(0, 0, 0), "És");
 			bullet_animation_14(bullets[i].x, bullets[i].y, 1, 1);
-
 		}
 	}
 	init_OutRangeBullets();
@@ -591,6 +594,8 @@ void enemy_shell::init(int HP, float start_x, float start_y, int stat) {
 	collision_size = 24;
 	stats = stat;
 	mode = 0;
+	init_Bullets();
+
 }
 
 void enemy_shell::shot() {
@@ -620,7 +625,7 @@ void enemy_shell::move() {
 		y -= cosf(test.move_rad) * test.speed * frame_Time;
 
 		// 1~180ÉtÉåÅ[ÉÄä‘(0~3ïb)ÉâÉìÉ_ÉÄÇ≈íeÇê∂ê¨
-		if (frame % ((GetRand(2) + 1) * (int)fps)== 0) {
+		if (frame % (((GetRand(2) + 1) * (int)fps)) == 0) {
 			shot();
 		}
 
@@ -632,7 +637,8 @@ void enemy_shell::move() {
 
 void enemy_shell::draw() {
 	if (stats == 1) {
-		DrawGraph(x - 24, y - 24, enemy_img[4], TRUE);
+		//DrawGraph(x - 24, y - 24, enemy_img[4], TRUE);
+		DrawRotaGraph(x, y, 1.0, -atan2(ship.x - x, ship.y - y) + a2r(180), enemy_img[4], TRUE, TRUE);
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
@@ -664,6 +670,8 @@ void enemy_brain::init(int HP, float start_x, float start_y, int stat) {
 	x = start_x;
 	y = start_y - test.y;
 	stats = stat;
+	init_Bullets();
+
 }
 
 void enemy_brain::shot() {
@@ -777,7 +785,6 @@ void enemy_brain::move_shot() {
 				bullets[i].y += cos(bullets[i].rad) * bullets[i].speed * frame_Time;
 			}
 		}
-
 	}
 }
 
@@ -872,9 +879,7 @@ void enemy_brain::move() {
 		else {
 			mode_move = 0;
 		}
-
 	}
-
 
 	move_shot();
 	draw();
@@ -966,6 +971,8 @@ void enemy_meatball::init(int HP, float start_x, float start_y, int stat) {
 	sh_x = 0.0f;
 	sh_y = 0.0f;
 	temp = 0;
+	init_Bullets();
+
 }
 
 void enemy_meatball::move() {
@@ -1106,6 +1113,8 @@ void enemy_worm::init(int HP, float start_x, float start_y, int stat) {
 		ball[i].collision_size = 24;
 		ball[i].stats = 1;
 	}
+	init_Bullets();
+
 }
 
 void enemy_worm::shot() {
@@ -1113,7 +1122,7 @@ void enemy_worm::shot() {
 	if (stats == 1) {
 		for (int i = 0; i < max; i++) {
 			int free = search_FreeAddress();
-			bullets[free].rad = ((2.0f * DX_PI_F) / max) * i;
+			bullets[free].rad = ((2.0f * DX_PI_F * a2r(deg)) / max) * i;
 			bullets[free].speed = 10;
 			bullets[free].x = ball[5].x;
 			bullets[free].y = ball[5].y;
@@ -1132,43 +1141,32 @@ void enemy_worm::move_shot() {
 
 void enemy_worm::move() {
 	for (int i = 0; i < 6; i++) {
-
 		ball[i].x -= sinf(test.move_rad) * test.speed * frame_Time;
 		ball[i].y -= cosf(test.move_rad) * test.speed * frame_Time;
-
 	}
 	if (stats == 1) {
 
 		/*
 		ÉNÉlÉãìÆÇ´
 		*/
-		if (mode == 0) {
-			for (int i = 1; i < 6; i++) {
-				if (bullets[i].rad <= -90 || bullets[i].rad >= 90) {
-					minus *= -1;;
-				}
-				else {
-					deg -= 1 * minus * frame_Time;
-				}
-				
-				ball[i].x = 48 * sinf(a2r(deg * i)) + ball[i-1].x; //48
-				ball[i].y = 48 * cosf(a2r(deg * i)) + ball[i-1].y;
 
-				/*
-				if (deg > 360) {
-					deg = 0;
-				}
-				if (deg < 0) {
-					deg = 360;
-				}
-				*/
+		if (mode == 0) {
+			deg -= 0.5 * minus * frame_Time;
+
+			if (deg <= -40.f || deg >= 40.f) {
+				minus *= -1;
+			}
+
+			for (int i = 1; i < 6; i++) {
+				
+				ball[i].x = 32 * sinf(a2r(deg * i)) + ball[i-1].x; //48
+				ball[i].y = 32 * cosf(a2r(deg * i)) + ball[i-1].y;
 			}
 
 			if (frame % ((int)fps / 2) == 0) {
 				shot();
 			}
 		}
-
 	}
 	move_shot();
 	draw();
@@ -1176,23 +1174,29 @@ void enemy_worm::move() {
 }
 
 void enemy_worm::draw() {
+	DrawFormatString(10, 200, 0xFFFFFF, "%f , %f:%f", deg, x, y);
 	if (stats == 1) {
 		for (int i = 0; i < 6; i++) {
 			switch (i) {
-			// case 0:	// êKîˆ
+			 case 0:	// êKîˆ:13
 				// DrawGraph(ball[0].x + ball[0].collision_size, ball[0].y + ball[0].collision_size, enemy_img[13], TRUE);
+				 DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg + 90), enemy_img[14], TRUE, 1);
 				// break;
-			case 5:		// ì™
+			case 5:		// ì™:12
 				//DrawGraph(ball[5].x - ball[5].collision_size, ball[5].y - ball[5].collision_size, enemy_img[12], TRUE);
-				DrawRotaGraph(ball[5].x - 24, ball[5].y - 24, 1.0, a2r(deg), enemy_img[12], TRUE, 1);
+				//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[12], TRUE, 1); //success
+				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[12], TRUE, 1);
+				x = ball[i].x;
+				y = ball[i].y;
+
 				break;
-			default:	// ì∑ëÃ
+			default:	// ì∑ëÃ:14
 				//DrawGraph(ball[i].x - 24, ball[i].y - 24, enemy_img[14], TRUE);
-				DrawRotaGraph(ball[i].x - 24, ball[5].y - 24, 1.0, a2r(deg), enemy_img[14], TRUE, 1);
+				//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[14], TRUE, 1); // success
+				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[14], TRUE, 1);
 				//DrawCircle(ball[i].x, ball[i].y, ball[i].collision_size, GetColor(255, 255, 255), TRUE, 1);
 				break;
 			}
-
 		}
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
@@ -1212,6 +1216,8 @@ void enemy_sporecore::init(int HP, float start_x, float start_y, int stat) {
 	collision_size = 48;
 	stats = stat;
 	mode = 0;
+	init_Bullets();
+
 }
 
 void enemy_sporecore::shot() {
@@ -1262,7 +1268,6 @@ void enemy_sporecore::move() {
 			}
 			mode = 0;
 		}
-
 	}
 	move_shot();
 	draw();
@@ -1296,6 +1301,8 @@ void enemy_ivy::init(int HP, float start_x, float start_y, int stat) {
 	height = 128;
 	stats = stat;
 	mode = 0; // 0:íníÜ 1:êLÇ—ÇƒÇÈç≈íÜ 2:îjâÛéû
+	init_Bullets();
+
 }
 
 void enemy_ivy::move() {
@@ -1359,6 +1366,8 @@ void enemy_stagbeetle::init(int HP, float start_x, float start_y, int stat) {
 	temp_x = start_x;
 	temp_y = start_y;
 	mode = 0;
+	init_Bullets();
+
 }
 
 void enemy_stagbeetle::shot() {
@@ -1426,9 +1435,7 @@ void enemy_stagbeetle::move() {
 				mode = 0;
 				shot();
 			}
-
 		}
-
 	}
 	move_shot();
 	draw();
@@ -1445,7 +1452,7 @@ void enemy_stagbeetle::draw() {
 	init_OutRangeBullets();
 }
 
-// genocide : WORK IN PROGRESS
+// genocide
 void enemy_genocide::init(int HP, float start_x, float start_y, int stat) {
 	mode = 1;
 	collision_size = 128;
@@ -1454,6 +1461,8 @@ void enemy_genocide::init(int HP, float start_x, float start_y, int stat) {
 	y = start_y - test.y;
 	prev_y = start_y;
 	stats = stat;
+	init_Bullets();
+
 }
 
 void enemy_genocide::shot() {
@@ -1511,7 +1520,6 @@ void enemy_genocide::move() {
 			}
 		}
 
-
 	}
 	move_shot();
 	draw();
@@ -1525,9 +1533,7 @@ void enemy_genocide::draw() {
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
 			bullet_animation_14(bullets[i].x, bullets[i].y, 5, 2);
-		}
-
-		
+		}		
 	}
 
 	init_OutRangeBullets();
@@ -1564,6 +1570,7 @@ void enemy_shindarla::init(int HP, float start_x, float start_y, int stat) {
 	x = start_x;
 	y = start_y - test.y;
 	stats = stat;
+	init_Bullets();
 
 }
 
@@ -1653,6 +1660,8 @@ void enemy_shindarla::draw() {
 void enemy_detecrew::init(int HP, float start_x, float start_y, int stat) {
 	mode = 0;
 	speed = 16;
+	count = 0;
+	dir = 0;
 	hp = HP;
 	x = start_x;
 	y = start_y - test.y;
@@ -1660,13 +1669,63 @@ void enemy_detecrew::init(int HP, float start_x, float start_y, int stat) {
 	prev_y = start_y;
 	stats = stat;
 	collision_size = 24;
+	init_Bullets();
 }
 
 void enemy_detecrew::shot() {
+	int max = 20;
+	for (int i = 0; i < max; i++) {
+		int free = search_FreeAddress();
+		bullets[free].rad = ((2.0f * DX_PI_F) / max) * dir;
+		bullets[free].speed = 6;
+		bullets[free].stats = 1;
+		bullets[free].collision_size = 16;
 
+		int var_x;
+		int var_y;
+
+		switch (dir) {
+		// â∫ 
+		case 0:
+			var_x = x;
+			var_y = y + (bullets[free].collision_size * 2 * i);
+			break;
+		// âE
+		case 1:
+			var_x = x + (bullets[free].collision_size * 2 * i);
+			var_y = y;
+			break;
+		// è„
+		case 2:
+			var_x = x;
+			var_y = y - (bullets[free].collision_size * 2 * i);
+			break;
+		// ç∂
+		case 3:
+			var_x = x - (bullets[free].collision_size * 2 * i);
+			var_y = y;
+			break;
+		}
+
+		bullets[free].x = var_x;
+		bullets[free].y = var_y;
+		
+	}
 }
 
 void enemy_detecrew::move_shot() {
+	for (int i = 0; i < MAX_BULLET; i++) {
+		if (bullets[i].stats == 1) {
+			bullets[i].x -= sinf(test.move_rad);
+			bullets[i].y += cosf(test.move_rad);
+
+			// åsÇ∆íeÇÃîªíËïî
+			if (mode == 2 /* && ì_Ç∆ãÈå`ÇÃìñÇΩÇËîª*/ || stats != 1) {
+				bullets[i].stats = 0;
+			}
+		}
+	}
+
 
 }
 
@@ -1675,14 +1734,19 @@ void enemy_detecrew::move() {
 		x -= sinf(test.move_rad) * test.speed * frame_Time;
 		y -= cosf(test.move_rad) * test.speed * frame_Time;
 
+		// é©ã@Ç∆ÇÃãóó£
+		if (sqrtf(powf(x - ship.x, 2) + powf(y - ship.y, 2)) <= 100) {
+			dir = GetRand(3);	// 4ï˚å¸Ç©ÇÁÉâÉìÉ_ÉÄ
+			mode = 1;
+		}
+
+		// éÀèoïî
 		if (mode == 1) {
-
-
+			shot();
+			mode = 2;
 		}
 
-		if (mode == 2) {
 
-		}
 
 	}
 	move_shot();
@@ -1693,14 +1757,17 @@ void enemy_detecrew::move() {
 void enemy_detecrew::draw() {
 	if (stats == 1) {
 		DrawGraph(x - 24, y - 24, enemy_img[18], TRUE);
-
+	}
+	if (count <= 2000) {
+		count += 1 * frame_Time;
 	}
 
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			bullet_animation_16(bullets[i].x, bullets[i].y, 4, 1);
+			if (count == 100 * i) {
+				DrawGraph(bullets[i].x, bullets[i].y, enemy_img[19], TRUE);
+			}
 		}
-
 	}
 	init_OutRangeBullets();
 }

@@ -89,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	debug_Init();
 
 	// ÉQÅ[ÉÄÉÇÅ[Éh : TOP_MENU / GAME / EDITOR
-	gamemode  = LOADING;
+	gamemode  = TOP_MENU;
 	mode_flag = 0;
 	frame     = 0;
 	quit      = true;

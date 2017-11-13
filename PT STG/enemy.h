@@ -177,7 +177,7 @@ public:
 class enemy_worm : public enemy {
 public:
 	int mode;
-	int deg;
+	float deg;
 	int minus;
 	BULLET ball[6];
 	void init(int HP, float start_x, float start_y, int stat);
@@ -270,8 +270,11 @@ public:
 
 class enemy_detecrew : public enemy {
 public:
+	BULLET kuki[MAX_BULLET];
 	int mode;
 	int random;
+	int dir;
+	float count;
 	float rad;
 	float prev_x;
 	float prev_y;

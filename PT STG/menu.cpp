@@ -84,11 +84,13 @@ void draw_CharSelect() {
 	switch (chara.draw(550, 420, 3, charSelect_str)) {
 	case 0:
 		gamemode = 2;
+		ship.type = 0;					// ©‹@‚Ìí—Ş‚ğİ’è 
 		test.io_MapdataFileLoad();
 		test.set_StagePos(0, 224);
 		break;
 	case 1:
 		gamemode = 2;
+		ship.type = 1;
 		test.io_MapdataFileLoad();
 		break;
 	case 2:
