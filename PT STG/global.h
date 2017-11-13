@@ -79,7 +79,9 @@ enum ene_type {
 	// *--- Boss ---*
 	BossTacos,		// 19 タコス
 	BossNoumison,	// 20 ノウミソン
-	BossWarmin		// 21 ワーミン
+	BossWarmin,		// 21 ワーミン
+
+	EneWarmBody
 };
 
 
