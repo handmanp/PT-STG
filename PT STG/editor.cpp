@@ -300,7 +300,7 @@ void draw_StageEditorMenuEnemy(void) {
 	DrawFormatStringToHandle(1010, 250, GetColor(255, 255, 255), font_handle[FONT_BUTTON], "エネミー");
 
 	char *list_str2[22] = { "ナッツ", "エダマメン", "ウニズ", "ジェノサイドバナナ", "ピネ", "カイ", "タケノコん", "キノコン", "クワガタん", "ミートボールスパム", "胞子", "ワーム", "ツタン", "ムービングスタチュ", "キモ箱", "出て来るーの", "出て来るーの", "ｼﾝﾀﾞｰﾗﾀﾏｳﾂ", "戦艦ジェノサイド", "タコス", "能美村", "ワーミン" };
-	com2.draw_Combo(1010, 280, 250, 22, list_str2);
+	int select_enemy = com2.draw_Combo(1010, 280, 250, 22, list_str2);
 
 	if (button.draw_Button(1010, 610, 260, 28, nc, oc, "消しゴム")) {
 		select_erase *= -1;
@@ -309,13 +309,20 @@ void draw_StageEditorMenuEnemy(void) {
 	// 設置されている敵を表示させる
 	for (int i = 0; i < 300; i++) {
 		if (editor[i].enemy_type != -1) {
-			DrawGraph();
+			int gsx, gsy;
+			GetGraphSize(enemy_img[editor[i].enemy_type], &gsx, &gsy);
+			DrawGraph(editor[i].var_1 - (gsx / 2), editor[i].var_2 - (gsy / 2), enemy_img[editor[i].enemy_type], TRUE);
+			DrawBox(editor[i].var_1 - (gsx / 2), editor[i].var_2 - (gsy / 2), editor[i].var_1 + (gsx / 2), editor[i].var_2 + (gsy / 2), 0x00FF00, TRUE);
 		}
 	}
 
 	// クリック時
 	if (mouse_l == 1 && mouse_x < 1000) {
-
+		for (int i = 0; i < 300; i++) {
+			if (editor[i].enemy_type == -1) {
+				//editor[i].
+			}
+		}
 	}
 }
 

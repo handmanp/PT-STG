@@ -47,7 +47,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// ê›íË
 	ChangeWindowMode(true);
 	SetGraphMode(WINDOW_SIZE_X, WINDOW_SIZE_Y, 32);
-	SetMainWindowText("LUNETTE <Presentation Edition v0.9.1>");
+	SetMainWindowText("LUNETTE \t <Project Trial Edition v1.0.0>");
 
 	SetDrawScreen( DX_SCREEN_BACK ); 
 
