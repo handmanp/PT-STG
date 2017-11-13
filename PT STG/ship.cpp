@@ -15,7 +15,7 @@ void my_Ship::init() {
 	speed          = 4.0f;
 	collision_size = 3;
 	anim           = 2;
-	type           = 0;
+	//type           = 0;		// 自機の種類 menu.cpp にて指定済
 	powerup_select = -1;
 	left		   = 5;
 	stat		   = 0;
@@ -74,22 +74,111 @@ void my_Ship::shot() {
 	int check_bullet = 0;
 	int free = -1;
 
-	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-		if (s[i].stats == 1) check_bullet++;
-		if (free == -1) {
-			if (s[i].stats == 0) free = i;
+	// 通常弾(共通)
+	if (powerup_select == -1) {
+		for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+			if (s[i].stats == 1) check_bullet++;
+			if (free == -1) {
+				if (s[i].stats == 0) free = i;
+			}
+		}
+		if (free != -1 && check_bullet <= 5) {
+			s[free].stats = 1;
+			s[free].x = x;
+			s[free].y = y;
+			s[free].rad = DX_PI_F / 2;
+			s[free].speed = 24;
+			s[free].length = 0;
+
+			PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
 		}
 	}
-	if (free != -1 && check_bullet <= 5) {
-		s[free].stats = 1;
-		s[free].x = x;
-		s[free].y = y;
-		s[free].rad = DX_PI_F / 2;
-		s[free].speed = 24;
-		s[free].length = 0;
 
-		PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+
+	// フローラ
+	if (type == 0) {
+		// パワーアップ1 (ダブルレーザー)
+		if (powerup_select == 0) {
+			for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+				if (s[i].stats == 1) check_bullet++;
+				if (free == -1) {
+					if (s[i].stats == 0) free = i;
+				}
+			}
+			if (free != -1 && check_bullet <= 5) {
+				s[free].stats = 1;
+				s[free].x = x;
+				s[free].y = y;
+				s[free].rad = DX_PI_F / 2;
+				s[free].speed = 24;
+				s[free].length = 0;
+
+				PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+			}
+		}
+		// パワーアップ2 (アッパーショット)
+		else if (powerup_select == 1) {
+			for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+				if (s[i].stats == 1) check_bullet++;
+				if (free == -1) {
+					if (s[i].stats == 0) free = i;
+				}
+			}
+			if (free != -1 && check_bullet <= 5) {
+				s[free].stats = 1;
+				s[free].x = x;
+				s[free].y = y;
+				s[free].rad = DX_PI_F / 2;
+				s[free].speed = 24;
+				s[free].length = 0;
+
+				PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+			}
+		}
 	}
+
+	// アメリア
+	else {
+		// パワーアップ1 (リングレーザー)
+		if (powerup_select == 0) {
+			for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+				if (s[i].stats == 1) check_bullet++;
+				if (free == -1) {
+					if (s[i].stats == 0) free = i;
+				}
+			}
+			if (free != -1 && check_bullet <= 5) {
+				s[free].stats = 1;
+				s[free].x = x;
+				s[free].y = y;
+				s[free].rad = DX_PI_F / 2;
+				s[free].speed = 24;
+				s[free].length = 0;
+
+				PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+			}
+		}
+		// パワーアップ2 (アンダーショット)
+		else if (powerup_select == 1) {
+			for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+				if (s[i].stats == 1) check_bullet++;
+				if (free == -1) {
+					if (s[i].stats == 0) free = i;
+				}
+			}
+			if (free != -1 && check_bullet <= 5) {
+				s[free].stats = 1;
+				s[free].x = x;
+				s[free].y = y;
+				s[free].rad = DX_PI_F / 2;
+				s[free].speed = 24;
+				s[free].length = 0;
+
+				PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+			}
+		}
+	}
+
 }
 
 //発射後の弾移動
