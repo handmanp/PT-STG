@@ -102,7 +102,7 @@ void io_SaveStageData(void) {
 
 			// “G‚Ì—N‚«ˆÊ’u
 
-			editor[i].start_x = 0;
+			//editor[i].start_x = 0;
 
 
 			//‚Ü‚Æ‚ß‚é

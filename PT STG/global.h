@@ -110,6 +110,9 @@ public:
 	int powerup[6];
 	int powerup_select;
 
+	int save_way_x[512];
+	int save_way_y[512];
+
 	void move();
 	void init();
 	void draw();
@@ -225,6 +228,7 @@ void item_init();
 void item_drop(int x, int y, int type);
 void item_draw();
 void item_move();
+void item_hit();
 
 bool IsDetection_Square(int x1, int y1, int x2, int y2, int xr1, int yr1, int xr2, int yr2);
 bool IsDetection_PointAndSquare(int sx, int sy, int w, int h, int x, int y);

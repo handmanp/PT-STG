@@ -92,9 +92,9 @@ int enemy::collision_Check() {
 					PlaySoundMem(game_sehnd[1], DX_PLAYTYPE_BACK, TRUE);
 
 					// ランダムでアイテム
-					if (GetRand(10) == 1) {
-						item_drop(x, y, 0);
-					}
+					
+					item_drop(x, y, 1);
+					
 					score += 100;
 
 					// 敵が死んでも弾が残ってたら存在させたままにする(stats = 2)
