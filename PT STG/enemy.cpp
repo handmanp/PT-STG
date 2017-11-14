@@ -31,6 +31,9 @@ int enemy::collision_Check() {
 				ship.x = -120.f;
 				ship.y = 340.f;
 				ship.left -= 1;
+				for (int i = 0; i < 5; i++) {
+					ship.powerup[i] = 0;
+				}
 
 				if (flag == false) {
 					stats = 0;
@@ -67,19 +70,19 @@ int enemy::collision_Check() {
 				// ショットの攻撃力
 				switch (ship.s[i].stats) {
 				case 1:				// 通常弾
-					hp -= 4;
+					hp -= 3;
 					break;
 				case 2:				// レーザー
-					hp -= 8;
+					hp -= 6;
 					break;
 				case 3:				// ミサイル
-					hp -= 12;
+					hp -= 10;
 					break;
 				case 4:				// ダブルレーザー(フローラ)
-					hp -= 8;
+					hp -= 6;
 					break;
 				case 5:				// リングレーザー(アメリア)
-					hp -= 8;
+					hp -= 3;
 					break;
 				case 6:				// 縦弾
 					hp -= 6;
@@ -133,7 +136,9 @@ int enemy::collision_Check() {
 						ship.x = -120.f;
 						ship.y = 340.f;
 						ship.left -= 1;
-
+						for (int i = 0; i < 5; i++) {
+							ship.powerup[i] = 0;
+						}
 						if (flag == false) {
 							stats = 0;
 							init_Bullets();
@@ -986,7 +991,7 @@ void enemy_brain::draw() {
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
-			DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, 0xFFFFFF, TRUE);
+			//DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, 0xFFFFFF, TRUE);
 			if (lazer[i] != i) {
 				bullet_animation_14(bullets[i].x, bullets[i].y, 0, 2);
 			}
@@ -1006,7 +1011,7 @@ void enemy_brain::draw() {
 				lazer[i] = 0;
 			}
 		}
-		DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, 0xFFFFFF, FALSE);
+		//DrawBox(bullets[i].x - 10, bullets[i].y - 10, bullets[i].x + 10, bullets[i].y + 10, 0xFFFFFF, FALSE);
 	}
 	init_OutRangeBullets();
 
