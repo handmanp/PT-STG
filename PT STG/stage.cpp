@@ -355,7 +355,7 @@ void my_Stage::stage_EnemyMove() {
 		sindarla[i].move();
 	}
 	for (int i = 0; i < enemy_count[EneGenocide]; i++) {
-		//genocide[i].move(); wip
+		genocide[i].move();
 	}
 
 	// *------------------------ Stage 3 ------------------------*
