@@ -31,6 +31,10 @@ int enemy::collision_Check() {
 			ship.y = 340.f;
 			ship.left -= 1;
 
+			for (int i = 0; i <= 5; i++) {
+				ship.powerup[i] = 0;
+			}
+
 			if (flag == false) {
 				stats = 0;
 				init_Bullets();
@@ -55,7 +59,7 @@ int enemy::collision_Check() {
 				// ショットの攻撃力
 				switch (ship.s[i].stats) {
 				case 1:				// 通常弾
-					hp -= 5;
+					hp -= 4;
 					break;
 				case 2:				// レーザー
 					hp -= 8;
@@ -121,6 +125,10 @@ int enemy::collision_Check() {
 					ship.y = 340.f;
 					ship.left -= 1;
 					bullets[i].stats = 0;
+
+					for (int j = 0; j <= 5; j++) {
+						ship.powerup[j] = 0;
+					}
 				}
 				return i;
 			}

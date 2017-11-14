@@ -91,35 +91,42 @@ void my_Ship::draw() {
 // 発射
 //--------------------------------------------------------------------------------
 void my_Ship::shot() {
-	switch (powerup_select) {
 	// 通常弾
-	case -1:
+	if (powerup[1] == 0 && powerup[2] == 0) {
 		shot_normal();
-		break;
+	}
+
 	// ミサイル
-	case 1:
+	if (powerup[1] == 1) {
 		if (powerup[2] == 1) {
 			shot_missile();
 			shot_raser();
 		}
-		else {
+		else if (powerup[2] == 0){
 			shot_normal();
 			shot_missile();
 		}
-		break;
+	}
 	// レーザー
-	case 2:
+	if (powerup[2] == 1) {
+		shot_raser();
 		if (type == 0) {				// レーザー2回でユニークショット
-			if (powerup[2] == 2) { shot_double_raser();	}
-			else { shot_raser(); }
 			shot_vertical(180);
 		}
 		else {
-			if (powerup[2] == 2) { shot_ring_raser();	}
-			else { shot_raser(); }
 			shot_vertical(0);
 		}
-		break;
+	}
+	else if (powerup[2] == 2) {
+		if (type == 0) {
+			shot_vertical(180);
+			shot_double_raser();
+		}
+		else {
+			shot_vertical(0);
+			shot_ring_raser();
+		}
+		
 	}
 	
 }
