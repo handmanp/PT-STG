@@ -31,6 +31,10 @@ int enemy::collision_Check() {
 			ship.y = 340.f;
 			ship.left -= 1;
 
+			for (int i = 0; i <= 5; i++) {
+				ship.powerup[i] = 0;
+			}
+
 			if (flag == false) {
 				stats = 0;
 				init_Bullets();
@@ -48,14 +52,14 @@ int enemy::collision_Check() {
 			if ((ship.s[i].x > x - collision_size && ship.s[i].x < x + collision_size &&
 				ship.s[i].y > y - collision_size && ship.s[i].y < y + collision_size) ||
 				(ship.s[i].x > x - collision_size && ship.s[i].x < x + collision_size &&
-				ship.s[i].y + 32 > y - collision_size && ship.s[i].y - 32 < y + collision_size && ship.s[i].stats == 5) ||
-				(IsDetection_PointAndSquare(x - collision_size, y - collision_size, collision_size * 2, collision_size * 2, ship.s[i].x, ship.s[i].y) &&
+					ship.s[i].y + 32 > y - collision_size && ship.s[i].y - 32 < y + collision_size && ship.s[i].stats == 5) ||
+					(IsDetection_PointAndSquare(x - collision_size, y - collision_size, collision_size * 2, collision_size * 2, ship.s[i].x, ship.s[i].y) &&
 				(ship.s[i].stats == 2 || ship.s[i].stats == 4))) {
 
 				// ƒVƒ‡ƒbƒg‚ÌUŒ‚—Í
 				switch (ship.s[i].stats) {
 				case 1:				// ’Êí’e
-					hp -= 5;
+					hp -= 4;
 					break;
 				case 2:				// ƒŒ[ƒU[
 					hp -= 8;
@@ -75,7 +79,7 @@ int enemy::collision_Check() {
 				}
 
 				ship.s[i].stats = 0;
-				
+
 
 
 				// “GŽ€–SŽž
@@ -92,9 +96,9 @@ int enemy::collision_Check() {
 					PlaySoundMem(game_sehnd[1], DX_PLAYTYPE_BACK, TRUE);
 
 					// ƒ‰ƒ“ƒ_ƒ€‚ÅƒAƒCƒeƒ€
-					
+
 					item_drop(x, y, 1);
-					
+
 					score += 100;
 
 					// “G‚ªŽ€‚ñ‚Å‚à’e‚ªŽc‚Á‚Ä‚½‚ç‘¶Ý‚³‚¹‚½‚Ü‚Ü‚É‚·‚é(stats = 2)
@@ -116,11 +120,31 @@ int enemy::collision_Check() {
 			if (ship.x + 25 >= bullets[i].x - bullets[i].collision_size && ship.x - 25 <= bullets[i].x + bullets[i].collision_size &&
 				ship.y + 10 >= bullets[i].y - bullets[i].collision_size && ship.y - 10 <= bullets[i].y + bullets[i].collision_size) {
 				if (ship.stat == 0 && bullets[i].stats != 0) {
-					ship.stat = -1;
-					ship.x = -120.f;
-					ship.y = 340.f;
-					ship.left -= 1;
-					bullets[i].stats = 0;
+					if (ship.powerup[3] == 0) {
+						ship.stat = -1;
+						ship.x = -120.f;
+						ship.y = 340.f;
+						ship.left -= 1;
+						bullets[i].stats = 0;
+
+						if (flag == false) {
+							stats = 0;
+							init_Bullets();
+						}
+						else {
+							stats = 2;
+						}
+					}
+					else {
+						ship.powerup[3]--;
+						if (flag == false) {
+							stats = 0;
+							init_Bullets();
+						}
+						else {
+							stats = 2;
+						}
+					}
 				}
 				return i;
 			}
@@ -170,9 +194,9 @@ bool enemy::init_OutRangeBullets() {
 			if (bullets[i].x < -48 || bullets[i].x > WINDOW_SIZE_X + 48 ||
 				bullets[i].y < -48 || bullets[i].y > WINDOW_SIZE_Y + 48) {
 				bullets[i].stats = 0;
-				bullets[i].x     = 0.f;
-				bullets[i].y     = 0.f;
-				bullets[i].rad   = 0.f;
+				bullets[i].x = 0.f;
+				bullets[i].y = 0.f;
+				bullets[i].rad = 0.f;
 				bullets[i].speed = 0.f;
 			}
 		}
@@ -320,16 +344,16 @@ void enemy_edamamen::move() {
 
 void enemy_nuts::init(float start_x, float start_y, float s, int rad, int stat) {
 
-	x     = start_x;
-	y     = 0.0f;
-	r     = rad;
-	hp    = 10;
-	py    = start_y - test.y;
+	x = start_x;
+	y = 0.0f;
+	r = rad;
+	hp = 10;
+	py = start_y - test.y;
 	speed = s;
 	stats = stat;
 	width = 60;
 	collision_size = 24;
-	effect_hnd     = -1;
+	effect_hnd = -1;
 
 	init_Bullets();
 }
@@ -499,7 +523,7 @@ void enemy_banana::move() {
 		y -= cosf(test.move_rad) * test.speed * frame_Time;
 
 		// mode=1:ÃŽ~ó‘Ô
-		if (mode == 0 && frame % ((GetRand(2) + 1) * (int) fps) == 0) {
+		if (mode == 0 && frame % ((GetRand(2) + 1) * (int)fps) == 0) {
 			mode = 1;
 		}
 
@@ -542,7 +566,7 @@ void enemy_banana::draw() {
 //  ƒsƒl
 // ----------------------------------------------------------------------------------------
 // ========================================================================================
-void enemy_pine::init(float s_x, float s_y, int HP, float up_y,int stat) {
+void enemy_pine::init(float s_x, float s_y, int HP, float up_y, int stat) {
 	x = s_x;
 	y = s_y - test.y;
 	hp = HP;
@@ -937,7 +961,7 @@ void enemy_brain::move() {
 	draw();
 	int remove = collision_Check();
 
-	if (remove >= 0 ) {
+	if (remove >= 0) {
 		bullets[remove].stats = 0;
 	}
 }
@@ -1222,9 +1246,9 @@ void enemy_worm::move() {
 			}
 
 			for (int i = 1; i < 6; i++) {
-				
-				ball[i].x = 32 * sinf(a2r(deg * i)) + ball[i-1].x; //48
-				ball[i].y = 32 * cosf(a2r(deg * i)) + ball[i-1].y;
+
+				ball[i].x = 32 * sinf(a2r(deg * i)) + ball[i - 1].x; //48
+				ball[i].y = 32 * cosf(a2r(deg * i)) + ball[i - 1].y;
 			}
 
 			if (frame % ((int)fps / 2) == 0) {
@@ -1242,22 +1266,22 @@ void enemy_worm::draw() {
 	if (stats == 1) {
 		for (int i = 0; i < 6; i++) {
 			switch (i) {
-			 case 0:	// K”ö:13
-				// DrawGraph(ball[0].x + ball[0].collision_size, ball[0].y + ball[0].collision_size, enemy_img[13], TRUE);
-				 DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg + 90), enemy_img[EneWarmBody], TRUE, 1);
+			case 0:	// K”ö:13
+					// DrawGraph(ball[0].x + ball[0].collision_size, ball[0].y + ball[0].collision_size, enemy_img[13], TRUE);
+				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg + 90), enemy_img[EneWarmBody], TRUE, 1);
 				// break;
 			case 5:		// “ª:12
-				//DrawGraph(ball[5].x - ball[5].collision_size, ball[5].y - ball[5].collision_size, enemy_img[12], TRUE);
-				//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[12], TRUE, 1); //success
-				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[EneWarm], TRUE, 1);
+						//DrawGraph(ball[5].x - ball[5].collision_size, ball[5].y - ball[5].collision_size, enemy_img[12], TRUE);
+						//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[12], TRUE, 1); //success
+				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i - 1].x, ball[i].y - ball[i - 1].y) + a2r(90), enemy_img[EneWarm], TRUE, 1);
 				x = ball[i].x;
 				y = ball[i].y;
 
 				break;
 			default:	// “·‘Ì:14
-				//DrawGraph(ball[i].x - 24, ball[i].y - 24, enemy_img[14], TRUE);
-				//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[14], TRUE, 1); // success
-				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i-1].x, ball[i].y - ball[i-1].y) + a2r(90), enemy_img[EneWarmBody], TRUE, 1);
+						//DrawGraph(ball[i].x - 24, ball[i].y - 24, enemy_img[14], TRUE);
+						//DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -a2r(deg+90), enemy_img[14], TRUE, 1); // success
+				DrawRotaGraph(ball[i].x, ball[i].y, 1.0, -atan2(ball[i].x - ball[i - 1].x, ball[i].y - ball[i - 1].y) + a2r(90), enemy_img[EneWarmBody], TRUE, 1);
 				//DrawCircle(ball[i].x, ball[i].y, ball[i].collision_size, GetColor(255, 255, 255), TRUE, 1);
 				break;
 			}
@@ -1419,7 +1443,7 @@ void enemy_ivy::move() {
 void enemy_ivy::draw() {
 	if (stats == 1) {
 		if (prev_y >= WINDOW_SIZE_Y / 2) {
-			DrawGraph((int)x - 24, (int)y, enemy_img[EneTutan],TRUE);
+			DrawGraph((int)x - 24, (int)y, enemy_img[EneTutan], TRUE);
 		}
 		else {
 			DrawGraph((int)x - 24, (int)y, enemy_img[EneTutan], TRUE);
@@ -1615,7 +1639,7 @@ void enemy_genocide::draw() {
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (bullets[i].stats == 1) {
 			bullet_animation_14(bullets[i].x, bullets[i].y, 5, 2);
-		}		
+		}
 	}
 
 	init_OutRangeBullets();
@@ -1701,7 +1725,7 @@ void enemy_shindarla::move() {
 		x -= sinf(test.move_rad) * test.speed * frame_Time;
 		y -= cosf(test.move_rad) * test.speed * frame_Time;
 	}
-	
+
 	// dead
 	if (stats != 1) {
 		if (mode == 0) {
@@ -1775,22 +1799,22 @@ void enemy_detecrew::shot() {
 		int var_y;
 
 		switch (dir) {
-		// ‰º 
+			// ‰º 
 		case 0:
 			var_x = x;
 			var_y = y + (bullets[free].collision_size * 2 * i);
 			break;
-		// ‰E
+			// ‰E
 		case 1:
 			var_x = x + (bullets[free].collision_size * 2 * i);
 			var_y = y;
 			break;
-		// ã
+			// ã
 		case 2:
 			var_x = x;
 			var_y = y - (bullets[free].collision_size * 2 * i);
 			break;
-		// ¶
+			// ¶
 		case 3:
 			var_x = x - (bullets[free].collision_size * 2 * i);
 			var_y = y;
@@ -1799,7 +1823,7 @@ void enemy_detecrew::shot() {
 
 		bullets[free].x = var_x;
 		bullets[free].y = var_y;
-		
+
 	}
 }
 

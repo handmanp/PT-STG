@@ -10,22 +10,22 @@
 //自機初期化
 //--------------------------------------------------------------------------------
 void my_Ship::init() {
-	x              = 200.0f;
-	y              = 360.0f;
-	speed          = 4.0f;
+	x = 200.0f;
+	y = 360.0f;
+	speed = 4.0f;
 	collision_size = 3;
-	anim           = 2;
+	anim = 2;
 	//type           = 0;		// 自機の種類 menu.cpp にて指定済
 	powerup_select = -1;
-	left		   = 5;
-	stat		   = 0;
+	left = 5;
+	stat = 0;
 	//自機弾初期化
 	for (int i = 0; i < 100; i++) {
-		s[i].stats  = 0;
-		s[i].x      = 0.0f;
-		s[i].y      = 0.0f;
-		s[i].rad    = 0.0f;
-		s[i].speed  = 0.0f;
+		s[i].stats = 0;
+		s[i].x = 0.0f;
+		s[i].y = 0.0f;
+		s[i].rad = 0.0f;
+		s[i].speed = 0.0f;
 		s[i].length = 0.0f;
 	}
 
@@ -63,7 +63,7 @@ void my_Ship::draw() {
 
 		}
 	}
-	else if (frame % (int)(200.f * frame_Time) == 0){
+	else if (frame % (int)(200.f * frame_Time) == 0) {
 		DrawGraph(x - 50, y - 25, ship_img[anim][type], TRUE);
 
 		for (int i = 0; i < SHIP_BULLET_MAX; i++) {
@@ -91,37 +91,44 @@ void my_Ship::draw() {
 // 発射
 //--------------------------------------------------------------------------------
 void my_Ship::shot() {
-	switch (powerup_select) {
 	// 通常弾
-	case -1:
+	if (powerup[1] == 0 && powerup[2] == 0) {
 		shot_normal();
-		break;
+	}
+
 	// ミサイル
-	case 1:
+	if (powerup[1] == 1) {
 		if (powerup[2] == 1) {
 			shot_missile();
 			shot_raser();
 		}
-		else {
+		else if (powerup[2] == 0) {
 			shot_normal();
 			shot_missile();
 		}
-		break;
+	}
 	// レーザー
-	case 2:
+	if (powerup[2] == 1) {
+		shot_raser();
 		if (type == 0) {				// レーザー2回でユニークショット
-			if (powerup[2] == 2) { shot_double_raser();	}
-			else { shot_raser(); }
 			shot_vertical(180);
 		}
 		else {
-			if (powerup[2] == 2) { shot_ring_raser();	}
-			else { shot_raser(); }
 			shot_vertical(0);
 		}
-		break;
 	}
-	
+	else if (powerup[2] == 2) {
+		if (type == 0) {
+			shot_vertical(180);
+			shot_double_raser();
+		}
+		else {
+			shot_vertical(0);
+			shot_ring_raser();
+		}
+
+	}
+
 }
 
 //発射後の弾移動
@@ -137,7 +144,7 @@ void my_Ship::shot_Move() {
 				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
 				s[i].stats = 0;
 			}
-		}		
+		}
 		// ミサイル
 		else if (s[i].stats == 3) {
 			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
@@ -201,59 +208,59 @@ void my_Ship::move() {
 		powerup_select++;
 		if (powerup_select > 6) powerup_select = 0;
 	}
-	
+
 	// 直談移動関数
 	shot_Move();
 
 	//移動キー
-	if (ctrl_key[KEY_INPUT_UP]    == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_UP]    == 1) input_stats += 2;
-	if (ctrl_key[KEY_INPUT_DOWN]  == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_DOWN]  == 1) input_stats += 1;
-	if (ctrl_key[KEY_INPUT_LEFT]  == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_LEFT]  == 1) input_stats += 4;
+	if (ctrl_key[KEY_INPUT_UP] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_UP] == 1) input_stats += 2;
+	if (ctrl_key[KEY_INPUT_DOWN] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_DOWN] == 1) input_stats += 1;
+	if (ctrl_key[KEY_INPUT_LEFT] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_LEFT] == 1) input_stats += 4;
 	if (ctrl_key[KEY_INPUT_RIGHT] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_DPAD_RIGHT] == 1) input_stats += 8;
 
 	//移動キーから角度を求める
 	switch (input_stats) {
-		case 0:
-			if (ctrl_pad.ThumbLY > 8192 || ctrl_pad.ThumbLY < -8192 || ctrl_pad.ThumbLX > 8192 || ctrl_pad.ThumbLX < -8192) {
-				//後の自乗の値が大きくなりすぎるから調整
-				float trg_x = ctrl_pad.ThumbLX / 32767.0f;//あえて-1にしてる
-				float trg_y = ctrl_pad.ThumbLY / -32767.0f;
-				//スティックの倒し具合を二点間の距離で見る
-				float trigger = sqrtf(trg_x * trg_x + trg_y * trg_y);
-				//角度
-				rad = atan2f(trg_x, trg_y);
-			}
-			else {
-				rad = -1.0f;
-			}
-			break;
-		case 1:
-			rad = 0.0f;
-			break;
-		case 2:
-			rad = DX_PI_F;
-			break;
-		case 4:
-			rad = DX_PI_F / 2.0f * 3.0f;
-			break;
-		case 5:
-			rad = DX_PI_F / 4.0f * 7.0f;
-			break;
-		case 6:
-			rad = DX_PI_F / 4.0f * 5.0f;
-			break;
-		case 8:
-			rad = DX_PI_F / 2.0f;
-			break;
-		case 9:
-			rad = DX_PI_F / 4.0f;
-			break;
-		case 10:
-			rad = DX_PI_F / 4.0f * 3.0f;
-			break;
-		default:
+	case 0:
+		if (ctrl_pad.ThumbLY > 8192 || ctrl_pad.ThumbLY < -8192 || ctrl_pad.ThumbLX > 8192 || ctrl_pad.ThumbLX < -8192) {
+			//後の自乗の値が大きくなりすぎるから調整
+			float trg_x = ctrl_pad.ThumbLX / 32767.0f;//あえて-1にしてる
+			float trg_y = ctrl_pad.ThumbLY / -32767.0f;
+			//スティックの倒し具合を二点間の距離で見る
+			float trigger = sqrtf(trg_x * trg_x + trg_y * trg_y);
+			//角度
+			rad = atan2f(trg_x, trg_y);
+		}
+		else {
 			rad = -1.0f;
-			break;
+		}
+		break;
+	case 1:
+		rad = 0.0f;
+		break;
+	case 2:
+		rad = DX_PI_F;
+		break;
+	case 4:
+		rad = DX_PI_F / 2.0f * 3.0f;
+		break;
+	case 5:
+		rad = DX_PI_F / 4.0f * 7.0f;
+		break;
+	case 6:
+		rad = DX_PI_F / 4.0f * 5.0f;
+		break;
+	case 8:
+		rad = DX_PI_F / 2.0f;
+		break;
+	case 9:
+		rad = DX_PI_F / 4.0f;
+		break;
+	case 10:
+		rad = DX_PI_F / 4.0f * 3.0f;
+		break;
+	default:
+		rad = -1.0f;
+		break;
 	}
 
 	//移動
@@ -280,7 +287,7 @@ void my_Ship::move() {
 			}
 		}
 	}
-	
+
 	if (input_stats != 0) {
 		int old1 = 511, old2 = 512;
 		for (int i = 0; i < 511; i++) {
