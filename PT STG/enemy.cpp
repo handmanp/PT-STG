@@ -26,21 +26,29 @@ int enemy::collision_Check() {
 
 		if (ship.stat == 0 && stats == 1) {
 
-			ship.stat = -1;
-			ship.x = -120.f;
-			ship.y = 340.f;
-			ship.left -= 1;
+			if (ship.powerup[3] == 0) {
+				ship.stat = -1;
+				ship.x = -120.f;
+				ship.y = 340.f;
+				ship.left -= 1;
 
-			for (int i = 0; i <= 5; i++) {
-				ship.powerup[i] = 0;
-			}
-
-			if (flag == false) {
-				stats = 0;
-				init_Bullets();
+				if (flag == false) {
+					stats = 0;
+					init_Bullets();
+				}
+				else {
+					stats = 2;
+				}
 			}
 			else {
-				stats = 2;
+				ship.powerup[3]--;
+				if (flag == false) {
+					stats = 0;
+					init_Bullets();
+				}
+				else {
+					stats = 2;
+				}
 			}
 		}
 		return -2;
@@ -125,7 +133,6 @@ int enemy::collision_Check() {
 						ship.x = -120.f;
 						ship.y = 340.f;
 						ship.left -= 1;
-						bullets[i].stats = 0;
 
 						if (flag == false) {
 							stats = 0;
