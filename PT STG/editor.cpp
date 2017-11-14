@@ -99,6 +99,15 @@ void io_SaveStageData(void) {
 
 	for (int i = 0; i < 300; i++) {
 		if (editor[i].enemy_type != -1) {
+
+			// “G‚Ì—N‚«ˆÊ’u
+			editor[i].start_x = editor[i].var_1 - WINDOW_SIZE_X + 100;
+			if (editor[i].start_x < 0) {
+				editor[i].start_x = 0;
+				// editor[i].var_1 = WINDOW_SIZE_X + 128;
+			}
+
+			//‚Ü‚Æ‚ß‚é
 			char buf[128];
 			sprintf_s(buf, 128, "%d,%d,%d,%d,%d,%d,%d,%d,%d", editor[i].start_x, editor[i].enemy_type, editor[i].var_1, editor[i].var_2, editor[i].var_3, editor[i].var_4, editor[i].var_5, editor[i].var_6, editor[i].var_7);
 			ofs << buf << endl;

@@ -281,6 +281,9 @@ void my_Stage::stage_Progression() {
 				to_stage_scroll_speed = stage_data[i].var_1;
 				to_stage_scroll_rad   = stage_data[i].var_2;
 				break;
+				// 100 マップの座標移動
+			case 101:
+				test.set_StagePos(stage_data[i].var_1, stage_data[i].var_2);
 				// 110 楽曲の再生
 			case 110:
 				PlaySoundMem(game_bgmhnd[stage_data[i].var_1], DX_PLAYTYPE_BACK, TRUE);
@@ -463,6 +466,15 @@ void my_Stage::io_StageDataLoad() {
 	}
 LOOP_OUT: // ループパス用のラベル
 	fclose(fp);
+
+	for (int i = 0; i < enemy_max; i++) {
+		if (stage_data[i].var_1 - WINDOW_SIZE_X < 0) {
+			// そのまま
+		}
+		else {
+			stage_data[i].var_1 = WINDOW_SIZE_X + 128;
+		}
+	}
 
 }
 

@@ -86,7 +86,6 @@ void draw_CharSelect() {
 		gamemode = 2;
 		ship.type = 0;					// ©‹@‚Ìí—Ş‚ğİ’è 
 		test.io_MapdataFileLoad();
-		test.set_StagePos(0, 224);
 		break;
 	case 1:
 		gamemode = 2;
