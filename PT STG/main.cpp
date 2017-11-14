@@ -101,7 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//----------ÉÅÉCÉìÉãÅ[Év------------------------------------------------------------
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() && quit) {
-		DrawFormatString(20, 100, 0xFFFFFF, "%d,%d,%d,%d,%d", ship.powerup[0], ship.powerup[1], ship.powerup[2], ship.powerup[3], ship.powerup[4]);
+		DrawFormatString(20, 100, 0xFFFFFF, "%f,%f", test.x, test.y);
 		input_key();
 
 		switch (gamemode) {
