@@ -44,11 +44,17 @@ int enemy::collision_Check() {
 	// Ž©‹@‚Ì’e‚Æ“G‚Ì“–‚½‚è”»’è
 	// ----------------------------------------------------------------------------
 	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-		if (ship.s[i].stats == 1 && stats == 1) {
-			if (ship.s[i].x > x - collision_size && ship.s[i].x < x + collision_size &&
-				ship.s[i].y > y - collision_size && ship.s[i].y < y + collision_size) {
+		if ((ship.s[i].stats != 0) && stats == 1) {
+			if ((ship.s[i].x > x - collision_size && ship.s[i].x < x + collision_size &&
+				ship.s[i].y > y - collision_size && ship.s[i].y < y + collision_size) ||
+				(ship.s[i].x > x - collision_size && ship.s[i].x < x + collision_size &&
+				ship.s[i].y + 32 > y - collision_size && ship.s[i].y - 32 < y + collision_size && ship.s[i].stats == 5) ||
+				(IsDetection_PointAndSquare(x - collision_size, y - collision_size, collision_size * 2, collision_size * 2, ship.s[i].x, ship.s[i].y) &&
+				(ship.s[i].stats == 2 || ship.s[i].stats == 4))) {
 				ship.s[i].stats = 0;
 				hp--;
+
+
 				// “GŽ€–SŽž
 				if (hp <= 0) {
 
@@ -1375,7 +1381,7 @@ void enemy_ivy::move() {
 
 	// Ž€ = •œŠˆ
 	if (stats == 0) {
-		if (frame % (3 * (int)fps) == 0) {
+		if (frame % ((int)fps / 2) == 0) {
 			stats = 1;
 			hp = 5;
 			mode = 0;

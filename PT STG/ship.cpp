@@ -45,9 +45,23 @@ void my_Ship::draw() {
 			if (s[i].stats == 1) {
 				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
 			}
+			// レーザー
+			if (s[i].stats == 2 || s[i].stats == 4) {
+				DrawLine(s[i].x, s[i].y, s[i].x + s[i].length, s[i].y, GetColor(0, 122, 255));
+			}
+			// ミサイル
 			if (s[i].stats == 3) {
 				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
 			}
+			// リングレーザー
+			if (s[i].stats == 5) {
+				DrawOvalAA(s[i].x, s[i].y, 16, 64, 20, GetColor(0, 100, 230), FALSE);
+			}
+			// 縦弾
+			if (s[i].stats == 6) {
+				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
+			}
+
 		}
 	}
 	else if (frame % (int)(200.f * frame_Time) == 0){
@@ -90,7 +104,11 @@ void my_Ship::shot() {
 	if (powerup_select == 1 || powerup_select == 2) {
 		if (powerup_select == 1 /*&& /*ミサイルのカウント0 < 2*/) {
 			shot_missile();
-			missile_count++;
+		}
+		if (powerup_select == 2) {
+			shot_raser();
+			//shot_double_raser();
+			//shot_ring_raser();
 		}
 	}
 
@@ -100,58 +118,45 @@ void my_Ship::shot() {
 //--------------------------------------------------------------------------------
 void my_Ship::shot_Move() {
 	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-		// 通常弾
-		if (s[i].stats == 1) {
-			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
-			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
-			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
-				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
-				s[i].stats = 0;
-			}
-		}
-		
-		// レーザー
-		if (s[i].stats == 2) {
-			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
-			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
-			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
-				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
-				s[i].stats = 0;
-			}
-		}
 
+		// ミサイル以外
+		if (s[i].stats != 3) {
+			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
+			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
+			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
+				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
+				s[i].stats = 0;
+			}
+		}		
 		// ミサイル
-		if (s[i].stats == 3) {
+		else if (s[i].stats == 3) {
 			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
 			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
 			for (int j = 0; j < test.stage_size_x; j++) {
 				for (int k = 0; k < test.stage_size_y; k++) {
 					if (test.stage_size[j][k] != -1) {
 						//ブロックの相対座標
-						int dpx = (j * STAGE_TIP_SIZE) - s[i].x;
-						int dpy = (k * STAGE_TIP_SIZE) - s[i].y;
+						int dpx = (j * STAGE_TIP_SIZE) - test.x;
+						int dpy = (k * STAGE_TIP_SIZE) - test.y;
 						//面内のみ描画
 						if (dpx >= -STAGE_TIP_SIZE && dpx <= WINDOW_SIZE_X + STAGE_TIP_SIZE &&
 							dpy >= -STAGE_TIP_SIZE && dpy <= WINDOW_SIZE_Y + STAGE_TIP_SIZE) {
 
 							// ステージとミサイルとの当たり判定
-							if (abs((dpx + (STAGE_TIP_SIZE / 2)) - s[i].x) < (STAGE_TIP_SIZE + 80) / 2 &&
-								abs((dpy + (STAGE_TIP_SIZE / 2)) - s[i].y) < (STAGE_TIP_SIZE + 15) / 2) {
+							if (abs((dpx + (STAGE_TIP_SIZE / 2)) - s[i].x) < (STAGE_TIP_SIZE) / 2 &&
+								abs((dpy + (STAGE_TIP_SIZE / 2)) - s[i].y) < (STAGE_TIP_SIZE + 50) / 2) {
+								// 角度を平行にする
 								s[i].rad = a2r(90);
+							}
+							else if (abs((dpx + (STAGE_TIP_SIZE / 2)) - s[i].x) < (STAGE_TIP_SIZE + 80) / 2 &&
+								abs((dpy + (STAGE_TIP_SIZE / 2)) - s[i].y) < (STAGE_TIP_SIZE + 15) / 2 && s[i].rad == a2r(90)) {
+
+								s[i].stats = 0;
 							}
 						}
 					}
 				}
 			}
-			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
-				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
-				s[i].stats = 0;
-			}
-		}
-
-		if (s[i].stats == 4) {
-			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
-			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
 			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
 				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
 				s[i].stats = 0;
@@ -436,7 +441,24 @@ void my_Ship::shot_normal() {
 // レーザー (共通) stats = 2
 //--------------------------------------------------------------------------------
 void my_Ship::shot_raser() {
+	int check_bullet = 0;
+	int free = -1;
+	for (int j = 0; j < SHIP_BULLET_MAX; j++) {
+		if (s[j].stats == 4) check_bullet++;
+		if (free == -1) {
+			if (s[j].stats == 0) free = j;
+		}
+	}
+	if (free != -1 && check_bullet <= 1) {
+		s[free].stats = 4;
+		s[free].x = x;
+		s[free].y = y;
+		s[free].rad = DX_PI_F / 2;
+		s[free].speed = 24;
+		s[free].length = 128;
 
+		PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+	}
 }
 
 
@@ -446,12 +468,12 @@ void my_Ship::shot_missile() {
 	int check_bullet = 0;
 	int free = -1;
 	for (int i = 0; i < SHIP_BULLET_MAX; i++) {
-		if (s[i].stats == 1) check_bullet++;
+		if (s[i].stats == 3) check_bullet++;
 		if (free == -1) {
 			if (s[i].stats == 0) free = i;
 		}
 	}
-	if (free != -1 && check_bullet <= 5) {
+	if (free != -1 && check_bullet <= 1) {
 		s[free].stats = 3;
 		s[free].x = x;
 		s[free].y = y;
@@ -463,26 +485,75 @@ void my_Ship::shot_missile() {
 	}
 }
 
-// ダブルレーザー (フロレンス)
+// ダブルレーザー (フロレンス) stats = 4
 //--------------------------------------------------------------------------------
 void my_Ship::shot_double_raser() {
+	for (int i = 0; i < 2; i++) {
+		int check_bullet = 0;
+		int free = -1;
+		for (int j = 0; j < SHIP_BULLET_MAX; j++) {
+			if (s[j].stats == 4) check_bullet++;
+			if (free == -1) {
+				if (s[j].stats == 0) free = j;
+			}
+		}
+		if (free != -1 && check_bullet <= 1) {
+			s[free].stats = 4;
+			s[free].x = x;
+			s[free].y = y - 10 + (i * 20);
+			s[free].rad = DX_PI_F / 2;
+			s[free].speed = 24;
+			s[free].length = 128;
 
+			PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+		}
+	}
 }
 
-// アッパーショット (フロレンス)
-//--------------------------------------------------------------------------------
-void my_Ship::shot_upper() {
-
-}
-
-// リングレーザー (アメリア)
+// リングレーザー (アメリア) stats = 5
 //--------------------------------------------------------------------------------
 void my_Ship::shot_ring_raser() {
+	int check_bullet = 0;
+	int free = -1;
+	for (int j = 0; j < SHIP_BULLET_MAX; j++) {
+		if (s[j].stats == 5) check_bullet++;
+		if (free == -1) {
+			if (s[j].stats == 0) free = j;
+		}
+	}
+	if (free != -1 && check_bullet <= 5) {
+		s[free].stats = 5;
+		s[free].x = x;
+		s[free].y = y;
+		s[free].rad = DX_PI_F / 2;
+		s[free].speed = 24;
+		s[free].length = 0;
 
+		PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+	}
 }
 
-// アンダーショット (アメリア)
+// 縦のショット / deg : 角度(度数法)
 //--------------------------------------------------------------------------------
-void my_Ship::shot_under() {
+void my_Ship::shot_vertical(float deg) {
+	for (int i = 0; i < 2; i++) {
+		int check_bullet = 0;
+		int free = -1;
+		for (int i = 0; i < SHIP_BULLET_MAX; i++) {
+			if (s[i].stats == 6) check_bullet++;
+			if (free == -1) {
+				if (s[i].stats == 0) free = i;
+			}
+		}
+		if (free != -1 && check_bullet <= 1) {
+			s[free].stats = 6;
+			s[free].x = x - 15 + (i * 30);
+			s[free].y = y - 10;
+			s[free].rad = a2r(deg);
+			s[free].speed = 24;
+			s[free].length = 0;
 
+			PlaySoundMem(game_sehnd[4], DX_PLAYTYPE_BACK, TRUE);
+		}
+	}
 }
