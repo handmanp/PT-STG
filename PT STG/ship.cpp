@@ -298,6 +298,7 @@ void my_Ship::move() {
 	// ƒo[ƒŠƒA
 	if (powerup[3] != 0) {
 		DrawOvalAA(x, y, 30 + (powerup[3] * 10), (powerup[3] * 10), 128, GetColor(115, 240, 250), TRUE);
+	}
 
 	if (input_stats != 0) {
 		int old1 = 511, old2 = 512;
