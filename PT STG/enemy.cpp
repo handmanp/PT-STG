@@ -72,7 +72,7 @@ int enemy::collision_Check() {
 					if (GetRand(10) == 1) {
 						item_drop(x, y, 0);
 					}
-					score += GetRand(10);
+					score += 100;
 
 					// “G‚ª€‚ñ‚Å‚à’e‚ªc‚Á‚Ä‚½‚ç‘¶İ‚³‚¹‚½‚Ü‚Ü‚É‚·‚é(stats = 2)
 					if (flag == false) {
@@ -357,7 +357,13 @@ void enemy_nuts::move_shot() {
 void enemy_nuts::move() {
 	if (stats != 0) {
 		// ‰¡ˆÚ“®
-		x -= speed * frame_Time;
+		if (x < WINDOW_SIZE_X + 200) {
+			x -= (test.speed + speed) * frame_Time;
+		}
+		else {
+			x -= test.speed * frame_Time;
+		}
+
 		// ³Œ·”gˆÚ“®
 		r += 10 * frame_Time;
 		if (r >= 360) r = 0;
@@ -394,7 +400,14 @@ void enemy_uni::init(float start_x, float start_y, int HP, float s, int stat) {
 
 void enemy_uni::move() {
 	if (stats == 1) {
-		x += sin(a2r(r)) * speed * frame_Time;
+
+		if (x < WINDOW_SIZE_X + 200) {
+			x += sin(a2r(r)) * (test.speed + speed) * frame_Time;
+		}
+		else {
+			x += sin(a2r(r)) * test.speed * frame_Time;
+		}
+
 		y += cos(a2r(r)) * speed * frame_Time;
 		if (x < ship.x + 200 && r < 90) {
 			r += 5.0f * frame_Time;

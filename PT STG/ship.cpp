@@ -73,15 +73,19 @@ void my_Ship::draw() {
 			}
 		}
 	}
+
+	int m = 0;
+	if (ship.y > 650) m = ship.y - 650;
+
 	// POWER UP
 	for (int i = 0; i < 6; i++) {
 		if (i != powerup_select)
-			DrawGraph((i * 128) + 256, 680, pwrup_img[1], TRUE);
+			DrawGraph((i * 128) + 256, 680 + m, pwrup_img[1], TRUE);
 		else
-			DrawGraph((i * 128) + 256, 680, pwrup_img[0], TRUE);
+			DrawGraph((i * 128) + 256, 680 + m, pwrup_img[0], TRUE);
 
 		int str_x = 64 - (GetDrawFormatStringWidthToHandle(font_handle[FONT_PWUP], "%s", pwer_str[i]) / 2);
-		DrawFormatStringToHandle((i * 128) + 256 + str_x, 683, GetColor(222, 222, 222), font_handle[FONT_PWUP], "%s", pwer_str[i]);
+		DrawFormatStringToHandle((i * 128) + 256 + str_x, 683 + m, GetColor(222, 222, 222), font_handle[FONT_PWUP], "%s", pwer_str[i]);
 	}
 }
 
