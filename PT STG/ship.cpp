@@ -19,6 +19,7 @@ void my_Ship::init() {
 	powerup_select = -1;
 	left		   = 5;
 	stat		   = 0;
+	
 	//自機弾初期化
 	for (int i = 0; i < 100; i++) {
 		s[i].stats  = 0;
@@ -188,7 +189,13 @@ void my_Ship::move() {
 	// ショットキー
 	if ((ctrl_key[KEY_INPUT_Z] == 2 || ctrl_pad.Buttons[XINPUT_BUTTON_X] == 1) && frame % ((((int)fps + 1) / 30) + 1) == 0) shot();
 	if ((ctrl_key[KEY_INPUT_C] == 1 || ctrl_pad.Buttons[XINPUT_BUTTON_Y] == 1)) {
-		powerup[powerup_select]++;
+		switch (powerup_select) {
+		case 3:
+			powerup[powerup_select] = 3;
+			break;
+		default:
+			powerup[powerup_select]++;
+		}
 		powerup_select = -1;
 	}
 

@@ -26,17 +26,29 @@ int enemy::collision_Check() {
 
 		if (ship.stat == 0 && stats == 1) {
 
-			ship.stat = -1;
-			ship.x = -120.f;
-			ship.y = 340.f;
-			ship.left -= 1;
+			if (ship.powerup[3] == 0) {
+				ship.stat = -1;
+				ship.x = -120.f;
+				ship.y = 340.f;
+				ship.left -= 1;
 
-			if (flag == false) {
-				stats = 0;
-				init_Bullets();
+				if (flag == false) {
+					stats = 0;
+					init_Bullets();
+				}
+				else {
+					stats = 2;
+				}
 			}
 			else {
-				stats = 2;
+				ship.powerup[3]--;
+				if (flag == false) {
+					stats = 0;
+					init_Bullets();
+				}
+				else {
+					stats = 2;
+				}
 			}
 		}
 		return -2;
@@ -116,11 +128,30 @@ int enemy::collision_Check() {
 			if (ship.x + 25 >= bullets[i].x - bullets[i].collision_size && ship.x - 25 <= bullets[i].x + bullets[i].collision_size &&
 				ship.y + 10 >= bullets[i].y - bullets[i].collision_size && ship.y - 10 <= bullets[i].y + bullets[i].collision_size) {
 				if (ship.stat == 0 && bullets[i].stats != 0) {
-					ship.stat = -1;
-					ship.x = -120.f;
-					ship.y = 340.f;
-					ship.left -= 1;
-					bullets[i].stats = 0;
+					if (ship.powerup[3] == 0) {
+						ship.stat = -1;
+						ship.x = -120.f;
+						ship.y = 340.f;
+						ship.left -= 1;
+
+						if (flag == false) {
+							stats = 0;
+							init_Bullets();
+						}
+						else {
+							stats = 2;
+						}
+					}
+					else {
+						ship.powerup[3]--;
+						if (flag == false) {
+							stats = 0;
+							init_Bullets();
+						}
+						else {
+							stats = 2;
+						}
+					}
 				}
 				return i;
 			}
