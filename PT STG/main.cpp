@@ -30,6 +30,7 @@ public:
 		}
 	}
 	void draw() {
+		// DrawGraph(-400, 300, bg_handle[1], TRUE);
 		for (int i = 0; i < 50; i++) {
 			DrawRotaGraph2(x[i], y[i],
 				10, 10,
@@ -86,7 +87,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	make_FontData();
 
 	// デバッグ
-	debug_Init();
+	//debug_Init();
 
 	// ゲームモード : TOP_MENU / GAME / EDITOR
 	gamemode  = TOP_MENU;
@@ -125,7 +126,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		case GAME:
 
 			debug_GameMain();
-			ingame_GUI();
+
 			break;
 
 		//------エディタモード------------------------------------------------------------
@@ -165,7 +166,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 void load_Img() {
 
 	// 背景
-	bg_handle = LoadGraph(_T("data/img/bg/bg000.png"));
+	bg_handle[0] = LoadGraph(_T("data/img/bg/bg000.png"));
+	bg_handle[1] = LoadGraph(_T("data/img/bg/bg.png"));
 
 	// 敵画像
 	// stage:1
@@ -299,8 +301,25 @@ void debug_Init() {
 	test.init(500, 40);
 	test.set_StagePos(0, 0);
 
+	// 敵構造体初期化
+	memset(&unis[0], 0x00, sizeof(unis));
+	memset(&pine[0], 0x00, sizeof(pine));
+	memset(&brain[0], 0x00, sizeof(brain));
+	memset(&nuts[0], 0x00, sizeof(nuts));
+	memset(&shell[0], 0x00, sizeof(shell));
+	memset(&banana[0], 0x00, sizeof(banana));
+	memset(&statue[0], 0x00, sizeof(statue));
+	memset(&ivy[0], 0x00, sizeof(ivy));
+	memset(&kuwagatan[0], 0x00, sizeof(kuwagatan));
+	memset(&houshi[0], 0x00, sizeof(houshi));
+	memset(&genocide[0], 0x00, sizeof(genocide));
+	memset(&sindarla[0], 0x00, sizeof(sindarla));
+	memset(&detecrew[0], 0x00, sizeof(detecrew));
+	memset(&meat[0], 0x00, sizeof(meat));
+
 	// CSVリーダ
 	test.io_StageDataLoad();
+	test.io_MapdataFileLoad();
 
 	// 弾関数用初期化
 	b_anim_3 = b_anim_4 = b_anim_6 = 0;
@@ -310,8 +329,16 @@ void debug_Init() {
 	frame_Time_2 = 1.0f;
 	prev_Time = GetNowHiPerformanceCount();
 
-	stage_scroll_speed = to_stage_scroll_speed = 1.8f;
+	stage_scroll_speed = to_stage_scroll_speed = 2.0f;
 	stage_scroll_rad   = to_stage_scroll_rad   = 90.f;
+
+	for (int i = 0; i < 22; i++) {
+		test.enemy_count[i] = 0;
+	}
+
+	//for (int i = 0; i < EACH_ENEMY_MAX; i++) {
+
+	//}
 
 	// スコアと残基
 	score = 0;
@@ -353,6 +380,7 @@ void debug_GameMain() {
 	// 描画関連
 	star.draw();
 	test.draw();
+	ingame_GUI();
 	ship.draw();
 
 	if (pause_flag == 1) draw_Pause();
@@ -360,7 +388,7 @@ void debug_GameMain() {
 }
 
 void debug_Message() {
-	 // DrawFormatString(600, 0, GetColor(255, 255, 255), "Scroll_X:%d / Scroll_Y:%d", ship.powerup[0], (int)ship.speed);
+	 // DrawFormatString(600, 0, GetColor(255, 255, 255), "Scroll_X:%f / Scroll_Y:%f", test.x, test.y);
 }
 
 double fps_Calc() {

@@ -84,13 +84,13 @@ void draw_CharSelect() {
 	switch (chara.draw(550, 420, 3, charSelect_str)) {
 	case 0:
 		gamemode = 2;
+		debug_Init();
 		ship.type = 0;					// é©ã@ÇÃéÌóﬁÇê›íË 
-		test.io_MapdataFileLoad();
 		break;
 	case 1:
 		gamemode = 2;
+		debug_Init();
 		ship.type = 1;
-		test.io_MapdataFileLoad();
 		break;
 	case 2:
 		menu_mode = Title;
@@ -131,6 +131,7 @@ void draw_Pause() {
 		gamemode = 1;
 		menu_mode = Title;
 		pause_flag = 0;
+		test.del_Stage();
 		StopSoundFile();
 		break;
 	default:
@@ -172,6 +173,7 @@ void draw_Over() {
 		gamemode   = 1;
 		menu_mode  = Title;
 		pause_flag = 0;
+		test.del_Stage();
 		StopSoundFile();
 		break;
 	default:

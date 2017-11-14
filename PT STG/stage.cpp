@@ -271,7 +271,6 @@ void my_Stage::stage_Progression() {
 				brain[enemy_count[BossNoumison]].init(stage_data[i].var_1, stage_data[i].var_2, stage_data[i].var_3, stage_data[i].var_4);
 				enemy_count[BossNoumison]++;
 				break;
-
 				// [21] ワーミン wip
 			case BossWarmin:
 				break;
@@ -284,6 +283,7 @@ void my_Stage::stage_Progression() {
 				// 100 マップの座標移動
 			case 101:
 				test.set_StagePos(stage_data[i].var_1, stage_data[i].var_2);
+				break;
 				// 110 楽曲の再生
 			case 110:
 				PlaySoundMem(game_bgmhnd[stage_data[i].var_1], DX_PLAYTYPE_BACK, TRUE);
@@ -369,6 +369,19 @@ void my_Stage::stage_EnemyMove() {
 
 // CSV読み込み
 void my_Stage::io_StageDataLoad() {
+
+	for (int i = 0; i < 300; i++) {
+		stage_data[i].start_x = -1;
+		stage_data[i].enemy_type = -1;
+		stage_data[i].var_1 = 0;
+		stage_data[i].var_2 = 0;
+		stage_data[i].var_3 = 0;
+		stage_data[i].var_4 = 0;
+		stage_data[i].var_5 = 0;
+		stage_data[i].var_6 = 0;
+		stage_data[i].var_7 = 0;
+		stage_data[i].stat =  0;
+	}
 
 	// たりなさそうなら適時増やす
 	const int BufMax = 128;
@@ -466,15 +479,6 @@ void my_Stage::io_StageDataLoad() {
 	}
 LOOP_OUT: // ループパス用のラベル
 	fclose(fp);
-
-	for (int i = 0; i < enemy_max; i++) {
-		if (stage_data[i].var_1 - WINDOW_SIZE_X < 0) {
-			// そのまま
-		}
-		else {
-			stage_data[i].var_1 = WINDOW_SIZE_X + 128;
-		}
-	}
 
 }
 

@@ -159,7 +159,7 @@ GLOBAL int		bullet16_img[48];
 
 GLOBAL int		font_handle[16];
 GLOBAL int		effects[16];
-GLOBAL int		bg_handle;
+GLOBAL int		bg_handle[2];
 
 GLOBAL int		title_img_1, title_img_2;
 GLOBAL int		menu_bg_1, menu_bg_2;
@@ -208,6 +208,8 @@ void make_FontData();
 void ingame_GUI();
 void draw_Pause();
 void draw_Over();
+
+void debug_Init();
 
 double fps_Calc();
 float variable_Fps();

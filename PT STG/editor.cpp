@@ -101,11 +101,9 @@ void io_SaveStageData(void) {
 		if (editor[i].enemy_type != -1) {
 
 			// “G‚Ì—N‚«ˆÊ’u
-			editor[i].start_x = editor[i].var_1 - WINDOW_SIZE_X + 100;
-			if (editor[i].start_x < 0) {
-				editor[i].start_x = 0;
-				// editor[i].var_1 = WINDOW_SIZE_X + 128;
-			}
+
+			editor[i].start_x = 0;
+
 
 			//‚Ü‚Æ‚ß‚é
 			char buf[128];
