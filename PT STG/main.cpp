@@ -101,7 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//----------ƒƒCƒ“ƒ‹[ƒv------------------------------------------------------------
 	while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() && quit) {
-
+		DrawFormatString(20, 100, 0xFFFFFF, "%f,%f", test.x, test.y);
 		input_key();
 
 		switch (gamemode) {

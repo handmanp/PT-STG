@@ -19,6 +19,7 @@ void my_Ship::init() {
 	powerup_select = -1;
 	left		   = 5;
 	stat		   = 0;
+	missile_count		   = 0;
 	//自機弾初期化
 	for (int i = 0; i < 100; i++) {
 		s[i].stats  = 0;
@@ -42,6 +43,9 @@ void my_Ship::draw() {
 
 		for (int i = 0; i < SHIP_BULLET_MAX; i++) {
 			if (s[i].stats == 1) {
+				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
+			}
+			if (s[i].stats == 3) {
 				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
 			}
 		}
@@ -84,8 +88,9 @@ void my_Ship::shot() {
 
 	// ミサイルはレーザーと共存できる
 	if (powerup_select == 1 || powerup_select == 2) {
-		if (powerup_select == 1 && /*ミサイルのカウント*/0 < 2) {
+		if (powerup_select == 1 /*&& /*ミサイルのカウント0 < 2*/) {
 			shot_missile();
+			missile_count++;
 		}
 	}
 
@@ -119,6 +124,25 @@ void my_Ship::shot_Move() {
 		if (s[i].stats == 3) {
 			s[i].x += sin(s[i].rad) * s[i].speed * frame_Time;
 			s[i].y += cos(s[i].rad) * s[i].speed * frame_Time;
+			for (int j = 0; j < test.stage_size_x; j++) {
+				for (int k = 0; k < test.stage_size_y; k++) {
+					if (test.stage_size[j][k] != -1) {
+						//ブロックの相対座標
+						int dpx = (j * STAGE_TIP_SIZE) - s[i].x;
+						int dpy = (k * STAGE_TIP_SIZE) - s[i].y;
+						//面内のみ描画
+						if (dpx >= -STAGE_TIP_SIZE && dpx <= WINDOW_SIZE_X + STAGE_TIP_SIZE &&
+							dpy >= -STAGE_TIP_SIZE && dpy <= WINDOW_SIZE_Y + STAGE_TIP_SIZE) {
+
+							// ステージとミサイルとの当たり判定
+							if (abs((dpx + (STAGE_TIP_SIZE / 2)) - s[i].x) < (STAGE_TIP_SIZE + 80) / 2 &&
+								abs((dpy + (STAGE_TIP_SIZE / 2)) - s[i].y) < (STAGE_TIP_SIZE + 15) / 2) {
+								s[i].rad = a2r(90);
+							}
+						}
+					}
+				}
+			}
 			if (s[i].x < -48 || s[i].x > WINDOW_SIZE_X + 48 ||
 				s[i].y < -48 || s[i].y > WINDOW_SIZE_Y + 48) {
 				s[i].stats = 0;

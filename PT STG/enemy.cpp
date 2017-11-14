@@ -434,7 +434,7 @@ void enemy_banana::init(float start_x, float start_y, int HP, int stat) {
 	y = start_y - test.y;
 	hp = HP;
 	speed = 0;
-	collision_size = 64;
+	collision_size = 32;
 	stats = stat;
 	mode = 0;
 	init_Bullets();
@@ -622,7 +622,7 @@ void enemy_shell::shot() {
 	for (int i = 0; i < max; i++) {
 		int free = search_FreeAddress();
 		bullets[free].rad = atan2(ship.x - x, ship.y - y);
-		bullets[free].speed = 10;
+		bullets[free].speed = 7;
 		bullets[free].x = x;
 		bullets[free].y = y;
 		bullets[free].stats = 1;
