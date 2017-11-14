@@ -19,7 +19,6 @@ void my_Ship::init() {
 	powerup_select = -1;
 	left		   = 5;
 	stat		   = 0;
-	missile_count		   = 0;
 	//自機弾初期化
 	for (int i = 0; i < 100; i++) {
 		s[i].stats  = 0;
@@ -51,7 +50,7 @@ void my_Ship::draw() {
 			}
 			// ミサイル
 			if (s[i].stats == 3) {
-				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
+				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[34], TRUE);
 			}
 			// リングレーザー
 			if (s[i].stats == 5) {
@@ -59,7 +58,7 @@ void my_Ship::draw() {
 			}
 			// 縦弾
 			if (s[i].stats == 6) {
-				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[2], TRUE);
+				DrawGraph(s[i].x - 8, s[i].y - 8, bullet16_img[18], TRUE);
 			}
 
 		}
@@ -92,26 +91,37 @@ void my_Ship::draw() {
 // 発射
 //--------------------------------------------------------------------------------
 void my_Ship::shot() {
-
-	// 初期弾はレーザー/ミサイルと共存できない
-	if (powerup_select == -1 && (powerup_select != 1 || powerup_select != 2)) {
+	switch (powerup_select) {
+	// 通常弾
+	case -1:
 		shot_normal();
-
-		
-	}
-
-	// ミサイルはレーザーと共存できる
-	if (powerup_select == 1 || powerup_select == 2) {
-		if (powerup_select == 1 /*&& /*ミサイルのカウント0 < 2*/) {
+		break;
+	// ミサイル
+	case 1:
+		if (powerup[2] == 1) {
+			shot_missile();
+			shot_raser();
+		}
+		else {
+			shot_normal();
 			shot_missile();
 		}
-		if (powerup_select == 2) {
-			shot_raser();
-			//shot_double_raser();
-			//shot_ring_raser();
+		break;
+	// レーザー
+	case 2:
+		if (type == 0) {				// レーザー2回でユニークショット
+			if (powerup[2] == 2) { shot_double_raser();	}
+			else { shot_raser(); }
+			shot_vertical(180);
 		}
+		else {
+			if (powerup[2] == 2) { shot_ring_raser();	}
+			else { shot_raser(); }
+			shot_vertical(0);
+		}
+		break;
 	}
-
+	
 }
 
 //発射後の弾移動

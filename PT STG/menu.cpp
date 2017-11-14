@@ -85,7 +85,7 @@ void draw_CharSelect() {
 	case 0:
 		gamemode = 2;
 		debug_Init();
-		ship.type = 0;					// 自機の種類を設定 
+		ship.type = 0;					// 自機の種類を設定 0:フロ 1:アメ
 		break;
 	case 1:
 		gamemode = 2;

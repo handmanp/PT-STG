@@ -51,8 +51,31 @@ int enemy::collision_Check() {
 				ship.s[i].y + 32 > y - collision_size && ship.s[i].y - 32 < y + collision_size && ship.s[i].stats == 5) ||
 				(IsDetection_PointAndSquare(x - collision_size, y - collision_size, collision_size * 2, collision_size * 2, ship.s[i].x, ship.s[i].y) &&
 				(ship.s[i].stats == 2 || ship.s[i].stats == 4))) {
+
+				// ショットの攻撃力
+				switch (ship.s[i].stats) {
+				case 1:				// 通常弾
+					hp -= 5;
+					break;
+				case 2:				// レーザー
+					hp -= 8;
+					break;
+				case 3:				// ミサイル
+					hp -= 12;
+					break;
+				case 4:				// ダブルレーザー(フローラ)
+					hp -= 8;
+					break;
+				case 5:				// リングレーザー(アメリア)
+					hp -= 8;
+					break;
+				case 6:				// 縦弾
+					hp -= 6;
+					break;
+				}
+
 				ship.s[i].stats = 0;
-				hp--;
+				
 
 
 				// 敵死亡時

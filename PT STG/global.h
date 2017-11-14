@@ -105,7 +105,6 @@ public:
 	int		anim;
 	int		type;
 	int		stat;
-	int		missile_count;
 	SHIP_SHOT s[100];
 
 	int powerup[6];
