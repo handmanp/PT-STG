@@ -259,12 +259,29 @@ void my_Ship::move() {
 			x += (sinf(rad) * speed) * frame_Time;
 			y += (cosf(rad) * speed) * frame_Time;
 			time += 30.f * frame_Time;
-			if (time > 400.f) {
+			if (time > 800.f) {
 				stat = 0;
 				time = 0.f;
 			}
 		}
 	}
+	
+	if (input_stats != 0) {
+		int old1 = 511, old2 = 512;
+		for (int i = 0; i < 511; i++) {
+			save_way_x[old2] = save_way_x[old1];
+			save_way_y[old2] = save_way_y[old1];
+			old1--;
+			old2--;
+		}
+		save_way_x[0] = x;
+		save_way_y[0] = y;
+	}
+
+	for (int i = 0; i < 3; i++) {
+		DrawOvalAA(save_way_x[128 + (128 * i)], save_way_y[128 + (128 * i)], 30, 15, 128, 0xFFFFFF, TRUE);
+	}
+
 	//アニメーション管理
 	if (frame % (int)(2000.f * frame_Time) == 0) {
 
@@ -299,6 +316,15 @@ bool my_Ship::ship_hit(int mx, int my, int col) {
 	return false;
 }
 
+void item_hit() {
+	for (int i = 0; i < ITEM_MAX; i++) {
+		if (ship.ship_hit(item[i].x, item[i].y, item[i].size)) {
+			item[i].stats = 0;
+			ship.powerup_select++;
+			if (ship.powerup_select > 6) ship.powerup_select = 0;
+		}
+	}
+}
 
 // アイテム初期化
 //--------------------------------------------------------------------------------
@@ -308,7 +334,7 @@ void item_init() {
 		item[i].type = 0;
 		item[i].x = 0;
 		item[i].y = 0;
-		item[i].size = 0;
+		item[i].size = 3;
 	}
 }
 
@@ -342,14 +368,15 @@ void item_move() {
 		if (item[i].stats == 1) {
 
 			// 移動
-			item[i].x += sinf(test.move_rad) * test.speed * frame_Time;
-			item[i].y += cosf(test.move_rad) * test.speed * frame_Time;
+			item[i].x -= sinf(test.move_rad) * test.speed * frame_Time;
+			item[i].y -= cosf(test.move_rad) * test.speed * frame_Time;
 
 			// 画面外にいったら消える
 			if (item[i].x < -100 || item[i].y < -100 || item[i].x > WINDOW_SIZE_X + 100 || item[i].y > WINDOW_SIZE_Y + 100) {
 				item[i].stats = 0;
 			}
 			if (ship.ship_hit(item[i].x, item[i].y, 10)) {
+				item[i].stats = 0;
 				ship.powerup_select++;
 				if (ship.powerup_select > 6) ship.powerup_select = 0;
 			}

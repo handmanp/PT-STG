@@ -153,8 +153,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		variable_Fps();
 	}
 
-	test.del_Stage();
-
 	Effkseer_End();
 	DxLib_End();
 
@@ -336,9 +334,7 @@ void debug_Init() {
 		test.enemy_count[i] = 0;
 	}
 
-	//for (int i = 0; i < EACH_ENEMY_MAX; i++) {
-
-	//}
+	item_init();
 
 	// スコアと残基
 	score = 0;
@@ -378,6 +374,7 @@ void debug_GameMain() {
 	}
 
 	// 描画関連
+	item_draw();
 	star.draw();
 	test.draw();
 	ingame_GUI();
