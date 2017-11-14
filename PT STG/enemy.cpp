@@ -32,6 +32,15 @@ int enemy::collision_Check() {
 				ship.y = 340.f;
 				ship.left -= 1;
 
+				effect_hnd = PlayEffekseer2DEffect(effects[2]);
+				// スケール変更
+				SetScalePlayingEffekseer2DEffect(effect_hnd, 12.0f, 12.0f, 12.0f);
+				// 敵の位置にエフェクトをあわせる
+				SetPosPlayingEffekseer2DEffect(effect_hnd, ship.x, ship.y, 0);
+
+				// 音再生
+				PlaySoundMem(game_sehnd[1], DX_PLAYTYPE_BACK, TRUE);
+
 				if (flag == false) {
 					stats = 0;
 					init_Bullets();
@@ -133,6 +142,15 @@ int enemy::collision_Check() {
 						ship.x = -120.f;
 						ship.y = 340.f;
 						ship.left -= 1;
+
+						effect_hnd = PlayEffekseer2DEffect(effects[2]);
+						// スケール変更
+						SetScalePlayingEffekseer2DEffect(effect_hnd, 12.0f, 12.0f, 12.0f);
+						// 敵の位置にエフェクトをあわせる
+						SetPosPlayingEffekseer2DEffect(effect_hnd, ship.x, ship.y, 0);
+
+						// 音再生
+						PlaySoundMem(game_sehnd[1], DX_PLAYTYPE_BACK, TRUE);
 
 						if (flag == false) {
 							stats = 0;

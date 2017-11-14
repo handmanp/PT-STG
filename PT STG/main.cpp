@@ -277,6 +277,7 @@ void load_Img() {
 void load_Effect() {
 	effects[0] = LoadEffekseerEffect(_T("data/effect/laser.efk"));
 	effects[1] = LoadEffekseerEffect(_T("data/effect/noumison_Laser.efk"));
+	effects[2] = LoadEffekseerEffect(_T("data/effect/dead.efk"));
 }
 
 void make_FontData() {

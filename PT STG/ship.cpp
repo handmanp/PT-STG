@@ -288,20 +288,9 @@ void my_Ship::move() {
 		}
 	}
 	
-	if (input_stats != 0) {
-		int old1 = 511, old2 = 512;
-		for (int i = 0; i < 511; i++) {
-			save_way_x[old2] = save_way_x[old1];
-			save_way_y[old2] = save_way_y[old1];
-			old1--;
-			old2--;
-		}
-		save_way_x[0] = x;
-		save_way_y[0] = y;
-	}
-
-	for (int i = 0; i < 3; i++) {
-		DrawOvalAA(save_way_x[128 + (128 * i)], save_way_y[128 + (128 * i)], 30, 15, 128, 0xFFFFFF, TRUE);
+	// バーリア
+	if (powerup[3] != 0) {
+		DrawOvalAA(x, y, 30 + (powerup[3] * 10), (powerup[3] * 10), 128, GetColor(115, 240, 250), TRUE);
 	}
 
 	//アニメーション管理
