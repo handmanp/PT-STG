@@ -123,9 +123,8 @@ public:
 	void shot_raser();
 	void shot_missile();
 	void shot_double_raser();
-	void shot_upper();
 	void shot_ring_raser();
-	void shot_under();
+	void shot_vertical(float deg);
 };
 
 // アイテム構造体
